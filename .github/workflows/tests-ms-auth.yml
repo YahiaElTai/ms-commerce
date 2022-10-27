@@ -1,6 +1,9 @@
 name: tests-ms-auth
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - "ms-auth/**"
 
 jobs:
   build:
