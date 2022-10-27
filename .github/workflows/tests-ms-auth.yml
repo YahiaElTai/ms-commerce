@@ -1,4 +1,4 @@
-name: tests
+name: tests-ms-auth
 
 on: pull_request
 
