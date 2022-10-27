@@ -4,13 +4,8 @@ metadata:
   name: ingress-service
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
-  tls:
-    - hosts:
-        - mss-commerce.com
-      secretName: echo-tls
   rules:
     - host: www.mss-commerce.com
       http:
