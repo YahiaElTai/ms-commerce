@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: ms-commerce.dev
+    - host: ms-commerce.com
       http:
         paths:
           - path: /api/users/?(.*)
