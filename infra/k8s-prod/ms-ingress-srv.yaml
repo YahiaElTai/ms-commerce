@@ -17,6 +17,13 @@ spec:
                 name: ms-auth-srv
                 port:
                   number: 3000
+          - path: /api/carts/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: cart-srv
+                port:
+                  number: 3001
 ---
 apiVersion: v1
 kind: Service

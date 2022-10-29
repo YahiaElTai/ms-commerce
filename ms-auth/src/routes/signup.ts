@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { BadRequestError, validateRequest } from "@ms-commerce/common";
-import { User } from "../models/user";
+import { User, UserDraft } from "../models/user";
 import { generateToken } from "../utils";
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.post(
       throw new BadRequestError("Email in use");
     }
 
-    const user = User.build({ email, password });
+    const user = new User<UserDraft>({ email, password });
     await user.save();
 
     const token = generateToken(user.id, user.email);

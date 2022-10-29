@@ -1,22 +1,17 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 import { Password } from "../services/password";
 
-// type checking for props to create a user.
-interface UserAttrs {
+export interface UserDraft {
   email: string;
   password: string;
 }
 
-interface UserModel extends mongoose.Model<UserDoc> {
-  build(attrs: UserAttrs): UserDoc;
-}
-
-interface UserDoc extends mongoose.Document {
+export interface UserDoc {
   email: string;
   password: string;
 }
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema<UserDoc>(
   {
     email: {
       type: String,
@@ -48,8 +43,6 @@ userSchema.pre("save", async function (done) {
   done();
 });
 
-userSchema.statics.build = (attrs: UserAttrs) => new User(attrs);
-
-const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
+const User = model<UserDoc>("User", userSchema);
 
 export { User };

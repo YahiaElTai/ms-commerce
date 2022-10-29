@@ -12,7 +12,15 @@ build:
     - image: yahiaeltai/ms-auth
       context: ms-auth
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: yahiaeltai/cart
+      context: cart
+      docker:
+        dockerfile: Dockerfile.dev
       sync:
         manual:
           - src: "src/**/*.ts"
