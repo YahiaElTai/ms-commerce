@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install doctl
+      - name: install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - name: Save DigitalOcean kubeconfig
+      - name: save DigitalOcean kubeconfig
         run: doctl kubernetes cluster kubeconfig save ms-commerce
-      - name: Apply infra manifest files
-        run: kubectl apply -f infra/k8s && kubectl apply -f infra/k8s-prod
+      - name: apply k8s manifests
+        run: kubectl apply -f infra/k8s -f infra/k8s-prod
