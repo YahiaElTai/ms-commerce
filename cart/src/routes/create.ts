@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post(
   "/api/carts",
+  requireAuth,
   [
     body("customerEmail").isEmail(),
     body("currency")
@@ -17,12 +18,11 @@ router.post(
     body("lineItems")
       .isArray({ min: 1 })
       .withMessage("You must add at least one line item to the cart"),
-    body("shippingMethodId").notEmpty().isUUID(),
+    body("shippingMethodId").notEmpty(),
     body("shippingAddress").notEmpty(),
     body("billingAddress").notEmpty(),
   ],
   validateRequest,
-  requireAuth,
   async (req: Request, res: Response) => {
     const cart = new Cart<CartDraft>(req.body);
     cart.save();

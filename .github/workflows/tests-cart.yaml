@@ -1,0 +1,14 @@
+name: tests-cart
+
+on:
+  pull_request:
+    paths:
+      - "cart/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: run cart tests
+        run: cd cart && npm install && npm run test:ci

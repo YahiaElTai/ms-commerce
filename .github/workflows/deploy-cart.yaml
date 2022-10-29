@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build docker image
+      - name: build docker image
         run: cd cart && docker build -t yahiaeltai/cart .
-      - name: Login to docker hub
+      - name: login to docker hub
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push image to docker hub
+      - name: push image to docker hub
         run: docker push yahiaeltai/cart
-      - name: Install doctl
+      - name: install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - name: Save DigitalOcean kubeconfig
+      - name: save DigitalOcean kubeconfig
         run: doctl kubernetes cluster kubeconfig save ms-commerce
-      - name: Update cart deployment
+      - name: rollout new cart service deployment
         run: kubectl rollout restart deployment cart-depl

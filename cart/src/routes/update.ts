@@ -10,8 +10,9 @@ import { isValidAction, Action } from "../utils";
 
 const router = express.Router();
 
-router.post(
+router.put(
   "/api/carts/:id",
+  requireAuth,
   [
     body("version").isNumeric().withMessage("Version must be a number"),
     body("action.type")
@@ -20,9 +21,12 @@ router.post(
     body("action").custom(isValidAction),
   ],
   validateRequest,
-  requireAuth,
   async (
-    req: Request<{ id: string }, any, { action: Action; version: number }>,
+    req: Request<
+      { id: string },
+      Record<string, unknown>,
+      { action: Action; version: number }
+    >,
     res: Response
   ) => {
     const { action, version } = req.body;

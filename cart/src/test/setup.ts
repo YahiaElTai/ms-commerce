@@ -1,7 +1,6 @@
-import request from "supertest";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import { app } from "../app";
+import { generateToken } from "@ms-commerce/common";
 
 let mongo: MongoMemoryServer;
 
@@ -28,22 +27,17 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-// adding signin function to the global object of NodeJS
-// just to avoid having to import this function everywhere
 declare global {
   function signin(): Promise<string[]>;
 }
 
 global.signin = async () => {
-  const email = "test@test.com";
-  const password = "password";
+  const payload = {
+    id: new mongoose.Types.ObjectId("635d013ae716eacb0e92d422").toHexString(),
+    email: "test@test.com",
+  };
 
-  const response = await request(app)
-    .post("/api/users/signup")
-    .send({ email, password })
-    .expect(201);
+  const token = generateToken(payload.id, payload.email);
 
-  const cookie = response.get("Set-Cookie");
-
-  return cookie;
+  return [`access_token=${token}`];
 };

@@ -1,8 +1,11 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import { BadRequestError, validateRequest } from "@ms-commerce/common";
+import {
+  BadRequestError,
+  validateRequest,
+  generateToken,
+} from "@ms-commerce/common";
 import { User, UserDraft } from "../models/user";
-import { generateToken } from "../utils";
 
 const router = express.Router();
 
