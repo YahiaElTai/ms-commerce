@@ -8,7 +8,7 @@ import pubSubRepo from "../pub-sub";
 const pubSubClient = new PubSub({
   projectId: "gcp-mss",
 });
-const topicName = "cart:created";
+const topicName = "cart_created";
 const { publishMessage } = pubSubRepo;
 
 const router = express.Router();
