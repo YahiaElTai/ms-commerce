@@ -1,36 +1,25 @@
 import { Schema } from "mongoose";
 
 export interface AddressDraft {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  streetName: string;
-  streetNumber: string;
-  postalCode: string;
-  city: string;
+  addressLine: string;
   country: string;
 }
 
 export interface Address {
-  firstName: string;
-  lastName: string;
+  id: Schema.Types.ObjectId;
+  name: string;
   email: string;
-  streetName: string;
-  streetNumber: string;
-  postalCode: string;
-  city: string;
+  addressLine: string;
   country: string;
 }
 
 export const AddressSchema = new Schema<Address>(
   {
-    firstName: String,
-    lastName: String,
+    name: String,
     email: String,
-    streetName: String,
-    streetNumber: String,
-    postalCode: String,
-    city: String,
+    addressLine: String,
     country: String,
   },
   {

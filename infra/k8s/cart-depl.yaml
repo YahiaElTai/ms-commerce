@@ -32,6 +32,8 @@ spec:
                   key: JWT_KEY
             - name: MONGO_URI
               value: "mongodb://cart-mongo-srv:27017/cart"
+            - name: GCP_PROJECT_ID
+              value: gcp-mss
 ---
 apiVersion: v1
 kind: Service

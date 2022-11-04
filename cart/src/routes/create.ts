@@ -2,14 +2,9 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@ms-commerce/common";
 import { Cart, CartDraft } from "../models/cart";
-import { PubSub } from "@google-cloud/pubsub";
-import pubSubRepo from "../pub-sub";
+import { CloudPubSub, Topics } from "../pub-sub";
 
-const pubSubClient = new PubSub({
-  projectId: "gcp-mss",
-});
-const topicName = "cart_created";
-const { publishMessage } = pubSubRepo;
+const pubSubClient = new CloudPubSub();
 
 const router = express.Router();
 
@@ -35,9 +30,10 @@ router.post(
     const cart = new Cart<CartDraft>(req.body);
     cart.save();
 
-    const messageId = await publishMessage(pubSubClient, topicName, {
-      id: cart.id,
-    });
+    const messageId = await pubSubClient.publishMessage(
+      Topics.CART_CREATED,
+      cart
+    );
 
     res.status(201).send({ cart, messageId });
   }

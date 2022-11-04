@@ -5,44 +5,34 @@ import {
   LineItemDraft,
   lineItemSchema,
 } from "./subdocuments/line-item";
-import { Money, moneySchema } from "./subdocuments/money";
-import { Shipping, shippingSchema } from "./subdocuments/shipping";
 
 export interface CartDraft {
-  currency: string;
   customerEmail: string;
-  country?: string;
   lineItems: [LineItemDraft];
   shippingAddress: AddressDraft;
-  billingAddress: AddressDraft;
   shippingMethodId: string;
 }
 
 // shipping address needs to match with the country of the cart and the shippingInfo country
 // all currencies need to matc
-interface CartDoc {
+export interface CartDoc {
+  id: Schema.Types.ObjectId;
   version: number;
-  currency: string;
   customerEmail: string;
-  country: string;
   lineItems: [LineItem];
   shippingAddress: Address;
-  billingAddress: Address;
-  shippingInfo: Shipping;
-  totalPrice: Money; // this field will be calculated on the backend. all line item cost + shipping price
+  shippingMethodId: string;
+  totalPrice: number; // this field will be calculated on the backend. all line item cost + shipping price
 }
 
 const cartSchema = new Schema<CartDoc>(
   {
     version: { type: Number, default: 1 },
-    currency: String,
     customerEmail: { type: String, required: true },
-    country: String,
     lineItems: [lineItemSchema],
     shippingAddress: AddressSchema,
-    billingAddress: AddressSchema,
-    shippingInfo: shippingSchema,
-    totalPrice: moneySchema,
+    shippingMethodId: String,
+    totalPrice: Number,
   },
   {
     toJSON: {

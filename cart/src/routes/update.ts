@@ -7,6 +7,9 @@ import {
 } from "@ms-commerce/common";
 import { Cart } from "../models/cart";
 import { isValidAction, Action } from "../utils";
+import { CloudPubSub, Topics } from "../pub-sub";
+
+const pubSubClient = new CloudPubSub();
 
 const router = express.Router();
 
@@ -42,8 +45,10 @@ router.put(
       throw new BadRequestError("Version mismatch");
     }
 
+    let updatedCart;
+
     if (action.type === "addLineItem") {
-      const updatedCart = await Cart.findOneAndUpdate(
+      updatedCart = await Cart.findOneAndUpdate(
         { id },
         {
           $push: { lineItems: action.value },
@@ -53,8 +58,6 @@ router.put(
         },
         { new: true }
       );
-
-      return res.send(updatedCart);
     }
 
     if (action.type === "changeLineItemQuantity") {
@@ -68,7 +71,7 @@ router.put(
         );
       }
 
-      const updatedCart = await Cart.findOneAndUpdate(
+      updatedCart = await Cart.findOneAndUpdate(
         { id: id, "lineItems.sku": lineItem.sku },
         {
           $set: {
@@ -78,12 +81,10 @@ router.put(
         },
         { new: true }
       );
-
-      return res.send(updatedCart);
     }
 
     if (action.type === "removeLineItem") {
-      const updatedCart = await Cart.findOneAndUpdate(
+      updatedCart = await Cart.findOneAndUpdate(
         { id },
         {
           $set: {
@@ -93,7 +94,15 @@ router.put(
         },
         { new: true }
       );
-      return res.send(updatedCart);
+    }
+
+    if (updatedCart) {
+      const messageId = await pubSubClient.publishMessage(
+        Topics.CART_UPDATED,
+        updatedCart
+      );
+
+      return res.send({ cart: updatedCart, messageId });
     }
   }
 );
