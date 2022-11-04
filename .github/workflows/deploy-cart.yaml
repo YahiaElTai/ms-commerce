@@ -8,11 +8,11 @@ on:
       - "cart/**"
 
 env:
-  - PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  - GKE_CLUSTER: mss-commerce-gcp
-  - GKE_ZONE: us-central1-c # Add your cluster zone here.
-  - DEPLOYMENT_NAME: cart-depl # Add your deployment name here.
-  - IMAGE: static-site
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: mss-commerce-gcp
+  GKE_ZONE: us-central1-c # Add your cluster zone here.
+  DEPLOYMENT_NAME: cart-depl # Add your deployment name here.
+  IMAGE: static-site
 
 jobs:
   build:
