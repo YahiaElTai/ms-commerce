@@ -3,7 +3,7 @@ import { app } from "./app";
 
 const start = async () => {
   console.log("starting....");
-  console.log("deploying with github action");
+  console.log("deploying with github action v2");
 
   if (!process.env.MONGO_URI) {
     throw new Error("MONGO_URI must be defined");
