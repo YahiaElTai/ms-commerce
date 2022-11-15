@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: ms-auth-srv
+                name: auth-srv
                 port:
                   number: 3000
           - path: /api/carts/?(.*)

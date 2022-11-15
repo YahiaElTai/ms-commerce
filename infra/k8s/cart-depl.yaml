@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cart-depl # name
+  name: cart-depl
 spec:
   replicas: 1
   selector:
@@ -12,19 +12,20 @@ spec:
       labels:
         app: cart
     spec:
-      volumes:
-        - name: google-cloud-key
-          secret:
-            secretName: pubsub-key
+      serviceAccountName: identity-service-account-ms-commerce
+      nodeSelector:
+        iam.gke.io/gke-metadata-server-enabled: "true"
       containers:
         - name: cart
-          image: yahiaeltai/cart
-          volumeMounts:
-            - name: google-cloud-key
-              mountPath: /var/secrets/google
+          image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
+          resources:
+            requests:
+              cpu: 100m
+              memory: 384Mi
+            limits:
+              memory: 384Mi
+              cpu: 300m
           env:
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /var/secrets/google/key.json
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -33,7 +34,7 @@ spec:
             - name: MONGO_URI
               value: "mongodb://cart-mongo-srv:27017/cart"
             - name: GCP_PROJECT_ID
-              value: gcp-mss
+              value: ms-commerce-368507
 ---
 apiVersion: v1
 kind: Service

@@ -1,27 +1,18 @@
-apiVersion: skaffold/v2alpha3
+apiVersion: skaffold/v2beta29
 kind: Config
-deploy:
-  kubectl:
-    manifests:
-      - ./infra/k8s/*
-      - ./infra/k8s-dev/*
+metadata:
+  name: ms-commerce
 build:
-  local:
-    push: false
   artifacts:
-    - image: yahiaeltai/ms-auth
-      context: ms-auth
+    - image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/auth
+      context: auth
       docker:
         dockerfile: Dockerfile.dev
-      sync:
-        manual:
-          - src: "src/**/*.ts"
-            dest: .
-    - image: yahiaeltai/cart
+    - image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
       context: cart
       docker:
         dockerfile: Dockerfile.dev
-      sync:
-        manual:
-          - src: "src/**/*.ts"
-            dest: .
+deploy:
+  kubectl:
+    manifests:
+      - infra/k8s-dev/*
