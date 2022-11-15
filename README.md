@@ -35,4 +35,4 @@ Each service has basic crud operations with a highly simplified data model.
 
 ### [Recreate GCP Project for production](/docs/Recreate_GCP_Project.md)
 
-### [Local Development Setup](/Local_Development_Setup.md)
+### [Local Development Setup](/docs/Local_Development_Setup.md)
