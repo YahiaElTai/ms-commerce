@@ -16,15 +16,17 @@ jobs:
     steps:
       - checkout
       - gcp-cli/initialize
-      - run: gcloud config list
       - run: gcloud auth configure-docker --quiet europe-west1-docker.pkg.dev
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: docker version
       - gcp-gcr/build-image:
           docker-context: ./cart
           image: ms-commerce/cart
           path: ./cart
+          registry-url: europe-west1-docker.pkg.dev
+      - run: docker images
+      - gcp-gcr/push-image:
+          image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
           registry-url: europe-west1-docker.pkg.dev
       # build the image, tag it and publsh it to registry
       # - gcp-gke/publish-and-rollout-image:
