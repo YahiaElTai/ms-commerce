@@ -1,6 +1,8 @@
 import request from "supertest";
 import { app } from "../../app";
 
+jest.mock("../../pub-sub");
+
 it("should responds with 401 status code for unauthenticated users", async () => {
   await request(app)
     .put("/api/carts/635d013ae716eacb0e92d422")
