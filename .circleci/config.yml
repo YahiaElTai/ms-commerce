@@ -3,19 +3,24 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.3
 
+executors:
+  nodejs:
+    docker:
+      - image: cimg/node:18.12.1
+
 jobs:
   cart_test:
-    executor: node/default
+    executor: nodejs
     steps:
       - checkout
       - node/install-packages:
           app-dir: cart
           pkg-manager: npm
+      # - run:
+      #     command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+      #     name: install libssl
       - run:
-          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-          name: install libssl
-      - run:
-          command: MONGOMS_DEBUG=1 cd cart && MONGOMS_DEBUG=1 npm run test:ci
+          command: cd cart && npm run test:ci
           name: Run tests
       - persist_to_workspace:
           root: ~/project
