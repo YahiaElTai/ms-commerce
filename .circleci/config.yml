@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
       - run:
-          command: pwd
-          name: show pwd
+          command: ls
+          name: ls
       - node/install-packages:
           pkg-manager: npm
       - run:
