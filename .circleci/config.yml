@@ -17,8 +17,7 @@ jobs:
       # - run: |
       #     echo $GCLOUD_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
       #     gcloud --quiet config set project ${GOOGLE_PROJECT_ID} && gcloud config list
-      - gcp-cli/initialize:
-          executor: gcp-cli/google
+      - gcp-cli/initialize
       - run: gcloud config list
       # - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
       # - gcp-gke/publish-and-rollout-image:
