@@ -48,7 +48,7 @@ jobs:
           paths:
             - .
 workflows:
-  test_cart_and_run:
+  auth:
     jobs:
       # - test_cart
       # - test_auth
