@@ -1,17 +1,5 @@
 version: 2.1
 
-aliases:
-  - &triggered_only_on_main
-    filters:
-      branches:
-        only:
-          - main
-  - &triggered_not_on_main
-    filters:
-      branches:
-        ignore:
-          - main
-
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
@@ -54,6 +42,7 @@ jobs:
       - run:
           name: Rollout new cart deployment
           command: kubectl rollout restart deployment cart-depl
+
 workflows:
   # test_cart: only runs on on PR and cart changes
   # test_and_deploy_cart: only runs on main and cart changes
@@ -63,6 +52,11 @@ workflows:
 
   # deploy_manifests: only runs on main and infa changes
   test_cart:
+    when:
+      not:
+        matches:
+          pattern: "^main$"
+          value: << pipeline.git.branch >>
     jobs:
       - node/test:
           name: test_cart
@@ -73,9 +67,10 @@ workflows:
             [
               run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
             ]
-        <<: *triggered_not_on_main
 
   test_and_deploy_cart:
+    when:
+      equal: [main, << pipeline.git.branch >>]
     jobs:
       - node/test:
           name: test_cart
@@ -89,8 +84,6 @@ workflows:
       - buid_and_push_image:
           requires:
             - test_cart
-          <<: *triggered_only_on_main
       - deploy_cart:
           requires:
             - buid_and_push_image
-          <<: *triggered_only_on_main
