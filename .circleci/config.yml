@@ -57,6 +57,14 @@ workflows:
       - buid_and_push_image:
           requires:
             - test_cart
+          filters:
+            branches:
+              only:
+                - main
       - deploy_cart:
           requires:
             - buid_and_push_image
+          filters:
+            branches:
+              only:
+                - main
