@@ -18,6 +18,8 @@ jobs:
       - gcp-cli/initialize
       - run: gcloud config list
       - run: gcloud auth configure-docker --quiet europe-west1-docker.pkg.dev
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: docker version
       - gcp-gcr/build-image:
           docker-context: ./cart
