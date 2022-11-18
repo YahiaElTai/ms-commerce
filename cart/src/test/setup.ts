@@ -5,7 +5,7 @@ import { generateToken } from "@ms-commerce/common";
 let mongo: MongoMemoryServer;
 
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create({ binary: { version: "4.2.6" } });
+  mongo = await MongoMemoryServer.create({ binary: { version: "latest" } });
   const mongoUri = mongo.getUri();
 
   await mongoose.connect(mongoUri, {});
