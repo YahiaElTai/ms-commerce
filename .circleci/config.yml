@@ -15,7 +15,7 @@ executors:
 
 jobs:
   buid_and_push_image:
-    executor: docker-context
+    executor: docker-executor
     steps:
       - checkout
       - gcp-cli/initialize
@@ -33,7 +33,7 @@ jobs:
           image: $IMAGE_NAME
           registry-url: $REGISTRY_URL
   deploy_cart:
-    executor: docker-context
+    executor: docker-executor
     steps:
       - gcp-cli/initialize
       - run:
