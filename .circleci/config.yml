@@ -16,22 +16,23 @@ jobs:
     steps:
       - checkout
       - gcp-cli/initialize
-      - run: gcloud auth configure-docker --quiet europe-west1-docker.pkg.dev
+      - run: gcloud auth configure-docker --quiet $REGISTRY_URL
       - setup_remote_docker:
           docker_layer_caching: true
       - gcp-gcr/build-image:
           docker-context: ./cart
-          image: ms-commerce/cart
+          image: $IMAGE_NAME
           path: ./cart
-          registry-url: europe-west1-docker.pkg.dev
+          registry-url: $REGISTRY_URL
       - gcp-gcr/push-image:
-          image: ms-commerce/cart
-          registry-url: europe-west1-docker.pkg.dev
-      - gcp-gke/rollout-image:
-          cluster: ms-commerce
-          container: cart
-          deployment: cart-depl
-          image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
+          image: $IMAGE_NAME
+          registry-url: $REGISTRY_URL
+      - run:
+          name: Connect to cluster
+          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GCP_PROJECT_ID
+      - run:
+          name: Rollout new cart deployment
+          command: kubectl rollout restart deployment cart-depl
 
   test_cart:
     docker:
