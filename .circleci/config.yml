@@ -18,6 +18,7 @@ jobs:
       - gcp-cli/initialize
       - run: gcloud config list
       - run: gcloud auth configure-docker --quiet europe-west1-docker.pkg.dev
+      - run: docker version
       - gcp-gcr/build-image:
           docker-context: ./cart
           image: ms-commerce/cart
