@@ -37,11 +37,11 @@ it("should responds with correct cart", async () => {
     })
     .expect(201);
 
-  const respone = await request(app)
-    .get(`/api/carts/${response.body.id}`)
+  const response2 = await request(app)
+    .get(`/api/carts/${response.body.cart.id}`)
     .set("Cookie", cookie)
     .send()
     .expect(200);
 
-  expect(respone.body.customerEmail).toEqual("test@test.com");
+  expect(response2.body.customerEmail).toEqual("test@test.com");
 });

@@ -24,7 +24,7 @@ it("should responds 400 and error message on bad request", async () => {
     });
 
   const response = await request(app)
-    .put(`/api/carts/${createdCart.body.id}`)
+    .put(`/api/carts/${createdCart.body.cart.id}`)
     .set("Cookie", cookie)
     .send({
       version: 1,
@@ -59,7 +59,7 @@ it("should responds with 200 update the correct cart", async () => {
     });
 
   await request(app)
-    .put(`/api/carts/${createdCart.body.id}`)
+    .put(`/api/carts/${createdCart.body.cart.id}`)
     .set("Cookie", cookie)
     .send({
       version: 1,

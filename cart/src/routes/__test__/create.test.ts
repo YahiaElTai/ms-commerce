@@ -33,5 +33,5 @@ it("should responds with 201 and create a cart", async () => {
     })
     .expect(201);
 
-  expect(response.body.customerEmail).toEqual("test@test.com");
+  expect(response.body.cart.customerEmail).toEqual("test@test.com");
 });

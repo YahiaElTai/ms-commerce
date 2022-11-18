@@ -31,7 +31,6 @@ export class CloudPubSub {
       const messageId = await this.client
         .topic(topicName)
         .publishMessage({ data: dataBuffer });
-      console.log(`Message ${messageId} published.`);
       return messageId;
     } catch (err) {
       console.error(err);
