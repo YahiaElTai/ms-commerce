@@ -51,5 +51,6 @@ jobs:
 workflows:
   test_cart_and_run:
     jobs:
-      - test_cart
-      - test_auth
+      # - test_cart
+      # - test_auth
+      - deploy
