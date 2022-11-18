@@ -2,9 +2,19 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.3
+  gcp-cli: circleci/gcp-cli@2.4.1
 
 jobs:
-  cart_test:
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - run: |
+          echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+          gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+          gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+
+  test_cart:
     executor: node/default
     steps:
       - checkout
@@ -21,7 +31,7 @@ jobs:
           root: ~/project
           paths:
             - .
-  auth_test:
+  test_auth:
     executor: node/default
     steps:
       - checkout
@@ -39,7 +49,7 @@ jobs:
           paths:
             - .
 workflows:
-  cart_test_and_run:
+  test_cart_and_run:
     jobs:
-      - cart_test
-      - auth_test
+      - test_cart
+      - test_auth
