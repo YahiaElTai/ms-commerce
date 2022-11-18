@@ -5,17 +5,14 @@ orbs:
 
 jobs:
   cart_test: 
-    working_directory: ~/project/cart
     executor: node/default
     steps:
       - checkout
-      - run:
-          command: ls
-          name: ls
       - node/install-packages:
+          app-dir: cart
           pkg-manager: npm
       - run:
-          command: npm run test
+          command: cd cart && npm run test:ci
           name: Run tests
       - persist_to_workspace:
           root: ~/project
