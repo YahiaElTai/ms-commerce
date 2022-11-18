@@ -1,5 +1,12 @@
 version: 2.1
 
+aliases:
+  - &triggered_only_on_default_branch
+    filters:
+      branches:
+        only:
+          - main
+
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
@@ -57,14 +64,8 @@ workflows:
       - buid_and_push_image:
           requires:
             - test_cart
-          filters:
-            branches:
-              only:
-                - main
+          <<: *triggered_only_on_default_branch
       - deploy_cart:
           requires:
             - buid_and_push_image
-          filters:
-            branches:
-              only:
-                - main
+          <<: *triggered_only_on_default_branch
