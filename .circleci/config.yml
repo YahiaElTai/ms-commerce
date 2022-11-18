@@ -3,14 +3,9 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.3
 
-executors:
-  nodejs:
-    docker:
-      - image: cimg/node:18.12.1
-
 jobs:
   cart_test:
-    executor: nodejs
+    executor: node/default
     steps:
       - checkout
       - node/install-packages:
@@ -21,7 +16,24 @@ jobs:
           name: install libssl
       - run:
           command: cd cart && npm run test:ci
-          name: Run tests
+          name: Run cart tests
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  auth_test:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          app-dir: auth
+          pkg-manager: npm
+      - run:
+          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+          name: install libssl
+      - run:
+          command: cd auth && npm run test:ci
+          name: Run auth tests
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -30,3 +42,4 @@ workflows:
   cart_test_and_run:
     jobs:
       - cart_test
+      - auth_test
