@@ -12,6 +12,9 @@ jobs:
           app-dir: cart
           pkg-manager: npm
       - run:
+          command: node --version
+          name: node version
+      - run:
           command: cd cart && npm run test:ci
           name: Run tests
       - persist_to_workspace:
