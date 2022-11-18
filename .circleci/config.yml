@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@5.0.3
 
 jobs:
-  cart_test: 
+  cart_test:
     executor: node/default
     steps:
       - checkout
@@ -15,7 +15,7 @@ jobs:
           command: node --version
           name: node version
       - run:
-          command: cd cart && npm run test:ci
+          command: MONGOMS_DEBUG=1 cd cart && npm run test:ci
           name: Run tests
       - persist_to_workspace:
           root: ~/project
