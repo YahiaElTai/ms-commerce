@@ -16,7 +16,7 @@ jobs:
       - checkout
       - gcp-cli/initialize
       - run: gcloud config list
-      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+      - run: gcloud auth configure-docker --quiet europe-west1-docker.pkg.dev
       # - gcp-gke/publish-and-rollout-image:
       #     cluster: ms-commerce
       #     # container:
