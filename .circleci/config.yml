@@ -24,20 +24,14 @@ jobs:
           image: ms-commerce/cart
           path: ./cart
           registry-url: europe-west1-docker.pkg.dev
-      - run: docker images
       - gcp-gcr/push-image:
           image: ms-commerce/cart
           registry-url: europe-west1-docker.pkg.dev
-      # build the image, tag it and publsh it to registry
-      # - gcp-gke/publish-and-rollout-image:
-      #     cluster: ms-commerce
-      #     # container:
-      #     deployment: cart-depl
-      #     docker-context: ./cart
-      #     dockerfile-dir: ./cart
-      #     image: cart
-      #     registry-url: europe-west1-docker.pkg.dev
-      #     tag: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
+      - gcp-gke/rollout-image:
+          cluster: ms-commerce
+          container: cart
+          deployment: cart-depl
+          image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
 
   test_cart:
     docker:
