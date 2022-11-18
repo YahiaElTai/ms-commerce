@@ -3,21 +3,34 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
+  gcp-gke: circleci/gcp-gke@1.4.0
 
 jobs:
-  authenticate_gcloud:
+  deploy_cart:
     docker:
       - image: google/cloud-sdk
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
     steps:
+      - checkout
       - run: |
           echo $GCLOUD_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
           gcloud --quiet config set project ${GOOGLE_PROJECT_ID} && gcloud config list
+      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+      - gke/publish-and-rollout-image:
+          cluster: ms-commerce
+          # container:
+          deployment: cart-depl
+          docker-context: ./cart
+          dockerfile-dir: ./cart
+          image: cart
+          registry-url: europe-west1-docker.pkg.dev
+          tag: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
 
   test_cart:
-    executor: node/default
+    docker:
+      - image: cimg/node:18.12.1
     steps:
       - checkout
       - node/install-packages:
@@ -34,7 +47,8 @@ jobs:
           paths:
             - .
   test_auth:
-    executor: node/default
+    docker:
+      - image: cimg/node:18.12.1
     steps:
       - checkout
       - node/install-packages:
@@ -55,4 +69,4 @@ workflows:
     jobs:
       # - test_cart
       # - test_auth
-      - authenticate_gcloud
+      - deploy_cart
