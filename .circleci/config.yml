@@ -46,12 +46,17 @@ workflows:
   tes_and_deploy_cart:
     jobs:
       - node/test:
+          name: test_cart
           app-dir: cart
           run-command: test:ci
           test-results-for: jest
+          setup:
+            [
+              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
+            ]
       - buid_and_push_image:
           requires:
-            - node/test
+            - test_cart
       - deploy_cart:
           requires:
             - buid_and_push_image
