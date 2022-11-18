@@ -16,7 +16,9 @@ jobs:
     steps:
       - checkout
       - gcp-cli/initialize
-      - run: gcloud auth configure-docker --quiet $REGISTRY_URL
+      - run:
+          name: Authenticate Docker with gcloud
+          command: gcloud auth configure-docker --quiet $REGISTRY_URL
       - setup_remote_docker:
           docker_layer_caching: true
       - gcp-gcr/build-image:
@@ -29,7 +31,7 @@ jobs:
           registry-url: $REGISTRY_URL
       - run:
           name: Connect to cluster
-          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GCP_PROJECT_ID
+          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
       - run:
           name: Rollout new cart deployment
           command: kubectl rollout restart deployment cart-depl
