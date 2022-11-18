@@ -4,6 +4,7 @@ orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
   gcp-gke: circleci/gcp-gke@1.4.0
+  gcp-gcr: circleci/gcp-gcr@0.15.0
 
 jobs:
   deploy_cart:
@@ -17,6 +18,13 @@ jobs:
       - gcp-cli/initialize
       - run: gcloud config list
       - run: gcloud auth configure-docker --quiet europe-west1-docker.pkg.dev
+      - gcp-gcr/build-image:
+          docker-context: ./cart
+          image: cart
+          path: ./cart
+          registry-url: europe-west1-docker.pkg.dev
+          tag: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
+      # build the image, tag it and publsh it to registry
       # - gcp-gke/publish-and-rollout-image:
       #     cluster: ms-commerce
       #     # container:
