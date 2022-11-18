@@ -43,7 +43,7 @@ jobs:
           name: Rollout new cart deployment
           command: kubectl rollout restart deployment cart-depl
 workflows:
-  auth:
+  tes_and_deploy_cart:
     jobs:
       - node/test:
           app-dir: cart
