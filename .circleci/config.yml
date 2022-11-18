@@ -5,6 +5,7 @@ orbs:
 
 jobs:
   cart_test: 
+    working_directory: ~/project/cart
     executor: node/default
     steps:
       - checkout
