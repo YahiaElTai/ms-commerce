@@ -14,12 +14,11 @@ jobs:
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
-      - gcp-cli/install_and_initialize_cli:
-          executor: gcp-cli/google
       # - run: |
       #     echo $GCLOUD_SERVICE_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
       #     gcloud --quiet config set project ${GOOGLE_PROJECT_ID} && gcloud config list
-      - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+      - run: gcloud config list
+      # - run: gcloud auth configure-docker europe-west1-docker.pkg.dev
       # - gcp-gke/publish-and-rollout-image:
       #     cluster: ms-commerce
       #     # container:
@@ -71,4 +70,6 @@ workflows:
     jobs:
       # - test_cart
       # - test_auth
+      - gcp-cli/install_and_initialize_cli:
+          executor: google
       - deploy_cart
