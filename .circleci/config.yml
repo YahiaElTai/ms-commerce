@@ -15,7 +15,7 @@ jobs:
           command: node --version
           name: node version
       - run:
-          command: MONGOMS_DEBUG=1 cd cart && npm run test:ci
+          command: MONGOMS_DEBUG=1 cd cart && MONGOMS_DEBUG=1 npm run test:ci
           name: Run tests
       - persist_to_workspace:
           root: ~/project
