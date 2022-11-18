@@ -5,13 +5,17 @@ orbs:
   gcp-cli: circleci/gcp-cli@2.4.1
   gcp-gcr: circleci/gcp-gcr@0.15.0
 
-jobs:
-  buid_and_push_image:
+executors:
+  docker-executor:
     docker:
       - image: cimg/gcp:2022.11
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
+
+jobs:
+  buid_and_push_image:
+    executor: docker-context
     steps:
       - checkout
       - gcp-cli/initialize
@@ -29,11 +33,7 @@ jobs:
           image: $IMAGE_NAME
           registry-url: $REGISTRY_URL
   deploy_cart:
-    docker:
-      - image: cimg/gcp:2022.11
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+    executor: docker-context
     steps:
       - gcp-cli/initialize
       - run:
