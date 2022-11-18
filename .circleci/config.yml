@@ -3,11 +3,10 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
-  gcp-gke: circleci/gcp-gke@1.4.0
   gcp-gcr: circleci/gcp-gcr@0.15.0
 
 jobs:
-  deploy_cart:
+  buid_and_push_image:
     docker:
       - image: cimg/gcp:2022.11
         auth:
@@ -29,52 +28,30 @@ jobs:
       - gcp-gcr/push-image:
           image: $IMAGE_NAME
           registry-url: $REGISTRY_URL
+  deploy_cart:
+    docker:
+      - image: cimg/gcp:2022.11
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - gcp-cli/initialize
       - run:
           name: Connect to cluster
           command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
       - run:
           name: Rollout new cart deployment
           command: kubectl rollout restart deployment cart-depl
-
-  test_cart:
-    docker:
-      - image: cimg/node:18.12.1
-    steps:
-      - checkout
-      - node/install-packages:
-          app-dir: cart
-          pkg-manager: npm
-      - run:
-          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-          name: install libssl
-      - run:
-          command: cd cart && npm run test:ci
-          name: Run cart tests
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
-  test_auth:
-    docker:
-      - image: cimg/node:18.12.1
-    steps:
-      - checkout
-      - node/install-packages:
-          app-dir: auth
-          pkg-manager: npm
-      - run:
-          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-          name: install libssl
-      - run:
-          command: cd auth && npm run test:ci
-          name: Run auth tests
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
 workflows:
   auth:
     jobs:
-      # - test_cart
-      # - test_auth
-      - deploy_cart
+      - node/test:
+          app-dir: cart
+          run-command: test:ci
+          test-results-for: jest
+      - buid_and_push_image:
+          requires:
+            - node/test
+      - deploy_cart:
+          requires:
+            - buid_and_push_image
