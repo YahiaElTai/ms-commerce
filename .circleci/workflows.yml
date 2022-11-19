@@ -9,7 +9,7 @@ parameters:
   cart-changed:
     type: boolean
     default: false
-  auth-changd:
+  auth-changed:
     type: boolean
     default: false
 
