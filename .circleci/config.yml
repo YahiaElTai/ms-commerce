@@ -14,7 +14,7 @@ executors:
           password: $DOCKERHUB_PASSWORD
 
 jobs:
-  buid_and_push_image:
+  buid_and_push_image_cart:
     executor: docker-executor
     parameters:
       service:
@@ -25,22 +25,19 @@ jobs:
       - run:
           name: Authenticate Docker with gcloud
           command: gcloud auth configure-docker --quiet $REGISTRY_URL
+      - run: echo << parameters.service >>
       - setup_remote_docker:
           docker_layer_caching: true
       - gcp-gcr/build-image:
-          docker-context: ./<< paramaters.service >>
-          image: $REPO_NAME/<< paramaters.service >>
-          path: ./<< paramaters.service >>
+          docker-context: ./<< parameters.service >>
+          image: $REPO_NAME/<< parameters.service >>
+          path: ./<< parameters.service >>
           registry-url: $REGISTRY_URL
       - gcp-gcr/push-image:
-          image: $REPO_NAME/<< paramaters.service >>
+          image: $REPO_NAME/<< parameters.service >>
           registry-url: $REGISTRY_URL
-
-  deploy:
+  deploy_cart:
     executor: docker-executor
-    parameters:
-      service:
-        type: string
     steps:
       - gcp-cli/initialize
       - run:
@@ -48,7 +45,35 @@ jobs:
           command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
       - run:
           name: Rollout new cart deployment
-          command: kubectl rollout restart deployment << paramaters.service >>-depl
+          command: kubectl rollout restart deployment cart-depl
+  buid_and_push_image_auth:
+    executor: docker-executor
+    steps:
+      - checkout
+      - gcp-cli/initialize
+      - run:
+          name: Authenticate Docker with gcloud
+          command: gcloud auth configure-docker --quiet $REGISTRY_URL
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - gcp-gcr/build-image:
+          docker-context: ./auth
+          image: $REPO_NAME/auth
+          path: ./auth
+          registry-url: $REGISTRY_URL
+      - gcp-gcr/push-image:
+          image: $REPO_NAME/auth
+          registry-url: $REGISTRY_URL
+  deploy_auth:
+    executor: docker-executor
+    steps:
+      - gcp-cli/initialize
+      - run:
+          name: Connect to cluster
+          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
+      - run:
+          name: Rollout new cart deployment
+          command: kubectl rollout restart deployment auth-depl
 
 workflows:
   # run tests only for the folder that changd
@@ -101,19 +126,16 @@ workflows:
             [
               run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
             ]
-      - buid_and_push_image:
+      - buid_and_push_image_cart:
           service: cart
           requires:
             - test_cart
-      - deploy:
-          service: cart
+      - deploy_cart:
           requires:
-            - buid_and_push_image
-      - buid_and_push_image:
-          service: auth
+            - buid_and_push_image_cart
+      - buid_and_push_image_auth:
           requires:
             - test_auth
-      - deploy:
-          service: cart
+      - deploy_auth:
           requires:
-            - buid_and_push_image
+            - buid_and_push_image_auth
