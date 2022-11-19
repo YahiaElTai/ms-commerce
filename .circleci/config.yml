@@ -5,17 +5,6 @@ orbs:
   gcp-cli: circleci/gcp-cli@2.4.1
   gcp-gcr: circleci/gcp-gcr@0.15.0
 
-parameters:
-  cart-changed:
-    type: boolean
-    default: false
-  auth-changed:
-    type: boolean
-    default: false
-  infra-changed:
-    type: boolean
-    default: false
-
 executors:
   gcp-executor:
     docker:
