@@ -147,5 +147,8 @@ workflows:
       and:
         - equal: [main, << pipeline.git.branch >>]
     jobs:
-      - deploy_manifests:
+      - can_deploy_manifests:
           type: approval
+      - deploy_manifests:
+          requires:
+            - can_deploy_manifests
