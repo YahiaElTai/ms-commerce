@@ -14,7 +14,7 @@ executors:
           password: $DOCKERHUB_PASSWORD
 
 jobs:
-  buid_and_push_image:
+  buid_and_push_image_cart:
     executor: docker-executor
     steps:
       - checkout
@@ -26,11 +26,11 @@ jobs:
           docker_layer_caching: true
       - gcp-gcr/build-image:
           docker-context: ./cart
-          image: $IMAGE_NAME
+          image: $REPO_NAME/cart
           path: ./cart
           registry-url: $REGISTRY_URL
       - gcp-gcr/push-image:
-          image: $IMAGE_NAME
+          image: $REPO_NAME/cart
           registry-url: $REGISTRY_URL
   deploy_cart:
     executor: docker-executor
@@ -42,16 +42,38 @@ jobs:
       - run:
           name: Rollout new cart deployment
           command: kubectl rollout restart deployment cart-depl
+  buid_and_push_image_auth:
+    executor: docker-executor
+    steps:
+      - checkout
+      - gcp-cli/initialize
+      - run:
+          name: Authenticate Docker with gcloud
+          command: gcloud auth configure-docker --quiet $REGISTRY_URL
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - gcp-gcr/build-image:
+          docker-context: ./auth
+          image: $REPO_NAME/auth
+          path: ./auth
+          registry-url: $REGISTRY_URL
+      - gcp-gcr/push-image:
+          image: $REPO_NAME/auth
+          registry-url: $REGISTRY_URL
+  deploy_auth:
+    executor: docker-executor
+    steps:
+      - gcp-cli/initialize
+      - run:
+          name: Connect to cluster
+          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
+      - run:
+          name: Rollout new cart deployment
+          command: kubectl rollout restart deployment auth-depl
 
 workflows:
-  # test_cart: only runs on on PR and cart changes
-  # test_and_deploy_cart: only runs on main and cart changes
-
-  # test_auth: only runs on on PR and auth changes
-  # test_and_deploy_auth: only runs on main and auth changes
-
-  # deploy_manifests: only runs on main and infa changes
-  test_cart:
+  # run tests only for the folder that changd
+  test_branch:
     when:
       not:
         matches:
@@ -67,8 +89,18 @@ workflows:
             [
               run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
             ]
+      - node/test:
+          name: test_auth
+          app-dir: auth
+          run-command: test:ci
+          test-results-for: jest
+          setup:
+            [
+              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
+            ]
 
-  test_and_deploy_cart:
+  # run all tests but deploy only the folder that changed
+  test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]
     jobs:
@@ -81,9 +113,24 @@ workflows:
             [
               run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
             ]
-      - buid_and_push_image:
+      - node/test:
+          name: test_auth
+          app-dir: auth
+          run-command: test:ci
+          test-results-for: jest
+          setup:
+            [
+              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
+            ]
+      - buid_and_push_image_cart:
           requires:
             - test_cart
       - deploy_cart:
           requires:
-            - buid_and_push_image
+            - buid_and_push_image_cart
+      - buid_and_push_image_auth:
+          requires:
+            - test_auth
+      - deploy_auth:
+          requires:
+            - buid_and_push_image_auth
