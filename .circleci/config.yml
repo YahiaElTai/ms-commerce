@@ -106,6 +106,7 @@ workflows:
           requires:
             - test_cart
       - deploy:
+          name: deploy_cart
           service: cart
           requires:
             - buid_and_push_image_cart
@@ -115,6 +116,7 @@ workflows:
           requires:
             - test_auth
       - deploy:
+          name: deploy_auth
           service: auth
           requires:
             - buid_and_push_image_auth
