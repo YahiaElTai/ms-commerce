@@ -69,16 +69,27 @@ jobs:
           command: kubectl rollout restart deployment << parameters.service >>-depl
 
 workflows:
-  test_branch:
+  test_cart_on_branch:
     when:
-      not:
-        matches:
-          pattern: "^main$"
-          value: << pipeline.git.branch >>
+      and:
+        - not:
+            matches:
+              pattern: "^main$"
+              value: << pipeline.git.branch >>
+        - equal: [true, << pipeline.parameters.cart-changed >>]
     jobs:
       - test:
           name: test_cart
           app-dir: cart
+  test_auth_on_branch:
+    when:
+      and:
+        - not:
+            matches:
+              pattern: "^main$"
+              value: << pipeline.git.branch >>
+        - equal: [true, << pipeline.parameters.auth-changed >>]
+    jobs:
       - test:
           name: test_auth
           app-dir: auth
