@@ -142,3 +142,10 @@ workflows:
         - equal: [true, << pipeline.parameters.infra-changed >>]
     jobs:
       - deploy_manifests
+  deploy_manifests:
+    when:
+      and:
+        - equal: [main, << pipeline.git.branch >>]
+    jobs:
+      - deploy_manifests:
+          type: approval
