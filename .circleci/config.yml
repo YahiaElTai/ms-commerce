@@ -14,8 +14,11 @@ executors:
           password: $DOCKERHUB_PASSWORD
 
 jobs:
-  buid_and_push_image_cart:
+  buid_and_push_image:
     executor: docker-executor
+    parameters:
+      service:
+        type: string
     steps:
       - checkout
       - gcp-cli/initialize
@@ -25,15 +28,19 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - gcp-gcr/build-image:
-          docker-context: ./cart
-          image: $REPO_NAME/cart
-          path: ./cart
+          docker-context: ./<< paramaters.service >>
+          image: $REPO_NAME/<< paramaters.service >>
+          path: ./<< paramaters.service >>
           registry-url: $REGISTRY_URL
       - gcp-gcr/push-image:
-          image: $REPO_NAME/cart
+          image: $REPO_NAME/<< paramaters.service >>
           registry-url: $REGISTRY_URL
-  deploy_cart:
+
+  deploy:
     executor: docker-executor
+    parameters:
+      service:
+        type: string
     steps:
       - gcp-cli/initialize
       - run:
@@ -41,35 +48,7 @@ jobs:
           command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
       - run:
           name: Rollout new cart deployment
-          command: kubectl rollout restart deployment cart-depl
-  buid_and_push_image_auth:
-    executor: docker-executor
-    steps:
-      - checkout
-      - gcp-cli/initialize
-      - run:
-          name: Authenticate Docker with gcloud
-          command: gcloud auth configure-docker --quiet $REGISTRY_URL
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - gcp-gcr/build-image:
-          docker-context: ./auth
-          image: $REPO_NAME/auth
-          path: ./auth
-          registry-url: $REGISTRY_URL
-      - gcp-gcr/push-image:
-          image: $REPO_NAME/auth
-          registry-url: $REGISTRY_URL
-  deploy_auth:
-    executor: docker-executor
-    steps:
-      - gcp-cli/initialize
-      - run:
-          name: Connect to cluster
-          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
-      - run:
-          name: Rollout new cart deployment
-          command: kubectl rollout restart deployment auth-depl
+          command: kubectl rollout restart deployment << paramaters.service >>-depl
 
 workflows:
   # run tests only for the folder that changd
@@ -122,15 +101,19 @@ workflows:
             [
               run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
             ]
-      - buid_and_push_image_cart:
+      - buid_and_push_image:
+          service: cart
           requires:
             - test_cart
-      - deploy_cart:
+      - deploy:
+          service: cart
           requires:
-            - buid_and_push_image_cart
-      - buid_and_push_image_auth:
+            - buid_and_push_image
+      - buid_and_push_image:
+          service: auth
           requires:
             - test_auth
-      - deploy_auth:
+      - deploy:
+          service: cart
           requires:
-            - buid_and_push_image_auth
+            - buid_and_push_image
