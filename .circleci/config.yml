@@ -9,7 +9,7 @@ workflows:
   always-run:
     jobs:
       - path-filtering/filter:
-          name: check-updated-files
+          name: check-service-changed
           mapping: |
             cart/.* cart-changed true
             auth/.* auth-changed true
