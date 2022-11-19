@@ -6,16 +6,19 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.15.0
 
 executors:
-  docker-executor:
+  gcp-executor:
     docker:
       - image: cimg/gcp:2022.11
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
+  node-executor:
+    docker:
+      - image: cimg/node:18.12.1
 
 jobs:
   buid_and_push_image:
-    executor: docker-executor
+    executor: gcp-executor
     parameters:
       service:
         type: string
@@ -36,7 +39,7 @@ jobs:
           image: $REPO_NAME/<< parameters.service >>
           registry-url: $REGISTRY_URL
   deploy:
-    executor: docker-executor
+    executor: gcp-executor
     parameters:
       service:
         type: string
@@ -48,9 +51,23 @@ jobs:
       - run:
           name: Rollout new cart deployment
           command: kubectl rollout restart deployment << parameters.service >>-depl
+  test:
+    executor: node-executor
+    parameters:
+      app-dir:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Setup machine
+          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+      - node/install-packages:
+          app-dir: << parameters.app-dir >>
+      - run:
+          command: cd << parameters.app-dir >> && npm run test:ci
+          name: Run tests << parameters.app-dir >>
 
 workflows:
-  # run tests only for the folder that changd
   test_branch:
     when:
       not:
@@ -58,48 +75,19 @@ workflows:
           pattern: "^main$"
           value: << pipeline.git.branch >>
     jobs:
-      - node/test:
+      - test:
           name: test_cart
           app-dir: cart
-          run-command: test:ci
-          test-results-for: jest
-          setup:
-            [
-              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
-            ]
-      - node/test:
+      - test:
           name: test_auth
           app-dir: auth
-          run-command: test:ci
-          test-results-for: jest
-          setup:
-            [
-              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
-            ]
-
-  # run all tests but deploy only the folder that changed
   test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]
     jobs:
-      - node/test:
+      - test:
           name: test_cart
           app-dir: cart
-          run-command: test:ci
-          test-results-for: jest
-          setup:
-            [
-              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
-            ]
-      - node/test:
-          name: test_auth
-          app-dir: auth
-          run-command: test:ci
-          test-results-for: jest
-          setup:
-            [
-              run: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb,
-            ]
       - buid_and_push_image:
           name: buid_and_push_image_cart
           service: cart
@@ -110,6 +98,9 @@ workflows:
           service: cart
           requires:
             - buid_and_push_image_cart
+      - test:
+          name: test_auth
+          app-dir: auth
       - buid_and_push_image:
           name: buid_and_push_image_auth
           service: auth
