@@ -1,0 +1,14 @@
+{
+  "name": "files-changed-cli",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "bin": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "execa": "^6.1.0",
+    "mri": "^1.2.0"
+  }
+}
