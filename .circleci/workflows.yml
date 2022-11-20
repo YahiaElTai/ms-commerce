@@ -1,10 +1,12 @@
 version: 2.1
-# add kubernetes shell script to connecr and either rollout or apply
 # add gcr shell script to build and push images
+# gcp-cli shell script to initialize
+# add shellcheck orb
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
   gcp-gcr: circleci/gcp-gcr@0.15.0
+  shellcheck: circleci/shellcheck@3.1.2
 
 parameters:
   trigger_cart:
@@ -36,6 +38,8 @@ jobs:
         type: string
     steps:
       - checkout
+      - shellcheck/check:
+          dir: ./.circleci
       - run:
           name: Setup machine
           command: bash ./.circleci/install-libssl.sh
@@ -51,6 +55,8 @@ jobs:
         type: string
     steps:
       - checkout
+      - shellcheck/check:
+          dir: ./.circleci
       - gcp-cli/initialize
       - run:
           name: Authenticate Docker with gcloud
