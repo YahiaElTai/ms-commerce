@@ -39,7 +39,7 @@ jobs:
       - checkout
       - run:
           name: Setup machine
-          command: ./.circleci/install-libssl.sh
+          command: sudo ./.circleci/install-libssl.sh
       - node/install-packages:
           app-dir: << parameters.app-dir >>
       - run:
