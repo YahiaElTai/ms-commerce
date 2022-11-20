@@ -35,7 +35,7 @@ jobs:
             infra/k8s/* infra-changed true
           output-path: /tmp/pipeline-parameters.json
 
-      - run: ls /tmp && echo /tmp/pipeline-parameters.json
+      - run: ls /tmp && cat /tmp/pipeline-parameters.json
       - node/install-packages:
           app-dir: << parameters.app-dir >>
       - run:
