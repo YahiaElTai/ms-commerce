@@ -8,6 +8,8 @@ import { signoutRouter } from "./routes/signout";
 import { signupRouter } from "./routes/signup";
 import { errorHandler, NotFoundError } from "@ms-commerce/common";
 
+console.log("changed");
+
 const app = express();
 app.set("trust proxy", true);
 app.use(json());
