@@ -1,7 +1,6 @@
 version: 2.1
 # add kubernetes shell script to connecr and either rollout or apply
 # add gcr shell script to build and push images
-# add setup machine shell script
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
@@ -67,22 +66,21 @@ jobs:
           image: $REPO_NAME/<< parameters.service >>
           registry-url: $REGISTRY_URL
       - run:
-          name: Connect to cluster
-          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
-      - run:
-          name: Rollout new cart deployment
-          command: kubectl rollout restart deployment << parameters.service >>-depl
+          name: Rollout new << parameters.service >> deployment
+          command: bash ./.circleci/kubernetes.sh
+          environment:
+            OPERATION: rollout
+            SERVICE_NAME: << parameters.service >>
   deploy_manifests:
     executor: gcp-executor
     steps:
       - checkout
       - gcp-cli/initialize
       - run:
-          name: Connect to cluster
-          command: gcloud container clusters get-credentials $CLUSTER_NAME --zone $GOOGLE_COMPUTE_ZONE --project $GOOGLE_PROJECT_ID
-      - run:
           name: Apply all k8s manifests
-          command: kubectl apply -f infra/k8s
+          command: bash ./.circleci/kubernetes.sh
+          environment:
+            OPERATION: apply
 
 workflows:
   test_cart_branch:
@@ -148,7 +146,7 @@ workflows:
       - deploy_manifests:
           requires:
             - can_deploy_manifests
-  deploy_manifests:
+  deploy_manifests_if_changed:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
