@@ -6,7 +6,7 @@ orbs:
   path-filtering: circleci/path-filtering@0.1.3
 
 workflows:
-  detect_modified_files:
+  configure_workflows:
     jobs:
       - path-filtering/filter:
           name: detect_modified_files
