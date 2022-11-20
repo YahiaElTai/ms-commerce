@@ -8,6 +8,8 @@ import { SingleCartRouter } from "./routes/single";
 import { CreateCartRouter } from "./routes/create";
 import { UpdateCartRouter } from "./routes/update";
 
+console.log("changed");
+
 const app = express();
 app.set("trust proxy", true);
 app.use(json());
