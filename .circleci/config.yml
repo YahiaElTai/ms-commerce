@@ -16,16 +16,6 @@ executors:
     docker:
       - image: cimg/node:18.12.1
 
-commands:
-  determine_if_files_changed:
-    parameters:
-      package_folder:
-        type: string
-    steps:
-      - run:
-          name: Detect if files have changed in << parameters.package_folder >>
-          command: npm run detect-changes detect -- --folder=<< parameters.package_folder >>
-
 jobs:
   test:
     executor: node-executor
@@ -34,9 +24,6 @@ jobs:
         type: string
     steps:
       - checkout
-      - node/install-packages
-      - determine_if_files_changed:
-          package_folder: << parameters.app-dir >>
       - run:
           name: Setup machine
           command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
