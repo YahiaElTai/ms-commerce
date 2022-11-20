@@ -28,7 +28,7 @@ jobs:
       - path-filter/stop:
           base_revision: << pipeline.git.base_revision >>
           head_revision: << pipeline.git.revision >>
-          path: cart/*
+          path: cart
       - run:
           name: Setup machine
           command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
