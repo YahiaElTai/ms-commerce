@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
   gcp-gcr: circleci/gcp-gcr@0.15.0
-  path-filtering: circleci/path-filtering@0.1.3
+  path-filter: mkusaka/path-filter@0.0.3
 
 executors:
   gcp-executor:
@@ -25,17 +25,13 @@ jobs:
         type: string
     steps:
       - checkout
+      - path-filter/stop:
+          base_revision: << pipeline.git.base_revision >>
+          head_revision: << pipeline.git.revision >>
+          path: << parameters.app-dir >>/*
       - run:
           name: Setup machine
           command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-      - path-filtering/set-parameters:
-          mapping: |
-            auth/.* auth-changed true
-            cart/.* cart-changed true
-            infra/k8s/* infra-changed true
-          output-path: /tmp/pipeline-parameters.json
-
-      - run: ls /tmp && echo /tmp/pipeline-parameters.json
       - node/install-packages:
           app-dir: << parameters.app-dir >>
       - run:
@@ -48,6 +44,10 @@ jobs:
         type: string
     steps:
       - checkout
+      - path-filter/stop:
+          base_revision: << pipeline.git.base_revision >>
+          head_revision: << pipeline.git.revision >>
+          path: << parameters.service >>/*
       - gcp-cli/initialize
       - run:
           name: Authenticate Docker with gcloud
@@ -104,7 +104,8 @@ workflows:
 
   test_and_deploy_cart:
     when:
-      equal: [main, << pipeline.git.branch >>]
+      and:
+        - equal: [main, << pipeline.git.branch >>]
     jobs:
       - test:
           name: test_cart
@@ -121,7 +122,8 @@ workflows:
             - can_deploy_manifests
   test_and_deploy_auth:
     when:
-      equal: [main, << pipeline.git.branch >>]
+      and:
+        - equal: [main, << pipeline.git.branch >>]
     jobs:
       - test:
           name: test_auth
