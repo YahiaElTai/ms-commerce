@@ -91,7 +91,7 @@ workflows:
             matches:
               pattern: "^main$"
               value: << pipeline.git.branch >>
-        - equal: [true, <<pipeline.paramaters.trigger_cart >>]
+        - equal: [true, << pipeline.paramaters.trigger_cart >>]
     jobs:
       - test:
           name: test_cart
@@ -103,7 +103,7 @@ workflows:
             matches:
               pattern: "^main$"
               value: << pipeline.git.branch >>
-        - equal: [true, <<pipeline.paramaters.trigger_auth >>]
+        - equal: [true, << pipeline.paramaters.trigger_auth >>]
     jobs:
       - test:
           name: test_auth
@@ -113,7 +113,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - equal: [true, <<pipeline.paramaters.trigger_cart >>]
+        - equal: [true, << pipeline.paramaters.trigger_cart >>]
     jobs:
       - test:
           name: test_cart
@@ -132,7 +132,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - equal: [true, <<pipeline.paramaters.trigger_auth >>]
+        - equal: [true, << pipeline.paramaters.trigger_auth >>]
     jobs:
       - test:
           name: test_auth
@@ -151,7 +151,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - equal: [true, <<pipeline.paramaters.trigger_infra >>]
+        - equal: [true, << pipeline.paramaters.trigger_infra >>]
     jobs:
       - can_deploy_manifests:
           type: approval
