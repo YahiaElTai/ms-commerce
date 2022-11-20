@@ -1,5 +1,7 @@
 version: 2.1
-
+# add kubernetes shell script to connecr and either rollout or apply
+# add gcr shell script to build and push images
+# add setup machine shell script
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
@@ -37,7 +39,7 @@ jobs:
       - checkout
       - run:
           name: Setup machine
-          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+          command: ./.circleci/install-libssl.sh
       - node/install-packages:
           app-dir: << parameters.app-dir >>
       - run:
@@ -112,7 +114,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        - equal: [true, << pipeline.parameters.trigger_cart >>]
+        # - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
       - test:
           name: test_cart
