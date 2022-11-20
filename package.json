@@ -1,0 +1,20 @@
+{
+  "name": "ms-commerce",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The project is a simplified clone version of some of the services at commercetools written as microservices.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "detect-changes": "detect-changes-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YahiaElTai/ms-commerce.git"
+  },
+  "homepage": "https://github.com/YahiaElTai/ms-commerce#readme",
+  "dependencies": {
+    "detect-changes-cli": "^1.0.7"
+  }
+}
