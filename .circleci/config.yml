@@ -37,6 +37,7 @@ jobs:
             - run:
                 command: cd << parameters.app-dir >> && npm run test:ci
                 name: Run tests << parameters.app-dir >>
+      - run: echo "hello"
       # - checkout
       # - run:
       #     name: Setup machine
