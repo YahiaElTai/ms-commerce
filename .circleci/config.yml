@@ -28,16 +28,24 @@ jobs:
             not:
               equal: [main, << pipeline.git.branch >>]
           steps:
-            - run: echo "skipped here"
-      - checkout
-      - run:
-          name: Setup machine
-          command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-      - node/install-packages:
-          app-dir: << parameters.app-dir >>
-      - run:
-          command: cd << parameters.app-dir >> && npm run test:ci
-          name: Run tests << parameters.app-dir >>
+            - checkout
+            - run:
+                name: Setup machine
+                command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+            - node/install-packages:
+                app-dir: << parameters.app-dir >>
+            - run:
+                command: cd << parameters.app-dir >> && npm run test:ci
+                name: Run tests << parameters.app-dir >>
+      # - checkout
+      # - run:
+      #     name: Setup machine
+      #     command: wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb && sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+      # - node/install-packages:
+      #     app-dir: << parameters.app-dir >>
+      # - run:
+      #     command: cd << parameters.app-dir >> && npm run test:ci
+      #     name: Run tests << parameters.app-dir >>
   build_and_deploy:
     executor: gcp-executor
     parameters:
