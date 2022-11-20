@@ -34,6 +34,7 @@ jobs:
         type: string
     steps:
       - checkout
+      - node/install-packages
       - determine_if_files_changed:
           package_folder: << parameters.app-dir >>
       - run:
