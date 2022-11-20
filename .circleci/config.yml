@@ -25,7 +25,8 @@ jobs:
     steps:
       - when:
           condition:
-            equal: [true]
+            not:
+              equal: [main, << pipeline.git.branch >>]
           steps:
             - run: echo "skipped here"
       - checkout
