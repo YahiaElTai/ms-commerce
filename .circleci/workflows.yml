@@ -1,7 +1,7 @@
 version: 2.1
 # add gcr shell script to build and push images
 # gcp-cli shell script to initialize
-# add shellcheck orb
+
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@2.4.1
@@ -29,7 +29,7 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:18.12.1
-
+# lint build test image deploy
 jobs:
   test:
     executor: node-executor
@@ -55,9 +55,9 @@ jobs:
         type: string
     steps:
       - checkout
-      - shellcheck/check:
-          dir: ./.circleci
-      - gcp-cli/initialize
+      - run:
+          name: Initialize gcloud CLI
+          command: bash ./.circleci/gcloud-initialize.sh
       - run:
           name: Authenticate Docker with gcloud
           command: gcloud auth configure-docker --quiet $REGISTRY_URL
