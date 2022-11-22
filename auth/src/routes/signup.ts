@@ -1,22 +1,22 @@
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import {
   BadRequestError,
   validateRequest,
   generateToken,
-} from "@ms-commerce/common";
-import { User, UserDraft } from "../models/user";
+} from '@ms-commerce/common';
+import { User, UserDraft } from '../models/user';
 
 const router = express.Router();
 
 router.post(
-  "/api/users/signup",
+  '/api/users/signup',
   [
-    body("email").isEmail().withMessage("Email must be valid"),
-    body("password")
+    body('email').isEmail().withMessage('Email must be valid'),
+    body('password')
       .trim()
       .isLength({ min: 4, max: 20 })
-      .withMessage("Password must be between 4 and 20 characters"),
+      .withMessage('Password must be between 4 and 20 characters'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -25,7 +25,7 @@ router.post(
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      throw new BadRequestError("Email in use");
+      throw new BadRequestError('Email in use');
     }
 
     const user = new User<UserDraft>({ email, password });
@@ -34,9 +34,9 @@ router.post(
     const token = generateToken(user.id, user.email);
 
     res
-      .cookie("access_token", token, {
+      .cookie('access_token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === 'production',
       })
       .status(201)
       .json(user);

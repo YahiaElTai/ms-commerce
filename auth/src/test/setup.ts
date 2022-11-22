@@ -1,7 +1,7 @@
-import request from "supertest";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
-import { app } from "../app";
+import request from 'supertest';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import { app } from '../app';
 
 let mongo: MongoMemoryServer;
 
@@ -13,7 +13,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  process.env.JWT_KEY = "asdfg";
+  process.env.JWT_KEY = 'asdfg';
   const collections = await mongoose.connection.db.collections();
 
   for (const collection of collections) {
@@ -35,15 +35,15 @@ declare global {
 }
 
 global.signin = async () => {
-  const email = "test@test.com";
-  const password = "password";
+  const email = 'test@test.com';
+  const password = 'password';
 
   const response = await request(app)
-    .post("/api/users/signup")
+    .post('/api/users/signup')
     .send({ email, password })
     .expect(201);
 
-  const cookie = response.get("Set-Cookie");
+  const cookie = response.get('Set-Cookie');
 
   return cookie;
 };

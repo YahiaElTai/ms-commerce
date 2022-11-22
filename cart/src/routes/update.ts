@@ -1,27 +1,27 @@
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import {
   BadRequestError,
   requireAuth,
   validateRequest,
-} from "@ms-commerce/common";
-import { Cart } from "../models/cart";
-import { isValidAction, Action } from "../utils";
-import { CloudPubSub, Topics } from "../pub-sub";
+} from '@ms-commerce/common';
+import { Cart } from '../models/cart';
+import { isValidAction, Action } from '../utils';
+import { CloudPubSub, Topics } from '../pub-sub';
 
 const pubSubClient = new CloudPubSub();
 
 const router = express.Router();
 
 router.put(
-  "/api/carts/:id",
+  '/api/carts/:id',
   requireAuth,
   [
-    body("version").isNumeric().withMessage("Version must be a number"),
-    body("action.type")
-      .isIn(["addLineItem", "removeLineItem", "changeLineItemQuantity"])
-      .withMessage("You must provide a valid action type"),
-    body("action").custom(isValidAction),
+    body('version').isNumeric().withMessage('Version must be a number'),
+    body('action.type')
+      .isIn(['addLineItem', 'removeLineItem', 'changeLineItemQuantity'])
+      .withMessage('You must provide a valid action type'),
+    body('action').custom(isValidAction),
   ],
   validateRequest,
   async (
@@ -38,16 +38,16 @@ router.put(
     const existingCart = await Cart.findById(id);
 
     if (!existingCart) {
-      throw new BadRequestError("Cart with given ID was not found");
+      throw new BadRequestError('Cart with given ID was not found');
     }
 
     if (existingCart.version !== version) {
-      throw new BadRequestError("Version mismatch");
+      throw new BadRequestError('Version mismatch');
     }
 
     let updatedCart;
 
-    if (action.type === "addLineItem") {
+    if (action.type === 'addLineItem') {
       updatedCart = await Cart.findOneAndUpdate(
         { id },
         {
@@ -60,30 +60,30 @@ router.put(
       );
     }
 
-    if (action.type === "changeLineItemQuantity") {
+    if (action.type === 'changeLineItemQuantity') {
       const lineItem = existingCart.lineItems.find(
         (lineItem) => lineItem.sku === action.value.sku
       );
 
       if (!lineItem) {
         throw new BadRequestError(
-          "Line item with given SKU could not be found"
+          'Line item with given SKU could not be found'
         );
       }
 
       updatedCart = await Cart.findOneAndUpdate(
-        { id: id, "lineItems.sku": lineItem.sku },
+        { id: id, 'lineItems.sku': lineItem.sku },
         {
           $set: {
             version: version + 1,
-            "lineItems.$.quantity": action.value.quantity,
+            'lineItems.$.quantity': action.value.quantity,
           },
         },
         { new: true }
       );
     }
 
-    if (action.type === "removeLineItem") {
+    if (action.type === 'removeLineItem') {
       updatedCart = await Cart.findOneAndUpdate(
         { id },
         {

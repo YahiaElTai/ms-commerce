@@ -2,12 +2,15 @@
   "name": "cart",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "start:dev": "nodemon src/index.ts",
-    "start": "ts-node-dev src/index.ts",
-    "test": "jest --watchAll --no-cache",
-    "test:ci": "jest"
+    "start": "node build/index.js",
+    "test": "jest --watchAll --no-cache ./src",
+    "test:ci": "jest ./src",
+    "lint": "eslint --ext .ts src/",
+    "build": "rimraf build && tsc",
+    "format": "prettier --write src/"
   },
   "jest": {
     "preset": "ts-jest",
@@ -20,36 +23,34 @@
       "jest-junit"
     ]
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@google-cloud/pubsub": "^3.2.1",
     "@ms-commerce/common": "^1.0.6",
-    "@types/cookie-parser": "^1.4.3",
-    "@types/express": "^4.17.14",
-    "@types/jsonwebtoken": "^8.5.9",
-    "@types/node": "^18.11.9",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "express-validator": "^6.14.2",
-    "mongoose": "^6.7.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^4.9.3"
+    "mongoose": "^6.7.2"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.14",
     "@types/jest": "^29.2.3",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/node": "^18.11.9",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
     "jest": "^29.3.1",
     "jest-junit": "^14.0.1",
     "mongodb-memory-server": "^8.10.0",
     "nodemon": "^2.0.20",
+    "rimraf": "^3.0.2",
     "supertest": "^6.3.1",
     "ts-jest": "^29.0.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
   }
 }

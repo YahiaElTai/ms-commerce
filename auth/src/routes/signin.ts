@@ -1,23 +1,23 @@
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import {
   BadRequestError,
   validateRequest,
   generateToken,
-} from "@ms-commerce/common";
-import { User } from "../models/user";
-import { Password } from "../services/password";
+} from '@ms-commerce/common';
+import { User } from '../models/user';
+import { Password } from '../services/password';
 
 const router = express.Router();
 
 router.post(
-  "/api/users/signin",
+  '/api/users/signin',
   [
-    body("email").isEmail().withMessage("Email must be valid"),
-    body("password")
+    body('email').isEmail().withMessage('Email must be valid'),
+    body('password')
       .trim()
       .notEmpty()
-      .withMessage("You must supply a password"),
+      .withMessage('You must supply a password'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ router.post(
     const existingUser = await User.findOne({ email });
 
     if (!existingUser) {
-      throw new BadRequestError("Invalid credentials");
+      throw new BadRequestError('Invalid credentials');
     }
 
     const passwordsMatch = await Password.compare(
@@ -35,18 +35,18 @@ router.post(
     );
 
     if (!passwordsMatch) {
-      throw new BadRequestError("Invalid credentials");
+      throw new BadRequestError('Invalid credentials');
     }
 
     const token = generateToken(existingUser.id, existingUser.email);
 
     res
-      .cookie("access_token", token, {
+      .cookie('access_token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === 'production',
       })
       .status(200)
-      .send({ message: "Successfully signed in" });
+      .send({ message: 'Successfully signed in' });
   }
 );
 

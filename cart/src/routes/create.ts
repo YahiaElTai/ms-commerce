@@ -1,29 +1,29 @@
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-import { requireAuth, validateRequest } from "@ms-commerce/common";
-import { Cart, CartDraft } from "../models/cart";
-import { CloudPubSub, Topics } from "../pub-sub";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import { requireAuth, validateRequest } from '@ms-commerce/common';
+import { Cart, CartDraft } from '../models/cart';
+import { CloudPubSub, Topics } from '../pub-sub';
 
 const pubSubClient = new CloudPubSub();
 
 const router = express.Router();
 
 router.post(
-  "/api/carts",
+  '/api/carts',
   requireAuth,
   [
-    body("customerEmail").isEmail(),
-    body("currency")
+    body('customerEmail').isEmail(),
+    body('currency')
       .notEmpty()
-      .withMessage("Currency is required")
-      .isIn(["EUR", "USD", "RUB"])
+      .withMessage('Currency is required')
+      .isIn(['EUR', 'USD', 'RUB'])
       .withMessage('Currency must be one of "EUR", "USD" or "RUB"'),
-    body("lineItems")
+    body('lineItems')
       .isArray({ min: 1 })
-      .withMessage("You must add at least one line item to the cart"),
-    body("shippingMethodId").notEmpty(),
-    body("shippingAddress").notEmpty(),
-    body("billingAddress").notEmpty(),
+      .withMessage('You must add at least one line item to the cart'),
+    body('shippingMethodId').notEmpty(),
+    body('shippingAddress').notEmpty(),
+    body('billingAddress').notEmpty(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {

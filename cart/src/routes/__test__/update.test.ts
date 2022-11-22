@@ -1,39 +1,39 @@
-import request from "supertest";
-import { app } from "../../app";
+import request from 'supertest';
+import { app } from '../../app';
 
-jest.mock("../../pub-sub");
+jest.mock('../../pub-sub');
 
-it("should responds with 401 status code for unauthenticated users", async () => {
+it('should responds with 401 status code for unauthenticated users', async () => {
   await request(app)
-    .put("/api/carts/635d013ae716eacb0e92d422")
+    .put('/api/carts/635d013ae716eacb0e92d422')
     .send()
     .expect(401);
 });
 
-it("should responds 400 and error message on bad request", async () => {
+it('should responds 400 and error message on bad request', async () => {
   const cookie = await global.signin();
 
   const createdCart = await request(app)
-    .post("/api/carts")
-    .set("Cookie", cookie)
+    .post('/api/carts')
+    .set('Cookie', cookie)
     .send({
-      customerEmail: "test@test.com",
-      currency: "EUR",
+      customerEmail: 'test@test.com',
+      currency: 'EUR',
       lineItems: [{}],
-      shippingMethodId: "shipping-method-id",
+      shippingMethodId: 'shipping-method-id',
       shippingAddress: {},
       billingAddress: {},
     });
 
   const response = await request(app)
     .put(`/api/carts/${createdCart.body.cart.id}`)
-    .set("Cookie", cookie)
+    .set('Cookie', cookie)
     .send({
       version: 1,
       action: {
-        type: "addLineItem",
+        type: 'addLineItem',
         value: {
-          sku: "sku-1",
+          sku: 'sku-1',
         },
       },
     })
@@ -41,34 +41,34 @@ it("should responds 400 and error message on bad request", async () => {
 
   expect(response.body.errors).toHaveLength(1);
   expect(response.body.errors[0].message).toEqual(
-    "You must provide a valid quantity"
+    'You must provide a valid quantity'
   );
 });
 
-it("should responds with 200 update the correct cart", async () => {
+it('should responds with 200 update the correct cart', async () => {
   const cookie = await global.signin();
 
   const createdCart = await request(app)
-    .post("/api/carts")
-    .set("Cookie", cookie)
+    .post('/api/carts')
+    .set('Cookie', cookie)
     .send({
-      customerEmail: "test@test.com",
-      currency: "EUR",
+      customerEmail: 'test@test.com',
+      currency: 'EUR',
       lineItems: [{}],
-      shippingMethodId: "shipping-method-id",
+      shippingMethodId: 'shipping-method-id',
       shippingAddress: {},
       billingAddress: {},
     });
 
   await request(app)
     .put(`/api/carts/${createdCart.body.cart.id}`)
-    .set("Cookie", cookie)
+    .set('Cookie', cookie)
     .send({
       version: 1,
       action: {
-        type: "addLineItem",
+        type: 'addLineItem',
         value: {
-          sku: "sku-1",
+          sku: 'sku-1',
           quantity: 5,
         },
       },

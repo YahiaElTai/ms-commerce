@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-import { Password } from "../services/password";
+import { Schema, model } from 'mongoose';
+import { Password } from '../services/password';
 
 export interface UserDraft {
   email: string;
@@ -35,14 +35,14 @@ const userSchema = new Schema<UserDoc>(
   }
 );
 
-userSchema.pre("save", async function (done) {
-  if (this.isModified("password")) {
-    const hashed = await Password.toHash(this.get("password"));
-    this.set("password", hashed);
+userSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
   }
   done();
 });
 
-const User = model<UserDoc>("User", userSchema);
+const User = model<UserDoc>('User', userSchema);
 
 export { User };

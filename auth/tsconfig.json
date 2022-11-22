@@ -1,14 +1,20 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "es2016",
+    "lib": ["ESNext"],
+    "target": "ESNext",
     "module": "commonjs",
-    "resolveJsonModule": true,
-    // "outDir": "build",
     "rootDir": "src",
+    "moduleResolution": "node",
+    "outDir": "build",
+    "removeComments": true,
+    "noEmitOnError": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "allowJs": false,
     "strict": true,
-    "noImplicitAny": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.spec.ts"]
 }

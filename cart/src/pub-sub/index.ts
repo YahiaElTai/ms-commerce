@@ -1,7 +1,7 @@
-import { PubSub } from "@google-cloud/pubsub";
-import { Schema } from "mongoose";
-import { Address } from "../models/subdocuments/address";
-import { LineItem } from "../models/subdocuments/line-item";
+import { PubSub } from '@google-cloud/pubsub';
+import { Schema } from 'mongoose';
+import { Address } from '../models/subdocuments/address';
+import { LineItem } from '../models/subdocuments/line-item';
 
 interface CartEvent {
   id: Schema.Types.ObjectId;
@@ -14,8 +14,8 @@ interface CartEvent {
 }
 
 export enum Topics {
-  CART_CREATED = "cart_created",
-  CART_UPDATED = "cart_updated",
+  CART_CREATED = 'cart_created',
+  CART_UPDATED = 'cart_updated',
 }
 
 export class CloudPubSub {

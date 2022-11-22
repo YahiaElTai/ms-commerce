@@ -1,6 +1,6 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
-import { generateToken } from "@ms-commerce/common";
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import { generateToken } from '@ms-commerce/common';
 
 let mongo: MongoMemoryServer;
 
@@ -12,7 +12,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  process.env.JWT_KEY = "asdfg";
+  process.env.JWT_KEY = 'asdfg';
   const collections = await mongoose.connection.db.collections();
 
   for (const collection of collections) {
@@ -34,8 +34,8 @@ declare global {
 
 global.signin = async () => {
   const payload = {
-    id: new mongoose.Types.ObjectId("635d013ae716eacb0e92d422").toHexString(),
-    email: "test@test.com",
+    id: new mongoose.Types.ObjectId('635d013ae716eacb0e92d422').toHexString(),
+    email: 'test@test.com',
   };
 
   const token = generateToken(payload.id, payload.email);

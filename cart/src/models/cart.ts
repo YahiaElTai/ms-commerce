@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
-import { Address, AddressDraft, AddressSchema } from "./subdocuments/address";
+import { Schema, model } from 'mongoose';
+import { Address, AddressDraft, AddressSchema } from './subdocuments/address';
 import {
   LineItem,
   LineItemDraft,
   lineItemSchema,
-} from "./subdocuments/line-item";
+} from './subdocuments/line-item';
 
 export interface CartDraft {
   customerEmail: string;
@@ -45,6 +45,6 @@ const cartSchema = new Schema<CartDoc>(
   }
 );
 
-const Cart = model<CartDoc>("Cart", cartSchema);
+const Cart = model<CartDoc>('Cart', cartSchema);
 
 export { Cart };
