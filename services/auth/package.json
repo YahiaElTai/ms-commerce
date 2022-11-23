@@ -8,7 +8,8 @@
     "start": "node build/index.js",
     "test": "jest --watchAll --no-cache ./src",
     "test:ci": "jest ./src",
-    "build": "rimraf build && tsc"
+    "build": "rimraf build && tsc",
+    "typecheck": "tsc --noEmit"
   },
   "jest": {
     "preset": "ts-jest",
