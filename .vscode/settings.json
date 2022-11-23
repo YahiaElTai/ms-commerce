@@ -1,6 +1,0 @@
-{
-  "yaml.schemas": {
-    "kubernetes": "*.yaml",
-    "https://json.schemastore.org/circleciconfig.json": "file:///Users/yahiaeltai/Documents/ms-commerce/.circleci/workflows.yml"
-  }
-}
