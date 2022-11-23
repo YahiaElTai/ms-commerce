@@ -1,7 +1,7 @@
 apiVersion: skaffold/v2beta29
 kind: Config
 metadata:
-  name: ms-commerce
+  name: ms-commerce-2
 build:
   artifacts:
     - image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/auth

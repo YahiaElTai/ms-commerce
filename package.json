@@ -12,10 +12,14 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint --fix"
-    ],
-    "*.{ts, md, yaml, yml}": [
+      "eslint --fix",
       "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write --parser markdown"
+    ],
+    "*.{yaml, yml}": [
+      "prettier --write --parser yaml"
     ]
   },
   "devDependencies": {
