@@ -112,6 +112,7 @@ workflows:
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
       - lint_and_typecheck:
+          name: lint_and_typecheck_cart
           app-dir: cart
       - test:
           name: test_cart
@@ -128,6 +129,7 @@ workflows:
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
       - lint_and_typecheck:
+          name: lint_and_typecheck_auth
           app-dir: auth
       - test:
           name: test_auth
@@ -142,6 +144,7 @@ workflows:
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
       - lint_and_typecheck:
+          name: lint_and_typecheck_cart
           app-dir: cart
       - test:
           name: test_cart
@@ -165,6 +168,7 @@ workflows:
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
       - lint_and_typecheck:
+          name: lint_and_typecheck_auth
           app-dir: auth
       - test:
           name: test_auth
