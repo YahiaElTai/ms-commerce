@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-# Add checks for env variables from orb using sh
 
 # save gcloud service key into a json file
 echo "$GCLOUD_SERVICE_KEY" >"${HOME}"/gcloud-service-key.json

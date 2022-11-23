@@ -1,6 +1,4 @@
 version: 2.1
-# add gcr shell script to build and push images
-# gcp-cli shell script to initialize
 
 orbs:
   node: circleci/node@5.0.3
@@ -29,7 +27,6 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:18.12.1
-# lint build test image deploy
 jobs:
   test:
     executor: node-executor
@@ -118,7 +115,7 @@ workflows:
     when:
       and:
         - equal: [main, << pipeline.git.branch >>]
-        # - equal: [true, << pipeline.parameters.trigger_cart >>]
+        - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
       - test:
           name: test_cart
