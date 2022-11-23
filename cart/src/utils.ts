@@ -4,7 +4,8 @@ export interface Action {
     [key: string]: any;
   };
 }
-// run tests with using jest for mongoDB
+// starting and building should be per service
+// testing, linting, formatting should be from the root
 
 export const isValidAction = (action: Action) => {
   switch (action.type) {

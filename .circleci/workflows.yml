@@ -40,9 +40,6 @@ jobs:
       - checkout
       - shellcheck/check:
           dir: ./.circleci
-      - run:
-          name: Setup machine
-          command: bash ./.circleci/install-libssl.sh
       - node/install-packages:
           app-dir: << parameters.app-dir >>
       - run:
