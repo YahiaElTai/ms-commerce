@@ -8,7 +8,7 @@ The project is a simplified clone version of some of the services at commercetoo
 - Written in TypeScript and deployed with kubernetes on GCP.
 - MongoDB is used for all services as a self hosted StatefulSet in kubernetes.
 - Communication between services is done with Cloud Pub/Sub.
-- Docker images are stored in Artifact Registry.
+- Docker images are stored in Artifact Registry
 - CI/CD: CircleCI
 - Cloud KMS is used to manage secrets for CircleCI
 
