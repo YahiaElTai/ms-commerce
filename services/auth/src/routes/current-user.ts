@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { requireAuth } from '@ms-commerce/common';
 
-const router = express.Router(ssss);
+const router = express.Router();
 
 router.get(
   '/api/users/currentuser',
