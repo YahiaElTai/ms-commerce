@@ -11,7 +11,7 @@ workflows:
       - path-filtering/filter:
           name: detect_modified_files
           mapping: |
-            auth/.* trigger_auth true
-            cart/.* trigger_cart true
+            services/auth/.* trigger_auth true
+            services/cart/.* trigger_cart true
             infra/k8s/.* trigger_infra true
           config-path: .circleci/workflows.yml

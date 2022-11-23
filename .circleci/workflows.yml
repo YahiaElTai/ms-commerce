@@ -94,7 +94,7 @@ workflows:
       and:
         - not:
             matches:
-              pattern: "^main$"
+              pattern: '^main$'
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
@@ -106,7 +106,7 @@ workflows:
       and:
         - not:
             matches:
-              pattern: "^main$"
+              pattern: '^main$'
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:

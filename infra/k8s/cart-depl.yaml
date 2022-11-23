@@ -15,7 +15,7 @@ spec:
     spec:
       serviceAccountName: identity-service-account-ms-commerce
       nodeSelector:
-        iam.gke.io/gke-metadata-server-enabled: "true"
+        iam.gke.io/gke-metadata-server-enabled: 'true'
       containers:
         - name: cart
           image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
@@ -33,7 +33,7 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
             - name: MONGO_URI
-              value: "mongodb://cart-mongo-srv:27017/cart"
+              value: 'mongodb://cart-mongo-srv:27017/cart'
             - name: GCP_PROJECT_ID
               value: ms-commerce-368507
 ---

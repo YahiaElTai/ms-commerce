@@ -1,11 +1,11 @@
 export interface Action {
   type: string;
   value: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 // starting and building should be per service
-// testing, linting, formatting should be from the root
+// testing, linting, formatting should be from the root and also add git hooks
 
 export const isValidAction = (action: Action) => {
   switch (action.type) {

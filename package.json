@@ -1,0 +1,30 @@
+{
+  "name": "ms-commerce",
+  "version": "1.0.0",
+  "description": "The project is a simplified clone version of some of the services at commercetools written as microservices.",
+  "scripts": {
+    "lint": "eslint --ext .ts",
+    "format": "npm run format:ts & npm run format:md & npm run format:yaml",
+    "format:ts": "prettier --write '**/*.ts'",
+    "format:md": "prettier --write --parser markdown '**/*.md'",
+    "format:yaml": "prettier --write --parser yaml '**/*.{yaml,yml}'",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ],
+    "*.{ts, md, yaml, yml}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
+    "typescript": "^4.9.3"
+  }
+}
