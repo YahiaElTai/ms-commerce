@@ -2,13 +2,16 @@
   message: 'Large'
   color: 'red'
   when: '$additions >= 200'
+
 - label: 'PR Size'
   message: 'Small'
-  color: 'red'
+  color: 'green'
   when: '$additions < 200'
+
 - message: '$commits commits across $changedFiles files'
-  color: 'pink'
+  color: 'blue'
+
 - label: 'CI'
   url: 'https://app.circleci.com/pipelines/github/YahiaElTai/ms-commerce?branch=$branchName'
   message: 'Link'
-  color: 'blue'
+  color: 'pink'
