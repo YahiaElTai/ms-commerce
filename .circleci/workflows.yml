@@ -28,6 +28,16 @@ executors:
     docker:
       - image: cimg/node:18.12.1
 jobs:
+  lint_and_typecheck:
+    executor: node-executor
+    steps:
+      - checkout
+      - shellcheck/check:
+          dir: ./.circleci
+      - node/install-packages
+      - run:
+          name: lint services
+          command: npm run lint
   test:
     executor: node-executor
     parameters:
@@ -35,16 +45,14 @@ jobs:
         type: string
     steps:
       - checkout
-      - shellcheck/check:
-          dir: ./.circleci
       - run:
           name: Setup machine
           command: bash ./.circleci/install-libssl.sh
       - node/install-packages:
-          app-dir: << parameters.app-dir >>
+          app-dir: ./services/<< parameters.app-dir >>
       - run:
-          command: cd << parameters.app-dir >> && npm run test:ci
-          name: Run tests << parameters.app-dir >>
+          command: cd ./services/<< parameters.app-dir >> && npm run test:ci
+          name: Run tests ./services/<< parameters.app-dir >>
   build_and_deploy:
     executor: gcp-executor
     parameters:
@@ -61,9 +69,9 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - gcp-gcr/build-image:
-          docker-context: ./<< parameters.service >>
+          docker-context: ./services/<< parameters.service >>
           image: $REPO_NAME/<< parameters.service >>
-          path: ./<< parameters.service >>
+          path: ./services/<< parameters.service >>
           registry-url: $REGISTRY_URL
       - gcp-gcr/push-image:
           image: $REPO_NAME/<< parameters.service >>
@@ -95,9 +103,12 @@ workflows:
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
+      - lint_and_typecheck
       - test:
           name: test_cart
           app-dir: cart
+          requires:
+            - lint_and_typecheck
   test_auth_branch:
     when:
       and:
@@ -107,9 +118,12 @@ workflows:
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
+      - lint_and_typecheck
       - test:
           name: test_auth
           app-dir: auth
+          requires:
+            - lint_and_typecheck
 
   test_and_deploy_cart:
     when:
@@ -117,9 +131,12 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
+      - lint_and_typecheck
       - test:
           name: test_cart
           app-dir: cart
+          requires:
+            - lint_and_typecheck
       - build_and_deploy:
           name: build_and_deploy_cart
           service: cart
@@ -136,9 +153,12 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
+      - lint_and_typecheck
       - test:
           name: test_auth
           app-dir: auth
+          requires:
+            - lint_and_typecheck
       - build_and_deploy:
           name: build_and_deploy_auth
           service: auth
