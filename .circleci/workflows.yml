@@ -27,6 +27,15 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:18.12.1
+
+commands:
+  install_packages_for_service:
+    parameters:
+      app-dir:
+        type: string
+    steps:
+      - node/install-packages:
+          app-dir: ./services/<< parameters.app-dir >>
 jobs:
   lint_and_typecheck:
     executor: node-executor
@@ -41,8 +50,8 @@ jobs:
       - run:
           name: lint all services
           command: npm run lint
-      - node/install-packages:
-          app-dir: ./services/<< parameters.app-dir >>
+      - install_packages_for_service:
+          app-dir: << parameters.app-dir >>
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run typecheck
           name: Typecheck services/<< parameters.app-dir >>
@@ -56,8 +65,8 @@ jobs:
       - run:
           name: Setup machine
           command: bash ./.circleci/install-libssl.sh
-      - node/install-packages:
-          app-dir: ./services/<< parameters.app-dir >>
+      - install_packages_for_service:
+          app-dir: << parameters.app-dir >>
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
