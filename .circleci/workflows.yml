@@ -127,7 +127,7 @@ workflows:
           name: test_cart
           app-dir: cart
           requires:
-            - lint_and_typecheck
+            - lint_and_typecheck_cart
   test_auth_branch:
     when:
       and:
@@ -144,7 +144,7 @@ workflows:
           name: test_auth
           app-dir: auth
           requires:
-            - lint_and_typecheck
+            - lint_and_typecheck_auth
 
   test_and_deploy_cart:
     when:
@@ -159,7 +159,7 @@ workflows:
           name: test_cart
           app-dir: cart
           requires:
-            - lint_and_typecheck
+            - lint_and_typecheck_cart
       - build_and_deploy:
           name: build_and_deploy_cart
           service: cart
@@ -183,7 +183,7 @@ workflows:
           name: test_auth
           app-dir: auth
           requires:
-            - lint_and_typecheck
+            - lint_and_typecheck_auth
       - build_and_deploy:
           name: build_and_deploy_auth
           service: auth
