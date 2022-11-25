@@ -4,12 +4,12 @@ metadata:
   name: ms-commerce
 build:
   artifacts:
-    - image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/auth
-      context: auth
+    - image: yahiaeltai/auth
+      context: services/auth
       docker:
         dockerfile: Dockerfile.dev
-    - image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
-      context: cart
+    - image: yahiaeltai/cart
+      context: services/cart
       docker:
         dockerfile: Dockerfile.dev
 deploy:

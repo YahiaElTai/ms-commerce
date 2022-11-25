@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/auth
+          image: yahiaeltai/auth
           env:
             - name: JWT_KEY
               valueFrom:

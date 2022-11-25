@@ -18,7 +18,7 @@ spec:
             secretName: pubsub-key
       containers:
         - name: cart
-          image: europe-west1-docker.pkg.dev/ms-commerce-368507/ms-commerce/cart
+          image: yahiaeltai/cart
           volumeMounts:
             - name: google-cloud-key
               mountPath: /var/secrets/google
