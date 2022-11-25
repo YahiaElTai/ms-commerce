@@ -37,13 +37,16 @@ commands:
       - node/install-packages:
           app-dir: ./services/<< parameters.app-dir >>
 jobs:
-  lint_and_typecheck:
+  lint_typecheck_and_test:
     executor: node-executor
     parameters:
       app-dir:
         type: string
     steps:
       - checkout
+      - run:
+          name: Setup machine
+          command: bash ./.circleci/install-libssl.sh
       - shellcheck/check:
           dir: ./.circleci
       - node/install-packages
@@ -55,16 +58,6 @@ jobs:
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run typecheck
           name: Typecheck services/<< parameters.app-dir >>
-  test:
-    executor: node-executor
-    parameters:
-      app-dir:
-        type: string
-    steps:
-      - checkout
-      - run:
-          name: Setup machine
-          command: bash ./.circleci/install-libssl.sh
       - install_packages_for_service:
           app-dir: << parameters.app-dir >>
       - run:
@@ -130,14 +123,9 @@ workflows:
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
-      - lint_and_typecheck:
-          name: lint_and_typecheck_cart
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_cart
           app-dir: cart
-      - test:
-          name: test_cart
-          app-dir: cart
-          requires:
-            - lint_and_typecheck_cart
   test_auth_branch:
     when:
       and:
@@ -147,14 +135,9 @@ workflows:
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
-      - lint_and_typecheck:
-          name: lint_and_typecheck_auth
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_auth
           app-dir: auth
-      - test:
-          name: test_auth
-          app-dir: auth
-          requires:
-            - lint_and_typecheck_auth
 
   test_and_deploy_cart:
     when:
@@ -162,19 +145,14 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
-      - lint_and_typecheck:
-          name: lint_and_typecheck_cart
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_cart
           app-dir: cart
-      - test:
-          name: test_cart
-          app-dir: cart
-          requires:
-            - lint_and_typecheck_cart
       - build_and_publish_image:
           name: build_and_publish_cart_image
           service: cart
           requires:
-            - test_cart
+            - lint_typecheck_and_test_cart
       - can_deploy_service:
           name: can_deploy_cart_service
           type: approval
@@ -196,19 +174,14 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
-      - lint_and_typecheck:
-          name: lint_and_typecheck_auth
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_auth
           app-dir: auth
-      - test:
-          name: test_auth
-          app-dir: auth
-          requires:
-            - lint_and_typecheck_auth
       - build_and_publish_image:
           name: build_and_publish_auth_image
           service: auth
           requires:
-            - test_auth
+            - lint_typecheck_and_test_auth
       - can_deploy_service:
           name: can_deploy_auth_service
           type: approval
