@@ -70,7 +70,7 @@ jobs:
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
-  build_and_deploy:
+  build_and_publish_image:
     executor: gcp-executor
     parameters:
       service:
@@ -93,6 +93,16 @@ jobs:
       - gcp-gcr/push-image:
           image: $REPO_NAME/<< parameters.service >>
           registry-url: $REGISTRY_URL
+  deploy_service:
+    executor: gcp-executor
+    parameters:
+      service:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Initialize gcloud CLI
+          command: bash ./.circleci/gcloud-initialize.sh
       - run:
           name: Rollout new << parameters.service >> deployment
           command: bash ./.circleci/kubernetes.sh
@@ -160,11 +170,19 @@ workflows:
           app-dir: cart
           requires:
             - lint_and_typecheck_cart
-      - build_and_deploy:
-          name: build_and_deploy_cart
+      - build_and_publish_image:
+          name: build_and_publish_cart_image
           service: cart
           requires:
             - test_cart
+      - can_deploy_service:
+          name: can_deploy_cart_service
+          type: approval
+      - deploy_service:
+          name: deploy_cart_service
+          service: cart
+          requires:
+            - can_deploy_cart_service
       - can_deploy_manifests:
           type: approval
       - deploy_manifests:
@@ -184,11 +202,19 @@ workflows:
           app-dir: auth
           requires:
             - lint_and_typecheck_auth
-      - build_and_deploy:
-          name: build_and_deploy_auth
+      - build_and_publish_image:
+          name: build_and_publish_auth_image
           service: auth
           requires:
             - test_auth
+      - can_deploy_service:
+          name: can_deploy_auth_service
+          type: approval
+      - deploy_service:
+          name: deploy_auth_service
+          service: auth
+          requires:
+            - can_deploy_auth_service
       - can_deploy_manifests:
           type: approval
       - deploy_manifests:
