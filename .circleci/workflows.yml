@@ -178,6 +178,8 @@ workflows:
       - can_deploy_service:
           name: can_deploy_cart_service
           type: approval
+          requires:
+            - build_and_publish_cart_image
       - deploy_service:
           name: deploy_cart_service
           service: cart
@@ -210,6 +212,8 @@ workflows:
       - can_deploy_service:
           name: can_deploy_auth_service
           type: approval
+          requires:
+            - build_and_publish_auth_image
       - deploy_service:
           name: deploy_auth_service
           service: auth
