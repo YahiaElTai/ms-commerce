@@ -7,7 +7,7 @@ gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$GOOGLE_COMPUT
 if [ "$OPERATION" == "rollout" ]; then
     kubectl rollout restart deployment "$SERVICE_NAME"-depl
 elif [ "$OPERATION" == "apply" ]; then
-    kubectl apply -f ../infra/k8s
+    kubectl apply -f ./infra/k8s
 else
     echo "$OPERATION not found"
 fi

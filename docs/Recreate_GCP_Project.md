@@ -40,16 +40,24 @@
           $ kubectl config view
        ```
 
-6.  create JWT_KEY as a secret
+6.  Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+
+    If you are not using Helm
+
+    ```bash
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+    ```
+
+7.  create JWT_KEY as a secret
 
     `kubectl create secret generic jwt-secret --from-literal=JWT_KEY={YOUR_JWT_KEY_HERE}`
 
-7.  Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
+8.  Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
 
     - Make sure to use the kuberentes service account you create in all services which needs to connect to Cloud Pub/Sub and annotate it properly as described.
 
-8.  Apply Kubernetes manifests
+9.  Apply Kubernetes manifests
 
     `kubectl apply -f infa/k8s`
 
-9.  point the domain name to ingress load balancer external IP address.
+10. point the domain name to ingress load balancer external IP address.
