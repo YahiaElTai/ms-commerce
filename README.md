@@ -23,6 +23,10 @@ The project is a simplified clone version of some of the services at commercetoo
 
 Each service has basic crud operations with a highly simplified data model.
 
+### API Documentation
+
+The documentation for this project was created with postman and can be found [here](https://documenter.getpostman.com/view/8722825/2s8YsryZiW).
+
 ### Events
 
 - **Cart service**: `cart_created`, `cart_updated`, `cart_deleted`
