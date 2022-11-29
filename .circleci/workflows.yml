@@ -46,7 +46,7 @@ jobs:
       - checkout
       - run:
           name: Setup machine
-          command: bash ./.circleci/install-libssl.sh
+          command: ./.circleci/install-libssl.sh
       - shellcheck/check:
           dir: ./.circleci
       - node/install-packages
@@ -72,7 +72,7 @@ jobs:
       - checkout
       - run:
           name: Initialize gcloud CLI
-          command: bash ./.circleci/gcloud-initialize.sh
+          command: ./.circleci/gcloud-initialize.sh
       - run:
           name: Authenticate Docker with gcloud
           command: gcloud auth configure-docker --quiet $REGISTRY_URL
@@ -95,10 +95,10 @@ jobs:
       - checkout
       - run:
           name: Initialize gcloud CLI
-          command: bash ./.circleci/gcloud-initialize.sh
+          command: ./.circleci/gcloud-initialize.sh
       - run:
           name: Rollout new << parameters.service >> deployment
-          command: bash ./.circleci/kubernetes.sh
+          command: ./.circleci/kubernetes.sh
           environment:
             OPERATION: rollout
             SERVICE_NAME: << parameters.service >>
@@ -109,7 +109,7 @@ jobs:
       - gcp-cli/initialize
       - run:
           name: Apply all k8s manifests
-          command: bash ./.circleci/kubernetes.sh
+          command: ./.circleci/kubernetes.sh
           environment:
             OPERATION: apply
 
