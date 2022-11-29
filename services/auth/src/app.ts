@@ -9,7 +9,7 @@ import { signupRouter } from './routes/signup';
 import { errorHandler, NotFoundError } from '@ms-commerce/common';
 
 const app = express();
-
+console.log('bash');
 app.set('trust proxy', true);
 app.use(json());
 app.use(cookieParser());
