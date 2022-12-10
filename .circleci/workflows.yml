@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.3
-  gcp-cli: circleci/gcp-cli@2.4.1
+  gcp-cli: circleci/gcp-cli@3.0.0
   gcp-gcr: circleci/gcp-gcr@0.15.0
   shellcheck: circleci/shellcheck@3.1.2
 
@@ -28,14 +28,6 @@ executors:
     docker:
       - image: cimg/node:18.12.1
 
-commands:
-  install_packages_for_service:
-    parameters:
-      app-dir:
-        type: string
-    steps:
-      - node/install-packages:
-          app-dir: ./services/<< parameters.app-dir >>
 jobs:
   lint_typecheck_and_test:
     executor: node-executor
@@ -53,39 +45,14 @@ jobs:
       - run:
           name: lint all services
           command: npm run lint
-      - install_packages_for_service:
-          app-dir: << parameters.app-dir >>
+      - node/install-packages:
+          app-dir: ./services/<< parameters.app-dir >>
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run typecheck
           name: Typecheck services/<< parameters.app-dir >>
-      - install_packages_for_service:
-          app-dir: << parameters.app-dir >>
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
-  build_and_publish_image:
-    executor: gcp-executor
-    parameters:
-      service:
-        type: string
-    steps:
-      - checkout
-      - run:
-          name: Initialize gcloud CLI
-          command: ./.circleci/gcloud-initialize.sh
-      - run:
-          name: Authenticate Docker with gcloud
-          command: gcloud auth configure-docker --quiet $REGISTRY_URL
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - gcp-gcr/build-image:
-          docker-context: ./services/<< parameters.service >>
-          image: $REPO_NAME/<< parameters.service >>
-          path: ./services/<< parameters.service >>
-          registry-url: $REGISTRY_URL
-      - gcp-gcr/push-image:
-          image: $REPO_NAME/<< parameters.service >>
-          registry-url: $REGISTRY_URL
   deploy_service:
     executor: gcp-executor
     parameters:
@@ -93,9 +60,7 @@ jobs:
         type: string
     steps:
       - checkout
-      - run:
-          name: Initialize gcloud CLI
-          command: ./.circleci/gcloud-initialize.sh
+      - gcp-cli/setup
       - run:
           name: Rollout new << parameters.service >> deployment
           command: ./.circleci/kubernetes.sh
@@ -106,7 +71,7 @@ jobs:
     executor: gcp-executor
     steps:
       - checkout
-      - gcp-cli/initialize
+      - gcp-cli/setup
       - run:
           name: Apply all k8s manifests
           command: ./.circleci/kubernetes.sh
@@ -148,9 +113,12 @@ workflows:
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_cart
           app-dir: cart
-      - build_and_publish_image:
+      - build-and-push-image:
           name: build_and_publish_cart_image
-          service: cart
+          docker-context: ./services/cart
+          image: $REPO_NAME/cart
+          path: ./services/cart
+          registry-url: $REGISTRY_URL
           requires:
             - lint_typecheck_and_test_cart
       - can_deploy_service:
@@ -177,9 +145,12 @@ workflows:
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_auth
           app-dir: auth
-      - build_and_publish_image:
+      - build-and-push-image:
           name: build_and_publish_auth_image
-          service: auth
+          docker-context: ./services/auth
+          image: $REPO_NAME/auth
+          path: ./services/auth
+          registry-url: $REGISTRY_URL
           requires:
             - lint_typecheck_and_test_auth
       - can_deploy_service:

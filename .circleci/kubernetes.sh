@@ -4,10 +4,10 @@ set -e
 
 gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$GOOGLE_COMPUTE_ZONE" --project "$GOOGLE_PROJECT_ID"
 
-if [ "$OPERATION" == "rollout" ]; then
-    kubectl rollout restart deployment "$SERVICE_NAME"-depl
-elif [ "$OPERATION" == "apply" ]; then
+if [ "$OPERATION" = "rollout" ]; then
+    kubectl rollout restart deployment "${SERVICE_NAME}-depl"
+elif [ "$OPERATION" = "apply" ]; then
     kubectl apply -f ./infra/k8s
 else
-    echo "$OPERATION not found"
+    echo "OPERATION not defined. OPERATION can be one of 2 values [ rollout, apply ]"
 fi
