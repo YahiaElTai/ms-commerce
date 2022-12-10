@@ -113,7 +113,7 @@ workflows:
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_cart
           app-dir: cart
-      - build-and-push-image:
+      - gcp-gcr/build-and-push-image:
           name: build_and_publish_cart_image
           docker-context: ./services/cart
           image: $REPO_NAME/cart
@@ -145,7 +145,7 @@ workflows:
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_auth
           app-dir: auth
-      - build-and-push-image:
+      - gcp-gcr/build-and-push-image:
           name: build_and_publish_auth_image
           docker-context: ./services/auth
           image: $REPO_NAME/auth
