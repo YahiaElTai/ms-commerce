@@ -32,7 +32,10 @@ spec:
                   name: jwt-secret
                   key: JWT_KEY
             - name: MONGO_URI
-              value: 'mongodb://cart-mongo-srv:27017/cart'
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-cart-secret
+                  key: MONGO_URI
             - name: GCP_PROJECT_ID
               value: ms-commerce-368507
 ---

@@ -52,12 +52,22 @@
 
     `kubectl create secret generic jwt-secret --from-literal=JWT_KEY={YOUR_JWT_KEY_HERE}`
 
-8.  Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
+8.  Connect MongoDB to services (auth & cart)
+
+    1. Create DB at MongoDB atlas and setup user and IP whitelist.
+
+    2. create a kubernetes secret for mongodb URI which includes the databasename, username and password.
+
+    `kubectl create secret generic mongo-{service_name}-secret --from-literal=MONGO_URI={YOUR_MONGO_URI_HERE}`
+
+    3. Ensure cart and auth deployment are consuming the secrets which contains mongod URIs.
+
+9.  Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
 
     - Make sure to use the kuberentes service account you create in all services which needs to connect to Cloud Pub/Sub and annotate it properly as described.
 
-9.  Apply Kubernetes manifests
+10. Apply Kubernetes manifests
 
     `kubectl apply -f infa/k8s`
 
-10. point the domain name to ingress load balancer external IP address.
+11. point your domain name to ingress load balancer external IP address.
