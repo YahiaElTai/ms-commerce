@@ -1,11 +1,11 @@
 import request from 'supertest';
 import { app } from '../../app';
 
-it.skip('clears the cookie after signing out', async () => {
+it('clears the cookie after signing out', async () => {
   const response = await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test@test.com',
+      email: 'test4@test.com',
       password: 'password',
     })
     .expect(201);

@@ -1,21 +1,21 @@
 import request from 'supertest';
 import { app } from '../../app';
 
-it.skip('fails when an email does not exist', async () => {
+it('fails when an email does not exist', async () => {
   return request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
+      email: 'test1@test.com',
       password: 'password',
     })
     .expect(400);
 });
 
-it.skip('fails when an incorrect password is supplied', async () => {
+it('fails when an incorrect password is supplied', async () => {
   await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test@test.com',
+      email: 'test2@test.com',
       password: 'password',
     })
     .expect(201);
@@ -23,17 +23,17 @@ it.skip('fails when an incorrect password is supplied', async () => {
   return request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
+      email: 'test2@test.com',
       password: 'incorrectpassword',
     })
     .expect(400);
 });
 
-it.skip('responds when a cookie when given valid credentials', async () => {
+it('responds when a cookie when given valid credentials', async () => {
   await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test@test.com',
+      email: 'test3@test.com',
       password: 'password',
     })
     .expect(201);
@@ -41,7 +41,7 @@ it.skip('responds when a cookie when given valid credentials', async () => {
   const response = await request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
+      email: 'test3@test.com',
       password: 'password',
     })
     .expect(200);

@@ -1,17 +1,12 @@
 version: '3.9'
-services:
-  mongodb_container:
-    image: 'bitnami/mongodb:4.4'
-    environment:
-      - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
-      - MONGODB_REPLICA_SET_MODE=primary
-      - MONGODB_ROOT_USER=prisma
-      - MONGODB_ROOT_PASSWORD=prisma
-      - MONGODB_REPLICA_SET_KEY=replicasetkey123
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb_data_container:/data/db
 
-volumes:
-  mongodb_data_container:
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: tests
