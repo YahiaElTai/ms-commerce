@@ -41,7 +41,9 @@ jobs:
       - run:
           name: Setup machine
           command: ./.circleci/install-libssl.sh
-      - run: which shellcheck && shellcheck --version
+      - run:
+          name: Installing shellcheck binary
+          command: sudo apt-get update && sudo apt-get install shellcheck -yqq
       - shellcheck/check:
           dir: ./.circleci
       - node/install-packages
