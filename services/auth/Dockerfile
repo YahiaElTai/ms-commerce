@@ -22,6 +22,8 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/build ./build
 
+RUN npx prisma generate --schema=src/prisma/schema.prisma
+
 ENV NODE_ENV production
 EXPOSE 3000
 
