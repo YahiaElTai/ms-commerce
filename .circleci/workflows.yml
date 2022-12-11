@@ -40,8 +40,8 @@ jobs:
       - run:
           name: Setup machine
           command: ./.circleci/install-libssl.sh
-      - shellcheck/check:
-          dir: ./.circleci
+      # - shellcheck/check:
+      #     dir: ./.circleci
       - node/install-packages
       - run:
           name: lint all services
