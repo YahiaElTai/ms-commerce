@@ -30,7 +30,8 @@ executors:
 
 jobs:
   lint_typecheck_and_test:
-    executor: node-executor
+    machine:
+      image: ubuntu-2204:2022.10.2
     parameters:
       app-dir:
         type: string
