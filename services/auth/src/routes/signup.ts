@@ -7,10 +7,17 @@ import {
 } from '@ms-commerce/common';
 import { prisma } from '../prisma';
 import { Password } from '../services/password';
+import { Prisma } from '@prisma/client';
 
 const router = express.Router();
 
-prisma.$use(async (params, next) => {
+interface User {
+  id: number;
+  email: string;
+  password: string;
+}
+
+const hashingMiddlware: Prisma.Middleware<User> = async (params, next) => {
   if (params.action === 'create' && params.model === 'User') {
     const hashed = await Password.toHash(params.args.data.password);
 
@@ -20,7 +27,9 @@ prisma.$use(async (params, next) => {
   const result = await next(params);
 
   return result;
-});
+};
+
+prisma.$use(hashingMiddlware);
 
 router.post(
   '/api/users/signup',

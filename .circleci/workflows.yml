@@ -48,6 +48,9 @@ jobs:
       - node/install-packages:
           app-dir: ./services/<< parameters.app-dir >>
       - run:
+          command: cd ./services/<< parameters.app-dir >> && npm run prisma:generate:dev
+          name: Generate Prisma client
+      - run:
           command: cd ./services/<< parameters.app-dir >> && npm run typecheck
           name: Typecheck services/<< parameters.app-dir >>
       - run:
