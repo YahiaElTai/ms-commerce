@@ -29,11 +29,11 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
-            - name: MONGO_URI
+            - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: mongo-auth-secret
-                  key: MONGO_AUTH_URI
+                  key: DATABASE_URL
 ---
 apiVersion: v1
 kind: Service
