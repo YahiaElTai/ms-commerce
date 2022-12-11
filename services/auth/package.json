@@ -7,7 +7,7 @@
     "jest:watch": "dotenv -e .env.test -- jest --watchAll --no-cache ./src",
     "jest:ci": "dotenv -e .env.test -- jest ./src",
     "build": "rimraf build && tsc",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --version && tsc --noEmit",
     "prisma:generate:dev": "dotenv -e .env.development -- prisma generate --schema=src/prisma/schema.prisma",
     "prisma:migrate:dev:dev": "dotenv -e .env.development -- prisma migrate dev --schema=src/prisma/schema.prisma",
     "prisma:migrate:dev:test": "dotenv -e .env.test -- prisma migrate dev --schema=src/prisma/schema.prisma",
