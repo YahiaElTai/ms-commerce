@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 
-it('clears the cookie after signing out', async () => {
+it.skip('clears the cookie after signing out', async () => {
   const response = await request(app)
     .post('/api/users/signup')
     .send({

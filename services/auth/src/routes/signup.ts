@@ -5,9 +5,22 @@ import {
   validateRequest,
   generateToken,
 } from '@ms-commerce/common';
-import { User, UserDraft } from '../models/user';
+import { prisma } from '../prisma';
+import { Password } from '../services/password';
 
 const router = express.Router();
+
+prisma.$use(async (params, next) => {
+  if (params.action === 'create' && params.model === 'User') {
+    const hashed = await Password.toHash(params.args.data.password);
+
+    params.args.data.password = hashed;
+  }
+
+  const result = await next(params);
+
+  return result;
+});
 
 router.post(
   '/api/users/signup',
@@ -22,14 +35,15 @@ router.post(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
 
     if (existingUser) {
       throw new BadRequestError('Email in use');
     }
 
-    const user = new User<UserDraft>({ email, password });
-    await user.save();
+    const user = await prisma.user.create({ data: { email, password } });
 
     const token = generateToken(user.id, user.email);
 

@@ -5,8 +5,8 @@ import {
   validateRequest,
   generateToken,
 } from '@ms-commerce/common';
-import { User } from '../models/user';
 import { Password } from '../services/password';
+import { prisma } from '../prisma';
 
 const router = express.Router();
 
@@ -23,7 +23,9 @@ router.post(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
 
     if (!existingUser) {
       throw new BadRequestError('Invalid credentials');

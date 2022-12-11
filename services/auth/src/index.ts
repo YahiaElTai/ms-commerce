@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { app } from './app';
 
 const start = async () => {
@@ -6,15 +5,8 @@ const start = async () => {
     throw new Error('JWT_KEY must be defined');
   }
 
-  if (!process.env.MONGO_URI) {
-    throw new Error('MONGO_URI must be defined');
-  }
-
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('Connected to MongoDB!');
-  } catch (error) {
-    console.log(error);
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL must be defined');
   }
 
   app.listen(3000, () => {
