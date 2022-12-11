@@ -32,6 +32,7 @@ jobs:
   lint_typecheck_and_test:
     machine:
       image: ubuntu-2204:2022.10.2
+    resource_class: medium
     parameters:
       app-dir:
         type: string
@@ -40,8 +41,9 @@ jobs:
       - run:
           name: Setup machine
           command: ./.circleci/install-libssl.sh
-      # - shellcheck/check:
-      #     dir: ./.circleci
+      - run: which shellcheck && shellcheck --version
+      - shellcheck/check:
+          dir: ./.circleci
       - node/install-packages
       - run:
           name: lint all services
@@ -67,6 +69,7 @@ jobs:
           name: Run tests ./services/<< parameters.app-dir >>
   deploy_service:
     executor: gcp-executor
+    resource_class: medium
     parameters:
       service:
         type: string
@@ -81,6 +84,7 @@ jobs:
             SERVICE_NAME: << parameters.service >>
   deploy_manifests:
     executor: gcp-executor
+    resource_class: medium
     steps:
       - checkout
       - gcp-cli/setup
