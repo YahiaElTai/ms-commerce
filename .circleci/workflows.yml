@@ -55,6 +55,14 @@ jobs:
           name: Typecheck services/<< parameters.app-dir >>
       - setup_remote_docker
       - run:
+          name: Starting Postgres database
+          command: |
+            cd ./services/<< parameters.app-dir >> && docker-compose up -d
+            sleep 20
+      - run:
+          name: Deploying Prisma schema
+          command: cd ./services/<< parameters.app-dir >> && prisma migrate deploy --schema=src/prisma/schema.prisma
+      - run:
           command: cd ./services/<< parameters.app-dir >> && npm run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
   deploy_service:
