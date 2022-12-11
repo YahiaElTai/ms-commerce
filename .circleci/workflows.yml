@@ -31,7 +31,7 @@ executors:
 jobs:
   lint_typecheck_and_test:
     machine:
-      image: ubuntu-2204:2022.10.2
+      image: ubuntu-2004:2022.10.1
     resource_class: medium
     parameters:
       app-dir:
@@ -41,9 +41,9 @@ jobs:
       - run:
           name: Setup machine
           command: ./.circleci/install-libssl.sh
-      - run:
-          name: Installing shellcheck binary
-          command: sudo apt-get update && sudo apt-get install shellcheck -yqq
+      # - run:
+      #     name: Installing shellcheck binary
+      #     command: sudo apt-get update && sudo apt-get install shellcheck -yqq
       - shellcheck/check:
           dir: ./.circleci
       - node/install-packages
