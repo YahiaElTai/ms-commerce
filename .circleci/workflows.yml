@@ -54,7 +54,6 @@ jobs:
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run typecheck
           name: Typecheck services/<< parameters.app-dir >>
-      - setup_remote_docker
       - run:
           name: Starting Postgres database
           command: |
