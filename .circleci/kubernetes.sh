@@ -3,7 +3,7 @@
 set -e
 
 : "${GOOGLE_PROJECT_ID?Required env variable GOOGLE_PROJECT_ID}"
-: "${GOOGLE_COMPUTE_ZONE?Required env variable GOOGLE_COMPUTE_ZONE}"
+: "${GOOGLE_COMPUTE_REGION?Required env variable GOOGLE_COMPUTE_REGION}"
 : "${CLUSTER_NAME?Required env variable CLUSTER_NAME}"
 : "${OPERATION?Required env variable OPERATION}"
 
@@ -24,6 +24,10 @@ apply_prisma_migrations() {
         echo "${SERVICE_NAME} does not use Prisma"
     fi
 }
+
+echo "$CLUSTER_NAME"
+echo "$GOOGLE_COMPUTE_REGION"
+echo "$GOOGLE_PROJECT_ID"
 
 gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
