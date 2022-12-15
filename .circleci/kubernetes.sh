@@ -25,10 +25,6 @@ apply_prisma_migrations() {
     fi
 }
 
-echo "$CLUSTER_NAME"
-echo "$GOOGLE_COMPUTE_REGION"
-echo "$GOOGLE_PROJECT_ID"
-
 gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
 case $OPERATION in
