@@ -25,7 +25,7 @@ apply_prisma_migrations() {
     fi
 }
 
-gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
+gcloud container clusters get-credentials ms-commerce --region europe-west1 --project ms-commerce-auto-1
 
 case $OPERATION in
 rollout)
