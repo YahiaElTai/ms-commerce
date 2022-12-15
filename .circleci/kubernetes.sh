@@ -25,7 +25,7 @@ apply_prisma_migrations() {
     fi
 }
 
-gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$GOOGLE_COMPUTE_ZONE" --project "$GOOGLE_PROJECT_ID"
+gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
 case $OPERATION in
 rollout)
