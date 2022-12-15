@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.3
-  gcp-cli: circleci/gcp-cli@3.0.0
+  gcp-cli: circleci/gcp-cli@3.0.1
   gcp-gcr: circleci/gcp-gcr@0.15.0
   shellcheck: circleci/shellcheck@3.1.2
 
@@ -86,6 +86,8 @@ jobs:
     steps:
       - checkout
       - gcp-cli/setup
+      - run: gcloud config list
+      - run: gcloud container clusters list
       - run:
           name: Rollout new << parameters.service >> deployment
           command: ./.circleci/kubernetes.sh
