@@ -21,8 +21,11 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
-            - name: MONGO_URI
-              value: 'mongodb://auth-mongo-srv:27017/auth'
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: sql-auth-secret
+                  key: DATABASE_URL
 ---
 apiVersion: v1
 kind: Service

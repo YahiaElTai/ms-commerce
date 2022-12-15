@@ -4,9 +4,10 @@
 
     1. Install [Docker for Desktop](https://www.docker.com/) and enable kubernetes.
 
-    2. Install [gcloud CLI](https://cloud.google.com/sdk/docs/install) and sign in
+    2. Install [gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
        ```bash
+       gcloud init # initialize gcloud
        gcloud auth application-default login
        gcloud config set container/use_application_default_credentials true
        ```
@@ -47,17 +48,7 @@
 
        Refer to [this guide](https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform)
 
-4.  Connect MongoDB to services (auth & cart)
-
-    1. Create DB at MongoDB atlas and setup user and IP whitelist or setup mongodb locally
-
-    2. create a kubernetes secret for mongodb URI which includes the databasename, username and password.
-
-    `kubectl create secret generic mongo-{service_name}-secret --from-literal=MONGO_URI={YOUR_MONGO_URI_HERE}`
-
-    3. Ensure cart and auth deployment are consuming the secrets which contains mongod URIs.
-
-5.  Enable and configure Cloud Pub/Sub
+4.  Enable and configure Cloud Pub/Sub
 
     GCP recommends to use the Pub/Sub Emulator for local development but for now we are connecting directly to Google Cloud.
 
@@ -65,7 +56,7 @@
 
     2. Create Cloud Pub/Sub topics that you require for the application from the [Google Cloud Console](https://console.cloud.google.com/cloudpubsub/topic/list)
 
-6.  Install and configure `skaffold`
+5.  Install and configure `skaffold`
 
     1. Install [skaffold](https://skaffold.dev)
 
@@ -85,6 +76,26 @@
     127.0.0.1 ms-commerce.dev
     ```
 
-    6. Run `skaffold dev`
+6.  Start the project
+
+    1. Start `docker-compose` for all services
+       ```bash
+       # Run this command within each folder inside /services/
+       docker-compose up -d
+       ```
+    2. Run `skaffold dev`
 
     This command should start all microservices with their endpoints under a custom hostname as specified in `skaffold.yaml` file.
+
+    ***
+
+    Alternatively you can start a single service locally with:
+
+    ```bash
+    # Run this command within the service you want to work on
+    docker-compose up -d
+
+    # Run this command within each folder inside /services/
+    docker-compose up -d run the start script
+    npm run start:dev
+    ```
