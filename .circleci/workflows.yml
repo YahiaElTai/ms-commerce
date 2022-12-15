@@ -32,7 +32,7 @@ jobs:
   lint_typecheck_and_test:
     machine:
       image: ubuntu-2204:2022.10.2
-    resource_class: medium
+    resource_class: large
     parameters:
       app-dir:
         type: string
