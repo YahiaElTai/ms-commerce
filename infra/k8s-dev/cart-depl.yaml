@@ -33,7 +33,7 @@ spec:
             - name: MONGO_URI
               value: 'mongodb://cart-mongo-srv:27017/cart'
             - name: GCP_PROJECT_ID
-              value: ms-commerce-368507
+              value: ms-commerce-auto-1
 ---
 apiVersion: v1
 kind: Service

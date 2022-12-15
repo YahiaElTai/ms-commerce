@@ -1,73 +1,134 @@
 ### Recreate GCP Project for production
 
-1.  Create a new project and connect a billing account
-2.  Create a custom Virtual Private Cloud (VCP)
+1. Install [gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
-    1. Create subnets in `europe-west-1` and `us-central1` regions with IPv4 10.181.0.0/20 and 10.182.0.0/20
-    2. Enable recommended firewall rules
+   ```bash
+   gcloud init # initialize gcloud
+   gcloud auth application-default login
+   gcloud config set container/use_application_default_credentials true
+   ```
 
-3.  Enable and configure Artifact Registry
+1. Use default project or create a new project and connect a billing account
 
-    1. Enable Artifact Registry API and create a new repository
-    2. Push your services images to the repository following [the setup instructions](https://cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling)
+```bash
+    gcloud projects create [PROJECT_ID] [--name=NAME] [--organization=ORGANIZATION_ID] [--set-as-default]
+    # Link billing account via Cloud Console
+```
 
-4.  Enable and configure Cloud Pub/Sub
+2. default `gcloud` default config for future use
 
-    1. Enable Cloud Pub/Sub API
-    2. create all topics required by your project
-    3. Create all subscriptions required by your project
+   ```bash
+   gcloud config set compute/region [REGION]
+   gcloud config set compute/zone [ZONE]
+   ```
 
-5.  Create GKE Cluster
+3. Enable and configure Artifact Registry
 
-    1. Enable Kubernetes Engine API
-    2. Create a cluster with the following properties
-       - Specify a zone within the custom VPC created above
-       - Under Networking, select the VPC created above
-       - Under Security, enable Workload Identity
-    3. Connect to cluster
+   1. Enable Artifact Registry API and create a new repository
 
-       `gcloud container clusters get-credentials <cluster_name> --zone <zone> --project <project>`
+      ```bash
+      gcloud services enable artifactregistry.googleapis.com
+      ```
 
-    4. Ensure you are on the correct context
+   2. Create repository
 
-       ```bash
-          # see all the available context
-          $ kubectl config get-contexts
-          # pick the context you want to currently use
-          $ kubectl config use-context <context-name>
+   ```bash
+    gcloud artifacts repositories create [REPOSITORY] [--repository-format=FORMAT] [--location=LOCATION]
+   ```
 
-          # extra: see detailed list of config/contexts
-          $ kubectl config view
-       ```
+   2. build and push docker images to the repository following [the setup instructions](https://cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling)
 
-6.  Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+4. Create GKE Cluster
 
-    If you are not using Helm
+   1. Enable Kubernetes Engine API
 
-    ```bash
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
-    ```
+   ```bash
+   gcloud services enable container.googleapis.com
+   ```
 
-7.  create JWT_KEY as a secret
+   2. Create an autopilot kubernetes cluster (recommended)
 
-    `kubectl create secret generic jwt-secret --from-literal=JWT_KEY={YOUR_JWT_KEY_HERE}`
+   ```bash
+   # You can get the gcloud command arguments from Cloud Console
+   gcloud container --project [PROJECT_ID] clusters create-auto [CLUSTER_NAME] --region [REGION] --release-channel [CHANNEL] --network [NETWORK] --subnetwork [SUBNETWORK] --cluster-ipv4-cidr [CLUSTER_IPV4] --services-ipv4-cidr [SERVICES_IPV4]
+   ```
 
-8.  Connect MongoDB to services (auth & cart)
+   3. Connect to cluster
 
-    1. Create DB at MongoDB atlas and setup user and IP whitelist.
+      ```bash
+      gcloud container clusters get-credentials [CLUSTER_NAME] --region [REGION] --project [PROJECT_ID]
+      ```
 
-    2. create a kubernetes secret for mongodb URI which includes the databasename, username and password.
+   4. Switch to the correct context
 
-    `kubectl create secret generic mongo-{service_name}-secret --from-literal=MONGO_URI={YOUR_MONGO_URI_HERE}`
+      ```bash
+         # see all the available context
+         kubectl config get-contexts
 
-    3. Ensure cart and auth deployment are consuming the secrets which contains mongod URIs.
+         # pick the context you want to currently use
+         kubectl config use-context [CONTEXT_NAME]
 
-9.  Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
+         # display the current context
+         kubectl config current-context
+      ```
+
+5. Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+   ```
+
+6. create JWT_KEY as a secret
+
+   ```bash
+   kubectl create secret generic jwt-secret --from-literal=JWT_KEY={YOUR_JWT_KEY_HERE}
+   ```
+
+7. Create PostgreSQL databases with Cloud SQL
+
+   ```bash
+        # Create PostgreSQL instances
+       gcloud sql instances create [INSTNACE_NAME] \
+       --database-version=[DATABASE_VERSION] \
+       --cpu=[CPU_COUNT] \
+       --memory=[MEMORY_COUNT] \
+       --region=[REGION] \
+       --root-password=[DB_ROOT_PASSWORD] \
+       --storage-size=[STORAGE_SIZE_GB] \
+       [--storage-auto-increase] \
+       [--storage-auto-increase-limit]
+
+       # Create PostgreSQL databases
+       gcloud sql databases create [DATABASE_NAME] --instance=[INSTANECE_NAME]
+
+       # Create PostgreSQL instance user
+       gcloud sql users create [USER_NAME] --instance=[INSTANCE_NAME] --password=[PASSWORD]
+   ```
+
+8. Connect PostgreSQL database with k8s deployments following [this guide](https://cloud.google.com/sql/docs/postgres/connect-instance-kubernetes)
+
+9. Enable and configure Cloud Pub/Sub
+
+   1. Enable Cloud Pub/Sub API
+
+   ```bash
+   gcloud services enable pubsub.googleapis.com
+   ```
+
+   2. Create needed topics
+
+   ```bash
+   gcloud pubsub topics create [TOPIC_ID] --message-encoding=[ENCODING_TYPE]  --schema=[SCHEMA_ID]
+   ```
+
+   3. Create needed subscriptions [Pull or Push]
+
+10. Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
 
     - Make sure to use the kuberentes service account you create in all services which needs to connect to Cloud Pub/Sub and annotate it properly as described.
 
-10. Apply Kubernetes manifests
+11. Apply Kubernetes manifests
 
     `kubectl apply -f infa/k8s`
 
-11. point your domain name to ingress load balancer external IP address.
+12. point your domain name to ingress load balancer external IP address.
