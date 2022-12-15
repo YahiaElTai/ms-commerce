@@ -39,9 +39,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: ECHO
-          command: echo $CLUSTER_NAME $GOOGLE_PROJECT_ID $GOOGLE_COMPUTE_REGION
-      - run:
           name: Setup machine
           command: ./.circleci/install-libssl.sh
       - run:
