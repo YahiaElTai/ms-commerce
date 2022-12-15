@@ -86,8 +86,6 @@ jobs:
     steps:
       - checkout
       - gcp-cli/setup
-      - run: gcloud config list
-      - run: gcloud container clusters list
       - run:
           name: Rollout new << parameters.service >> deployment
           command: ./.circleci/kubernetes.sh
