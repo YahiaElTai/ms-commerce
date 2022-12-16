@@ -52,28 +52,20 @@ jobs:
           command: npm run lint
       - node/install-packages:
           app-dir: ./services/<< parameters.app-dir >>
-      - when:
-          condition:
-            equal: [auth, << parameters.app-dir >>]
-          steps:
-            - run:
-                command: cd ./services/<< parameters.app-dir >> && npx prisma generate --schema=src/prisma/schema.prisma
-                name: Generate Prisma client
+      - run:
+          command: cd ./services/<< parameters.app-dir >> && npx prisma generate --schema=src/prisma/schema.prisma
+          name: Generate Prisma client
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run typecheck
           name: Typecheck services/<< parameters.app-dir >>
-      - when:
-          condition:
-            equal: [auth, << parameters.app-dir >>]
-          steps:
-            - run:
-                name: Starting Postgres database
-                command: |
-                  cd ./services/<< parameters.app-dir >> && docker-compose up -d
-                  sleep 20
-            - run:
-                name: Deploying Prisma schema
-                command: cd ./services/<< parameters.app-dir >> && docker ps && npx prisma migrate deploy --schema=src/prisma/schema.prisma
+      - run:
+          name: Starting Postgres database
+          command: |
+            cd ./services/<< parameters.app-dir >> && docker-compose up -d
+            sleep 20
+      - run:
+          name: Deploying Prisma schema
+          command: cd ./services/<< parameters.app-dir >> && docker ps && npx prisma migrate deploy --schema=src/prisma/schema.prisma
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
