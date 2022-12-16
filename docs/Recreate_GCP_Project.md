@@ -111,8 +111,13 @@
    - Create DATABASE_URL as secret
 
    ```bash
-   kubectl create secret generic sql-auth-secret --from-literal=DATABASE_URL={DATABASE_URL_HERE}
+   kubectl create secret generic [SECRET_NAME] --from-literal=[DATABASE_URL_KEY]={DATABASE_URL_VALUE}
    ```
+
+   **Notes**:
+
+   - `auth` service expect `DATABASE_URL`
+   - `cartx` service expect `DATABASE_URL_CART`
 
 10. Enable and configure Cloud Pub/Sub
 
