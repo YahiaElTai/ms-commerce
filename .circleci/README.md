@@ -5,6 +5,7 @@
 2.  Add required env variables:
 
     - `DATABASE_URL`: PostgreSQL URL as configured in docker-compose.yaml
+    - `DATABASE_URL_CART`: PostgreSQL URL as configured in docker-compose.yaml for `cart` service
     - `DOCKERHUB_USERNAME`
     - `DOCKERHUB_PASSWORD`
     - `GCLOUD_SERVICE_KEY`: See below for setup

@@ -6,9 +6,8 @@ import cookieParser from 'cookie-parser';
 import { errorHandler, NotFoundError } from '@ms-commerce/common';
 import { SingleCartRouter } from './routes/single';
 import { CreateCartRouter } from './routes/create';
-import { UpdateCartRouter } from './routes/update';
+// import { UpdateCartRouter } from './routes/update';
 
-console.log('hello');
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
@@ -18,7 +17,7 @@ app.use(CartsRouter);
 app.use(SingleCartRouter);
 
 app.use(CreateCartRouter);
-app.use(UpdateCartRouter);
+// app.use(UpdateCartRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

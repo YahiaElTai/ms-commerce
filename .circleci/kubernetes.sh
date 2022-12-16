@@ -8,11 +8,11 @@ set -e
 : "${OPERATION?Required env variable OPERATION}"
 
 apply_prisma_migrations() {
-    if [ "$SERVICE_NAME" == "auth" ]; then
+    if [ "$SERVICE_NAME" == "auth" ] || [ "$SERVICE_NAME" == "cart" ]; then
         echo "Applying pending Prisma migrations from inside K8s pod"
 
         # Get the name of one of the settings pods running
-        pod_name=$(kubectl get pods --field-selector=status.phase=Running --sort-by=.metadata.creationTimestamp -l app="auth" -o=name | tail -1)
+        pod_name=$(kubectl get pods --field-selector=status.phase=Running --sort-by=.metadata.creationTimestamp -l app="${SERVICE_NAME}" -o=name | tail -1)
 
         echo "Using pod $pod_name"
 

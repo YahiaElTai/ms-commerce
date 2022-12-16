@@ -12,9 +12,10 @@ spec:
       labels:
         app: cart
     spec:
-      serviceAccountName: identity-service-account-ms-commerce
-      nodeSelector:
-        iam.gke.io/gke-metadata-server-enabled: 'true'
+      # serviceAccountName: identity-service-account-ms-commerce
+      # nodeSelector:
+      #   iam.gke.io/gke-metadata-server-enabled: 'true'
+      serviceAccountName: ksa-cloud-sql
       containers:
         - name: cart
           image: europe-west1-docker.pkg.dev/ms-commerce-auto-1/ms-commerce/cart
@@ -31,13 +32,31 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
-            - name: MONGO_URI
+            - name: DATABASE_URL_CART
               valueFrom:
                 secretKeyRef:
-                  name: mongodb-cart-secret
-                  key: MONGO_URI
-            - name: GCP_PROJECT_ID
-              value: ms-commerce-auto-1
+                  name: sql-cart-secret
+                  key: DATABASE_URL_CART
+        - name: cloud-sql-proxy
+          # This uses the latest version of the Cloud SQL proxy
+          # It is recommended to use a specific version for production environments.
+          # See: https://github.com/GoogleCloudPlatform/cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:latest
+          command:
+            - '/cloud_sql_proxy'
+
+            # If connecting from a VPC-native GKE cluster, you can use the
+            # following flag to have the proxy connect over private IP
+            # - "-ip_address_types=PRIVATE"
+
+            # tcp should be set to the port the proxy should listen on
+            # and should match the DB_PORT value set above.
+            # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
+            - '-instances=ms-commerce-auto-1:europe-west1:ms-commerce-cart=tcp:5432'
+          securityContext:
+            # The default Cloud SQL proxy image runs as the
+            # "nonroot" user and group (uid: 65532) by default.
+            runAsNonRoot: true
 ---
 apiVersion: v1
 kind: Service

@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 
-jest.mock('../../pub-sub');
+// jest.mock('../../pub-sub');
 
 it('should responds with 401 status code for unauthenticated users', async () => {
   await request(app)
@@ -32,10 +32,8 @@ it('should responds with correct cart', async () => {
     .send({
       customerEmail: 'test@test.com',
       currency: 'EUR',
-      lineItems: [{}],
+      lineItems: [{ quantity: 12, sku: '1234' }],
       shippingMethodId: 'shipping-method-id',
-      shippingAddress: {},
-      billingAddress: {},
     })
     .expect(201);
 

@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_CART")
+}
+
+model LineItem {
+  id       Int    @id @default(autoincrement())
+  quantity Int
+  sku      String
+  Cart     Cart?  @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cartId   Int?
+}
+
+model Cart {
+  id                Int             @id @default(autoincrement())
+  customerEmail     String          @db.VarChar(255)
+  lineItems         LineItem[]
+  shippingMethodId  String
+  version           Int             @default(0)
+}

@@ -95,7 +95,6 @@
     # Run this command within the service you want to work on
     docker-compose up -d
 
-    # Run this command within each folder inside /services/
-    docker-compose up -d run the start script
+    # Run this command within the service you want to work on
     npm run start:dev
     ```

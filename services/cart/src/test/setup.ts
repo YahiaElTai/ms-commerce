@@ -1,31 +1,12 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import mongoose from 'mongoose';
+import { prisma } from '../prisma';
 import { generateToken } from '@ms-commerce/common';
 
-let mongo: MongoMemoryServer;
-
-beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
-  const mongoUri = mongo.getUri();
-
-  await mongoose.connect(mongoUri, {});
-});
-
 beforeEach(async () => {
-  process.env.JWT_KEY = 'asdfg';
-  const collections = await mongoose.connection.db.collections();
-
-  for (const collection of collections) {
-    await collection.deleteMany({});
-  }
+  await prisma.cart.deleteMany();
 });
 
 afterAll(async () => {
-  if (mongo) {
-    await mongo.stop();
-  }
-
-  await mongoose.connection.close();
+  await prisma.$disconnect();
 });
 
 declare global {
@@ -34,7 +15,7 @@ declare global {
 
 global.signin = async () => {
   const payload = {
-    id: new mongoose.Types.ObjectId('635d013ae716eacb0e92d422').toHexString(),
+    id: Math.floor(Math.random() * 10).toString(),
     email: 'test@test.com',
   };
 
