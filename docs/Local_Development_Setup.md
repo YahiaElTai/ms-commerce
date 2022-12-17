@@ -57,16 +57,7 @@
 
     1. Install [skaffold](https://skaffold.dev)
 
-    2. Esnure skaffold has read access from your registry where the images are stocker.
-
-       1. Docker: login into docker with `docker login`
-       2. GCP Artifact Registry: Read this [guide](https://cloud.google.com/artifact-registry/docs/docker/authentication)
-
-    3. Update the location of images used in `skaffold.yaml` file to match where your images are stored
-
-    4. Update all k8s deplyment yaml files that require `GCP_PROJECT_ID` with your GCP project ID.
-
-    5. Update `/etc/hosts` file to add a custom hostname as `localhost` to match the config in `skaffold.yaml`
+    2. Update `/etc/hosts` file to add a custom hostname as `ms-commerce.dev` to match the config in `skaffold.yaml`
 
     ```bash
     # /etc/hosts
