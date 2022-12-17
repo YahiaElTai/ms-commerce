@@ -22,7 +22,6 @@ router.post('/api/users/authenticate', async (req: Request, res: Response) => {
       process.env.JWT_KEY!
     ) as UserPayload;
 
-    // req.currentUser = { id: payload.id, email: payload.email };
     return res
       .status(200)
       .set({ UserId: payload.id, UserEmail: payload.email })

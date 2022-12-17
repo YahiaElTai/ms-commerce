@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
@@ -10,6 +11,7 @@ import { authenticateRouter } from './routes/authenticate';
 import { errorHandler, NotFoundError } from '@ms-commerce/common';
 
 const app = express();
+app.use(cors());
 app.set('trust proxy', true);
 app.use(json());
 app.use(cookieParser());
