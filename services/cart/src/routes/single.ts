@@ -10,6 +10,8 @@ router.get('/api/carts/:id', async (req: Request, res: Response) => {
     include: { lineItems: true },
   });
 
+  console.log(cart);
+
   if (!cart) {
     throw new BadRequestError('Cart with given ID could not be found');
   }

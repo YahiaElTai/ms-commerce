@@ -17,7 +17,6 @@ it('should responds with 404 and error message if cart is not found', async () =
 it('should responds with correct cart', async () => {
   const response = await request(app)
     .post('/api/carts')
-
     .send({
       customerEmail: 'test@test.com',
       currency: 'EUR',
