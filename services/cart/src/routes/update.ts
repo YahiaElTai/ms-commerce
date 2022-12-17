@@ -2,7 +2,6 @@
 // import { body } from 'express-validator';
 // import {
 //   BadRequestError,
-//   requireAuth,
 //   validateRequest,
 // } from '@ms-commerce/common';
 // import { Cart } from '../models/cart';
@@ -15,7 +14,6 @@
 
 // router.put(
 //   '/api/carts/:id',
-//   requireAuth,
 //   [
 //     body('version').isNumeric().withMessage('Version must be a number'),
 //     body('action.type')
