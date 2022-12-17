@@ -12,4 +12,4 @@ RUN npx prisma generate --schema=src/prisma/schema.prisma
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "dev"]

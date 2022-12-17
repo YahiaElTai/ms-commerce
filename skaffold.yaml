@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta29
+apiVersion: skaffold/v4beta1
 kind: Config
 metadata:
   name: ms-commerce
@@ -12,7 +12,6 @@ build:
       context: services/cart
       docker:
         dockerfile: Dockerfile.dev
-deploy:
-  kubectl:
-    manifests:
-      - infra/k8s-dev/*
+manifests:
+  rawYaml:
+    - infra/k8s-dev/*

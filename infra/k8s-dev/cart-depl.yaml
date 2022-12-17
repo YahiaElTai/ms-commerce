@@ -12,29 +12,9 @@ spec:
       labels:
         app: cart
     spec:
-      volumes:
-        - name: google-cloud-key
-          secret:
-            secretName: pubsub-key
       containers:
         - name: cart
           image: yahiaeltai/cart
-          volumeMounts:
-            - name: google-cloud-key
-              mountPath: /var/secrets/google
-          env:
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /var/secrets/google/key.json
-            - name: JWT_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: jwt-secret
-                  key: JWT_KEY
-            - name: DATABASE_URL_CART
-              valueFrom:
-                secretKeyRef:
-                  name: sql-cart-secret
-                  key: DATABASE_URL_CART
 ---
 apiVersion: v1
 kind: Service
@@ -45,6 +25,5 @@ spec:
     app: cart
   ports:
     - name: cart
-      protocol: TCP
       port: 3001
       targetPort: 3001

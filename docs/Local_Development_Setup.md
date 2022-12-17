@@ -2,7 +2,7 @@
 
 1.  Install required tools
 
-    1. Install [Docker for Desktop](https://www.docker.com/) and enable kubernetes.
+    1. Install [Docker for Desktop](https://www.docker.com/products/docker-desktop/) and enable kubernetes.
 
     2. Install [gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
@@ -28,33 +28,30 @@
 
 2.  Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
 
-    If you are not using Helm
-
     ```bash
     kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
     ```
 
-3.  Configure kubernetes secrets
+3.  Add environment variables
+    Replace `.env.template` with `.env` and add the required variables.
 
-    1. JWT key as a sceret `jwt-secret`
+    ```bash
+    # host.docker.internal is required instead of localhost so skaffold can connect to docker-compose
+    DATABASE_URL=postgresql://[DB_USER]:[DB_PASSWORD]@host.docker.internal:[DB_PORT]/[DB]
+    JWT_KEY=[RANDOM_STRING_HERE]
+    ```
 
-       JWT_KEY is used in all services to ensure the user is authenticated
-
-       `kubectl create secret generic jwt-secret --from-literal=JWT_KEY={YOUR_JWT_KEY_HERE}`
-
-    2. Authenticate to Cloud Pub/Sub
-
-       Do step 3.2 after step 4
-
-       Refer to [this guide](https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform)
-
-4.  Enable and configure Cloud Pub/Sub
+4.  configure Cloud Pub/Sub for the services that needs it
 
     GCP recommends to use the Pub/Sub Emulator for local development but for now we are connecting directly to Google Cloud.
 
     1. Create a project on GCP and enable Cloud Pub/Sub API
 
     2. Create Cloud Pub/Sub topics that you require for the application from the [Google Cloud Console](https://console.cloud.google.com/cloudpubsub/topic/list)
+
+    3. Authenticate to Cloud Pub/Sub
+
+       Refer to [this guide](https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform)
 
 5.  Install and configure `skaffold`
 
@@ -76,28 +73,24 @@
     127.0.0.1 ms-commerce.dev
     ```
 
-6.  Start the project
+6.  Start
 
-    1. Start `docker-compose` for all services
-
-       ```bash
-       # Run this command within each folder inside /services/
-       docker-compose up -d
-       ```
-
-    2. Deploy Prisma database to apply all migrations
+    **Option 1**: Start all services together
 
     ```bash
+    # Start `docker-compose` in each service
+    docker-compose up -d
+
+    # Deploy Prisma database to apply all migrations in each service
     npm run prisma:dev
+
+    # Start skaffold from project root dir
+    skaffold dev
     ```
-
-    3. Run `skaffold dev`
-
-    This command should start all microservices with their endpoints under a custom hostname as specified in `skaffold.yaml` file.
 
     ***
 
-    Alternatively you can start a single service locally with:
+    **Option 2**: Start a single service
 
     ```bash
     # Run this command within the service you want to work on

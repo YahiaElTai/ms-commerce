@@ -1,4 +1,6 @@
-### Recreate GCP Project for production
+### Infrastructure Provisioning on GCP
+
+> These steps are performed manually as of now.
 
 1. Install [gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
