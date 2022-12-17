@@ -13,7 +13,7 @@
     "prisma:deploy": "prisma migrate deploy --schema=src/prisma/schema.prisma"
   },
   "dependencies": {
-    "@ms-commerce/common": "^1.0.8",
+    "@ms-commerce/common": "^1.0.9",
     "@prisma/client": "^4.7.1",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",

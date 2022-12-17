@@ -1,12 +1,9 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import {
-  BadRequestError,
-  validateRequest,
-  generateToken,
-} from '@ms-commerce/common';
+import { BadRequestError, validateRequest } from '@ms-commerce/common';
 import { Password } from '../services/password';
 import { prisma } from '../prisma';
+import { generateToken } from '../utils';
 
 const router = express.Router();
 
