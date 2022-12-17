@@ -1,13 +1,12 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest } from '@ms-commerce/common';
+import { validateRequest } from '@ms-commerce/common';
 import { prisma } from '../prisma';
 
 const router = express.Router();
 
 router.post(
   '/api/carts',
-  requireAuth,
   [
     body('customerEmail').isEmail(),
     body('lineItems')

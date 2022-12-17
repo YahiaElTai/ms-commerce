@@ -6,9 +6,9 @@ import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
+import { authenticateRouter } from './routes/authenticate';
 import { errorHandler, NotFoundError } from '@ms-commerce/common';
 
-console.log('Hello');
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
@@ -17,6 +17,7 @@ app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
+app.use(authenticateRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

@@ -4,9 +4,9 @@ The project is a simplified clone version of some of the services at commercetoo
 
 ### Description
 
-- The project is using a custom VCP with 2 subnet in `europe-west-1` and `us-central1`.
-- Written in TypeScript and deployed with kubernetes on GCP.
-- MongoDB is used for all services as a self hosted StatefulSet in kubernetes.
+- The project is deployed on kubernetes cluster on GCP with autopilot mode.
+- Written in TypeScript
+- PostgreSQL is used for all services and hosted on GCP Cloud SQL.
 - Communication between services is done with Cloud Pub/Sub.
 - Docker images are stored in Artifact Registry
 - CI/CD: CircleCI

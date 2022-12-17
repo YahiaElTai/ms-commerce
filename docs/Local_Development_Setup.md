@@ -79,11 +79,19 @@
 6.  Start the project
 
     1. Start `docker-compose` for all services
+
        ```bash
        # Run this command within each folder inside /services/
        docker-compose up -d
        ```
-    2. Run `skaffold dev`
+
+    2. Deploy Prisma database to apply all migrations
+
+    ```bash
+    npm run prisma:dev
+    ```
+
+    3. Run `skaffold dev`
 
     This command should start all microservices with their endpoints under a custom hostname as specified in `skaffold.yaml` file.
 
@@ -94,6 +102,9 @@
     ```bash
     # Run this command within the service you want to work on
     docker-compose up -d
+
+    # Deploy Prisma database to apply all migrations within the service you want to work on
+    npm run prisma:dev
 
     # Run this command within the service you want to work on
     npm run start:dev

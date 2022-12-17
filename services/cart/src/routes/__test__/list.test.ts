@@ -3,16 +3,9 @@ import { app } from '../../app';
 
 // jest.mock('../../pub-sub');
 
-it('should responds with 401 status code for unauthenticated users', async () => {
-  await request(app).get('/api/carts').send().expect(401);
-});
-
 it('should responds with list of carts', async () => {
-  const cookie = await global.signin();
-
   await request(app)
     .post('/api/carts')
-    .set('Cookie', cookie)
     .send({
       customerEmail: 'test@test.com',
       lineItems: [{ quantity: 12, sku: '12345' }],
@@ -20,11 +13,7 @@ it('should responds with list of carts', async () => {
     })
     .expect(201);
 
-  const respone = await request(app)
-    .get('/api/carts')
-    .set('Cookie', cookie)
-    .send()
-    .expect(200);
+  const respone = await request(app).get('/api/carts').send().expect(200);
 
   expect(respone.body.length).toBeGreaterThan(0);
 });

@@ -5,6 +5,10 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/auth-url: http://auth-srv.default/api/users/authenticate
+    nginx.ingress.kubernetes.io/auth-method: POST
+    nginx.ingress.kubernetes.io/auth-response-headers: UserId, UserEmail
+    nginx.ingress.kubernetes.io/auth-signin: http://auth-srv.default/api/users/signin
 spec:
   rules:
     - host: mss-commerce.com
