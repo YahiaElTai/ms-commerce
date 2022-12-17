@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
+import cors from 'cors';
 import { CartsRouter } from './routes/list';
 import cookieParser from 'cookie-parser';
 import { errorHandler, NotFoundError } from '@ms-commerce/common';
@@ -9,6 +10,8 @@ import { CreateCartRouter } from './routes/create';
 // import { UpdateCartRouter } from './routes/update';
 
 const app = express();
+
+app.use(cors());
 app.set('trust proxy', true);
 app.use(json());
 app.use(cookieParser());
