@@ -40,7 +40,7 @@ The documentation for this project was created with postman and can be found [he
 
 ### Authentication strategy
 
-Authentication is extract out to its own microservice on the cluster called `auth-srv`.
+Authentication is extracted out to its own microservice on the cluster called `auth-srv`.
 
 Basic Authentication with email and password is set up with [Nginx-Ingress](https://kubernetes.github.io/ingress-nginx/examples/auth/external-auth/) using annotations.
 
