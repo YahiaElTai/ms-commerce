@@ -11,7 +11,8 @@ router.get('/api/carts', async (req: Request, res: Response) => {
     include: { lineItems: true },
   });
 
-  res.send({ carts, id, email });
+  console.log({ id, email });
+  res.send(carts);
 });
 
 export { router as CartsRouter };
