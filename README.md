@@ -16,13 +16,19 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 ### Services
 
-1. Auth
-2. Cart
-3. Projects (Not yet implemented)
-4. Order (Not yet implemented)
-5. Customer (Not yet implemented)
-6. Product (Not yet implemented)
-7. Settings (Not yet implemented)
+1. Authentication
+2. Cart (In progress)
+3. Order (Not yet implemented)
+4. Customer (Not yet implemented)
+5. Product (Not yet implemented)
+6. Pricing (Not yet implemented)
+7. Account (Not yet implemented)
+
+   Inlcudes: Profile, Projects, Organizations
+
+8. Settings (Not yet implemented)
+
+   Inlcudes: Taxes, Shipping methods, Currencies, Countries
 
 Each service has basic CRUD operations with a highly simplified schema.
 
@@ -78,12 +84,15 @@ Eventual consistency can be achieved using the Materialized View Pattern with ev
 
 A materialized view is a read-only representation of the source data in a format that best serves that specific microservice.
 
-This approach ensures loose coupling between microservices at the trade-off of eventual consistency.
+This approach ensures loose coupling between microservices at the trade-off of eventual consistency and data duplication.
 
 **Example Flow**
 
 - A POST request is sent to the cart service to create a new cart.
-- The cart service creates the cart and stores it in the database and then sends an event `cart_created` containing JSON of the new cart with all its fields.
-- This event is sent via Cloud Pub/Sub to a specific topic `cart_created`, the later can have many subscribers for example the order service and the customer service needs to know when a new cart is created.
-- Each service that cares about `cart_created` event subscribes to that topic and created a handler to handle all events coming from that topic.
-- A handler's responsibility is to ensure that new data coming in the event is stored in its own local database to ensure data consistency.
+- The cart service creates the cart and stores it in its own database and then sends an event `cart_created` containing JSON of the new cart with all its fields.
+- This event is sent via Cloud Pub/Sub to a specific topic `cart_created`, the later can have many subscribers for example the order service and the customer service need to know when a new cart is created.
+- Each service that cares about `cart_created` event subscribes to that topic and creates a handler to receive incoming events from that topic.
+- A handler's responsibility is to ensure data is synchronized between its local version and the source data (cart service) by duplicating the data.
+- The services that care about the `cart` data never updates its own local version of the data since it's read-only but only updates it when it receives events.
+
+The above flow ensures that the `cart` data is (eventually) consistent across all microservices that cares about it.
