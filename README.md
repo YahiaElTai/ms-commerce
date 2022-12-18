@@ -6,9 +6,9 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 - **Languages**: TypeScript (auth & cart services).
 - **Database**: PostgreSQL hosted on GCP Cloud SQL (all services).
-- **Database** ORM: Prisma for services written in TypeScript.
+- **Database ORM**: Prisma for services written in TypeScript.
 - **Image registry**: Artifact Registry on GCP.
-- **Inter-service** Communication: Cloud Pub/Sub.
+- **Inter-service Communication**: Events with Cloud Pub/Sub.
 - **Deployment**: Kubernetes cluster on GCP with autopilot mode.
 - **CI/CD**: CircleCI
 - **Code sharing**:
