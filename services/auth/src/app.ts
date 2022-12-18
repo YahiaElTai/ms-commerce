@@ -9,7 +9,6 @@ import { signupRouter } from './routes/signup';
 import { authenticateRouter } from './routes/authenticate';
 import { errorHandler, NotFoundError } from '@ms-commerce/common';
 
-console.log('hi');
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
