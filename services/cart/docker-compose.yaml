@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  cart_db:
     image: postgres:14.4
     restart: always
     ports:

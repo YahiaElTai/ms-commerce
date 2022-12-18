@@ -84,11 +84,14 @@ There are 2 options to start developing locally:
 
    ```bash
    # Start `docker-compose` in each service
-   docker-compose up -d
+   npm run compose:up
 
    # Deploy Prisma database to apply all migrations in each service
    npm run prisma:dev
 
    # Start skaffold from project root dir
    skaffold dev
+
+   # Stopping compose in each service
+   npm run compose:down
    ```

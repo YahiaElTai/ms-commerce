@@ -8,7 +8,9 @@
     "format:ts": "prettier --write '**/*.ts'",
     "format:md": "prettier --write --parser markdown '**/*.md'",
     "format:yaml": "prettier --write --parser yaml '**/*.{yaml,yml}'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "compose:up": "cd ./services/auth && docker-compose up -d && cd ../cart && docker-compose up -d",
+    "compose:down": "cd ./services/auth && docker-compose down && cd ../cart && docker-compose down"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.44.0",
