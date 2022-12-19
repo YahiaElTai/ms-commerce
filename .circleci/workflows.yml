@@ -43,6 +43,7 @@ jobs:
           dir: ./.circleci
       - node/install-packages:
           app-dir: ./services/<< parameters.app-dir >>
+          cache-path: ~/.npm/<< parameters.app-dir >>
       - run:
           name: Lint << parameters.app-dir >> service
           command: cd ./services/<< parameters.app-dir >> && npm run lint
