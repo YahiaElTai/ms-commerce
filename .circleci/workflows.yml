@@ -39,19 +39,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup machine
-          command: ./.circleci/install-libssl.sh
-      - run:
           name: Installing shellcheck binary
           command: sudo apt-get update && sudo apt-get install shellcheck -yqq
       - shellcheck/check:
           dir: ./.circleci
-      - node/install-packages
-      - run:
-          name: lint all services
-          command: npm run lint
       - node/install-packages:
           app-dir: ./services/<< parameters.app-dir >>
+      - run:
+          name: Lint << parameters.app-dir >> service
+          command: cd ./services/<< parameters.app-dir >> && npm run lint
       - run:
           command: cd ./services/<< parameters.app-dir >> && npx prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client
@@ -65,13 +61,13 @@ jobs:
             sleep 20
       - run:
           name: Deploying Prisma schema
-          command: cd ./services/<< parameters.app-dir >> && docker ps && npx prisma migrate deploy --schema=src/prisma/schema.prisma
+          command: cd ./services/<< parameters.app-dir >> && npx prisma migrate deploy --schema=src/prisma/schema.prisma
       - run:
           command: cd ./services/<< parameters.app-dir >> && npm run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
   deploy_service:
     executor: gcp-executor
-    resource_class: medium
+    resource_class: large
     parameters:
       service:
         type: string
@@ -86,7 +82,7 @@ jobs:
             SERVICE_NAME: << parameters.service >>
   deploy_manifests:
     executor: gcp-executor
-    resource_class: medium
+    resource_class: large
     steps:
       - checkout
       - gcp-cli/setup
@@ -102,7 +98,7 @@ workflows:
       and:
         - not:
             matches:
-              pattern: '^main$'
+              pattern: "^main$"
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
@@ -114,7 +110,7 @@ workflows:
       and:
         - not:
             matches:
-              pattern: '^main$'
+              pattern: "^main$"
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:

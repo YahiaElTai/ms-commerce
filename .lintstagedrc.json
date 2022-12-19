@@ -1,5 +1,0 @@
-{
-  "*.ts": ["eslint --fix", "prettier --write"],
-  "*.md": ["prettier --write --parser markdown"],
-  "*.{yaml, yml}": ["prettier --write --parser yaml"]
-}
