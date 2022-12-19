@@ -1,5 +1,5 @@
 {
-  "name": "cart",
+  "name": "auth",
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon src/index.ts",
