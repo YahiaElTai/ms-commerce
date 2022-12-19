@@ -24,13 +24,13 @@ executors:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-  node-executor:
-    docker:
-      - image: cimg/node:18.12.1
+  ubuntu-executor:
+    machine:
+      image: ubuntu-2204:2022.10.2
 
 jobs:
   lint_typecheck_and_test:
-    executor: node-executor
+    executor: ubuntu-executor
     resource_class: large
     parameters:
       app-dir:
