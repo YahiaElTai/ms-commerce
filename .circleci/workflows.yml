@@ -30,17 +30,15 @@ executors:
 
 jobs:
   lint_typecheck_and_test:
-    machine:
-      image: ubuntu-2204:2022.10.2
+    executor: node-executor
     resource_class: large
     parameters:
       app-dir:
         type: string
     steps:
       - checkout
-      - run:
-          name: Installing shellcheck binary
-          command: sudo apt-get update && sudo apt-get install shellcheck -yqq
+      - shellcheck/install:
+          version: 0.9.0
       - shellcheck/check:
           dir: ./.circleci
       - node/install-packages:
