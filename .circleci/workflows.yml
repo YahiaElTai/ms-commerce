@@ -156,6 +156,8 @@ workflows:
             - can_deploy_cart_service
       - can_deploy_manifests:
           type: approval
+          requires:
+            - shell_check
       - deploy_manifests:
           requires:
             - can_deploy_manifests
@@ -193,6 +195,8 @@ workflows:
             - can_deploy_auth_service
       - can_deploy_manifests:
           type: approval
+          requires:
+            - shell_check
       - deploy_manifests:
           requires:
             - can_deploy_manifests
