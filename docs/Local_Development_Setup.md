@@ -92,3 +92,17 @@ There are 2 options to start developing locally:
    # Start skaffold from project root dir
    skaffold dev
    ```
+
+#### Git Hooks
+
+[pre-commit](https://pre-commit.com/) is setup for linting and formatting a few different file extensions.
+
+**Installation**
+
+```bash
+# Install pre-commit
+brew install pre-commit
+
+# install required hooks
+pre-commit install
+```
