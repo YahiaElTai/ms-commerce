@@ -9,7 +9,6 @@ import { CreateCartRouter } from './routes/create';
 // import { UpdateCartRouter } from './routes/update';
 
 const app = express();
-console.log('hi');
 app.set('trust proxy', true);
 app.use(json());
 app.use(cookieParser());
