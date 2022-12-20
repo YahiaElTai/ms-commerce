@@ -43,15 +43,15 @@ jobs:
           dir: ./.circleci
       - node/install-packages:
           app-dir: ./services/<< parameters.app-dir >>
-          cache-path: ~/.npm/<< parameters.app-dir >>
+          pkg-manager: yarn
       - run:
           name: Lint << parameters.app-dir >> service
-          command: cd ./services/<< parameters.app-dir >> && npm run lint
+          command: cd ./services/<< parameters.app-dir >> && yarn run lint
       - run:
-          command: cd ./services/<< parameters.app-dir >> && npx prisma generate --schema=src/prisma/schema.prisma
+          command: cd ./services/<< parameters.app-dir >> && yarn prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client
       - run:
-          command: cd ./services/<< parameters.app-dir >> && npm run typecheck
+          command: cd ./services/<< parameters.app-dir >> && yarn run typecheck
           name: Typecheck services/<< parameters.app-dir >>
       - run:
           name: Starting Postgres database
@@ -60,9 +60,9 @@ jobs:
             sleep 20
       - run:
           name: Deploying Prisma schema
-          command: cd ./services/<< parameters.app-dir >> && npx prisma migrate deploy --schema=src/prisma/schema.prisma
+          command: cd ./services/<< parameters.app-dir >> && yarn prisma migrate deploy --schema=src/prisma/schema.prisma
       - run:
-          command: cd ./services/<< parameters.app-dir >> && npm run test:ci
+          command: cd ./services/<< parameters.app-dir >> && yarn run test:ci
           name: Run tests ./services/<< parameters.app-dir >>
   deploy_service:
     executor: gcp-executor

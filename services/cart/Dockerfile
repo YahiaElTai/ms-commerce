@@ -2,15 +2,16 @@ FROM node:lts as builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
+COPY yarn.lock ./
 
-RUN npm ci
+yarn install --frozen-lockfile
 
 COPY . .
 
-RUN npx prisma generate --schema=src/prisma/schema.prisma
+RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
-RUN npm run build
+RUN yarn run build
 
 FROM node:lts-slim as production
 
@@ -22,15 +23,15 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --omit=dev
+RUN yarn install --production
 
 COPY --from=builder /app/build ./build
 
 COPY --from=builder /app/src/prisma/ ./prisma/
 
-RUN npx prisma generate --schema=./prisma/schema.prisma
+RUN yarn prisma generate --schema=./prisma/schema.prisma
 
 ENV NODE_ENV production
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
