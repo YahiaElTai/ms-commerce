@@ -39,12 +39,7 @@ jobs:
     steps:
       - checkout:
           path: ~/ms-commerce
-      # - shellcheck/install:
-      #     version: 0.9.0
-      # - shellcheck/check:
-      #     dir: ./.circleci
       - node/install-packages:
-          # app-dir: ./services/<< parameters.app-dir >>
           pkg-manager: yarn
       - run:
           name: Lint << parameters.app-dir >> service
@@ -101,9 +96,14 @@ workflows:
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_cart
           app-dir: cart
+          requires:
+            - shell_check
   test_auth_branch:
     when:
       and:
@@ -113,9 +113,14 @@ workflows:
               value: << pipeline.git.branch >>
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_auth
           app-dir: auth
+          requires:
+            - shell_check
 
   test_and_deploy_cart:
     when:
@@ -123,9 +128,14 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_cart >>]
     jobs:
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_cart
           app-dir: cart
+          requires:
+            - shell_check
       - gcp-gcr/build-and-push-image:
           name: build_and_publish_cart_image
           docker-context: ./services/cart
@@ -155,9 +165,14 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_auth >>]
     jobs:
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
       - lint_typecheck_and_test:
           name: lint_typecheck_and_test_auth
           app-dir: auth
+          requires:
+            - shell_check
       - gcp-gcr/build-and-push-image:
           name: build_and_publish_auth_image
           docker-context: ./services/auth
@@ -187,8 +202,13 @@ workflows:
         - equal: [main, << pipeline.git.branch >>]
         - equal: [true, << pipeline.parameters.trigger_infra >>]
     jobs:
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
       - can_deploy_manifests:
           type: approval
+          requires:
+            - shell_check
       - deploy_manifests:
           requires:
             - can_deploy_manifests
