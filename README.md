@@ -47,7 +47,7 @@ Postman docs can be found [here](https://documenter.getpostman.com/view/8722825/
 
 ### [Infrastructure Provisioning](/docs/INFRASTRUCTURE_PROVISIONING_ON_GCP.md)
 
-### [Local Development Setup](/docs/Local_Development_Setup.md)
+### [Local Development Setup](/docs/LOCAL_DEVELOPMENT_SETUP.md)
 
 ### Microservices Architecture Decisions
 

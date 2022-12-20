@@ -91,7 +91,4 @@ There are 2 options to start developing locally:
 
    # Start skaffold from project root dir
    skaffold dev
-
-   # Stopping compose in each service
-   yarn run compose:down
    ```
