@@ -21,9 +21,10 @@ RUN apt-get install -y openssl
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
+COPY yarn.lock ./
 
-RUN yarn install --production
+RUN yarn install --production --frozen-lockfile
 
 COPY --from=builder /app/build ./build
 
