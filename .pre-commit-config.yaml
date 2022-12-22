@@ -14,9 +14,9 @@ repos:
       - id: prettier
         files: \.ts|js|json|yaml|md?$
         types: [file]
-  # - repo: https://github.com/pre-commit/mirrors-eslint
-  #   rev: v8.30.0
-  #   hooks:
-  #     - id: eslint
-  #       files: \.ts?$
-  #       types: [file]
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.30.0
+    hooks:
+      - id: eslint
+        files: \.ts?$
+        types: [file]

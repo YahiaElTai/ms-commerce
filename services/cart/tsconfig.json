@@ -15,6 +15,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "./.eslintrc.js"],
+  "include": ["src/**/*"],
   "exclude": ["src/**/*.spec.ts"]
 }
