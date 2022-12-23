@@ -1,19 +1,19 @@
 ### Project overview
 
-The project is a simplified version of commercetools HTTP API written as microservices with kubernetes and deployed on GCP `europe-west1` region.
+The project is a simplified version of commercetools HTTP API written as microservices and deployed on GCP with kubernetes.
 
-### Technologies
+### Tech Stack
 
-- **Languages**: TypeScript (Authentication & Cart services).
-- **Database**: PostgreSQL hosted on GCP Cloud SQL (all services).
-- **Database ORM**: Prisma for services written in TypeScript.
-- **Image registry**: Artifact Registry on GCP.
-- **Inter-service Communication**: Events with Cloud Pub/Sub.
-- **Deployment**: Kubernetes cluster on GCP with autopilot mode.
-- **Gateway API**: Nginx Ingress
-- **CI/CD**: CircleCI
-- **Code sharing**:
-  - Common middlewares and utilities are published as a separate package `@ms-commerce/common` for services written in TypeScript.
+| Stack                       | Detail                                         |
+| --------------------------- | ---------------------------------------------- |
+| Languages                   | **TypeScript**: Authentication & Cart services |
+| Database                    | **PostgreSQL** (GCP Cloud SQL): All services   |
+| Database ORM                | **Prisma** for TypeScript                      |
+| Docker Image Registry       | **Artifact Registry** on GCP                   |
+| Inter-service Communication | **Cloud Pub/Sub**                              |
+| Kubernetes Package Manager  | **Helm**                                       |
+| CI/CD                       | **CircleCI**                                   |
+| API Gateway                 | **Ingress Nginx**                              |
 
 ### Services
 
