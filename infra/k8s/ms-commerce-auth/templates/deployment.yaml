@@ -34,8 +34,6 @@ spec:
                   key: {{ $key }}
               {{- end}}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
             {{- range $key, $val := .Values.service.ports }}
               - name: {{ $val.name }}
                 containerPort: {{ $val.port }}
