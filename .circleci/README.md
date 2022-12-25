@@ -34,6 +34,10 @@
        gcloud projects add-iam-policy-binding [PROJECT_ID] \
        --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
        --role=roles/container.admin
+
+       gcloud projects add-iam-policy-binding [PROJECT_ID] \
+       --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
+       --role=roles/cloudkms.cryptoKeyDecrypter
        ```
 
     2. Create key file in JSON format and download it.

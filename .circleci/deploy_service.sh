@@ -56,7 +56,7 @@ else
         --wait \
         --timeout 10m0s \
         -f "infra/k8s/$CHART_NAME/values.yaml" \
-        -f "/infra/k8s/$CHART_NAME/secrets.yaml" \
+        -f "infra/k8s/$CHART_NAME/secrets.yaml" \
         --set image.tag="$GIT_REVISION" \
         "$HELM_RELEASE_NAME" "infra/k8s/$CHART_NAME"
 
