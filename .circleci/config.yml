@@ -71,12 +71,12 @@ jobs:
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
   clean_up_artifact_registry:
-    executor: ubuntu-executor
+    executor: gcp-executor
     resource_class: large
     steps:
       - checkout
-      - gcp-cli/install
       - gcp-cli/setup
+      - setup_remote_docker
       - run:
           name: Cleaning up Artifact Registry
           command: ./.circleci/clean_up_artifact_registry.sh
