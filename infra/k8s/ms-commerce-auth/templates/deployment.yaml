@@ -34,7 +34,7 @@ spec:
                   key: {{ $key }}
               {{- end}}
             - name: ROARR_LOG
-              value: {{ .Values.lightship.logging.enabled }}
+              value: true
           ports:
             {{- range $key, $val := .Values.service.ports }}
               - name: {{ $val.name }}

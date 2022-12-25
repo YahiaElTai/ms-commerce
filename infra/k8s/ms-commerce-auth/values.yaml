@@ -22,10 +22,6 @@ service:
       port: 9000
       targetPort: 9000
 
-lightship:
-  logging:
-    enabled: true
-
 autoscaling:
   enabled: true
   minReplicas: 1
