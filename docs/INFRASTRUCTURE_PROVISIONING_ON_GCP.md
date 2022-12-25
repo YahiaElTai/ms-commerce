@@ -75,16 +75,14 @@
          kubectl config current-context
       ```
 
-6. Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
+6. Install [helm](https://helm.sh/)
+
+7. Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start) chart
 
    ```bash
-   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
-   ```
-
-7. create JWT_KEY as a secret
-
-   ```bash
-   kubectl create secret generic jwt-secret --from-literal=JWT_KEY={YOUR_JWT_KEY_HERE}
+      helm upgrade --install ingress-nginx ingress-nginx \
+      --repo https://kubernetes.github.io/ingress-nginx \
+      --namespace ingress-nginx --create-namespace
    ```
 
 8. Create PostgreSQL databases with Cloud SQL
@@ -110,16 +108,7 @@
 
 9. Connect PostgreSQL database with k8s deployments following [this guide](https://cloud.google.com/sql/docs/postgres/connect-instance-kubernetes)
 
-   - Create DATABASE_URL as secret
-
-   ```bash
-   kubectl create secret generic [SECRET_NAME] --from-literal=[DATABASE_URL_KEY]={DATABASE_URL_VALUE}
-   ```
-
-   **Notes**:
-
-   - `auth` service expect `DATABASE_URL`
-   - `cartx` service expect `DATABASE_URL_CART`
+   **Note**: Ensure gcloud service account is connected to all k8s service account that uses it.
 
 10. Enable and configure Cloud Pub/Sub
 
@@ -141,10 +130,9 @@
 
     - Make sure to use the kuberentes service account you create in all services which needs to connect to Cloud Pub/Sub and annotate it properly as described.
 
-12. Apply Kubernetes manifests
+12. Create key ring and key for KMS encryption for helm secrets
+    Follow [this guide](https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets)
 
-    ```bash
-    kubectl apply -f infa/k8s
-    ```
+13. Install helm charts on CI
 
-13. point your domain name to ingress load balancer external IP address.
+14. point your domain name to ingress load balancer external IP address.

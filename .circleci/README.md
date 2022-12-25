@@ -22,21 +22,13 @@
              gcloud iam service-accounts create [SA_NAME] --display-name=[DISPLAY_NAME]
 
              # Add required roles to sevice account
-             gcloud projects add-iam-policy-binding [PROJECT_ID] \
+            gcloud projects add-iam-policy-binding [PROJECT_ID] \
              --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-             --role=roles/artifactregistry.admin
-
-            gcloud projects add-iam-policy-binding ms-commerce-auto-1 \
-            --member "serviceAccount:circleci@ms-commerce-auto-1.iam.gserviceaccount.com" \
-            --role "roles/browser"
+             --role=roles/artifactregistry.repoAdmin
 
              gcloud projects add-iam-policy-binding [PROJECT_ID] \
              --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-             --role=roles/storage.objectViewer
-
-             gcloud projects add-iam-policy-binding [PROJECT_ID] \
-             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-             --role=roles/container.admin
+             --role=roles/container.developer
 
              gcloud projects add-iam-policy-binding [PROJECT_ID] \
              --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \

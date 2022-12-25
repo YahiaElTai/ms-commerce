@@ -11,9 +11,6 @@ executors:
   gcp-executor:
     docker:
       - image: cimg/gcp:2022.11
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
   ubuntu-executor:
     machine:
       image: ubuntu-2204:2022.10.2
