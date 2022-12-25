@@ -18,7 +18,7 @@ executors:
       image: ubuntu-2204:2022.10.2
 
 jobs:
-  lint_typecheck_and_test:
+  typecheck_and_test:
     working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
     executor: ubuntu-executor
     resource_class: large
@@ -77,13 +77,13 @@ workflows:
       - shellcheck/check:
           name: shell_check
           dir: ./.circleci
-      - lint_typecheck_and_test:
-          name: lint_typecheck_and_test_cart
+      - typecheck_and_test:
+          name: typecheck_and_test_cart
           app-dir: cart
           requires:
             - shell_check
-      - lint_typecheck_and_test:
-          name: lint_typecheck_and_test_auth
+      - typecheck_and_test:
+          name: typecheck_and_test_auth
           app-dir: auth
           requires:
             - shell_check
@@ -95,8 +95,8 @@ workflows:
           name: shell_check
           dir: ./.circleci
           # Cart service jobs
-      - lint_typecheck_and_test:
-          name: lint_typecheck_and_test_cart
+      - typecheck_and_test:
+          name: typecheck_and_test_cart
           app-dir: cart
           requires:
             - shell_check
@@ -108,7 +108,7 @@ workflows:
           registry-url: $REGISTRY_URL
           tag: << pipeline.git.revision >>
           requires:
-            - lint_typecheck_and_test_cart
+            - typecheck_and_test_cart
       - can_deploy_service:
           name: can_deploy_cart_service
           type: approval
@@ -121,8 +121,8 @@ workflows:
           requires:
             - can_deploy_cart_service
           # Auth service jobs
-      - lint_typecheck_and_test:
-          name: lint_typecheck_and_test_auth
+      - typecheck_and_test:
+          name: typecheck_and_test_auth
           app-dir: auth
           requires:
             - shell_check
@@ -134,7 +134,7 @@ workflows:
           registry-url: $REGISTRY_URL
           tag: << pipeline.git.revision >>
           requires:
-            - lint_typecheck_and_test_auth
+            - typecheck_and_test_auth
       - can_deploy_service:
           name: can_deploy_auth_service
           type: approval

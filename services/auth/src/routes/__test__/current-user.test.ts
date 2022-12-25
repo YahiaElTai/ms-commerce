@@ -17,6 +17,7 @@ const authenticate = async () => {
   const authenticateResponse = await request(app)
     .post('/api/users/authenticate')
     .set('Cookie', cookie)
+    .set('x-original-uri', '/api/users/currentuser')
     .send()
     .expect(200);
 
