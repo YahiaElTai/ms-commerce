@@ -4,8 +4,6 @@
 
 2.  Add required env variables:
 
-    - `DOCKERHUB_USERNAME`
-    - `DOCKERHUB_PASSWORD`
     - `GCLOUD_SERVICE_KEY`: See below for setup
     - `GOOGLE_COMPUTE_ZONE`
     - `GOOGLE_COMPUTE_REGION`
