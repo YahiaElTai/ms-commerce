@@ -1,5 +1,7 @@
 FROM node:lts-alpine as builder
 
+RUN apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
+
 WORKDIR /app
 
 COPY package.json ./
@@ -14,6 +16,8 @@ RUN yarn prisma generate --schema=src/prisma/schema.prisma
 RUN yarn run build
 
 FROM node:lts-alpine as production
+
+RUN apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
