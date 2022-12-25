@@ -7,9 +7,22 @@ interface UserPayload {
   email: string;
 }
 
+// These URIs should not be authenticated
+const UNAUTHENTICATED_URLS = ['/api/users/signup', '/api/users/signin'];
+
 const router = express.Router();
 
 router.post('/api/users/authenticate', async (req: Request, res: Response) => {
+  const originalURI = req.header('x-original-uri');
+
+  if (!originalURI) {
+    throw new Error();
+  }
+
+  if (UNAUTHENTICATED_URLS.includes(originalURI)) {
+    return res.status(200).send();
+  }
+
   if (!req.cookies.access_token) {
     throw new NotAuthorized();
   }

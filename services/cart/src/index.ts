@@ -1,10 +1,6 @@
 import { app } from './app';
 
 const start = async () => {
-  if (!process.env.JWT_KEY) {
-    throw new Error('JWT_KEY must be defined');
-  }
-
   if (!process.env.DATABASE_URL_CART) {
     throw new Error('DATABASE_URL_CART must be defined');
   }

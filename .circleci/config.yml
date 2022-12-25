@@ -1,17 +1,158 @@
 version: 2.1
 
-setup: true
-
 orbs:
-  path-filtering: circleci/path-filtering@0.1.3
+  node: circleci/node@5.0.3
+  gcp-cli: circleci/gcp-cli@3.0.1
+  gcp-gcr: circleci/gcp-gcr@0.15.0
+  shellcheck: circleci/shellcheck@3.1.2
 
+executors:
+  gcp-executor:
+    docker:
+      - image: cimg/gcp:2022.11
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+  ubuntu-executor:
+    machine:
+      image: ubuntu-2204:2022.10.2
+
+jobs:
+  lint_typecheck_and_test:
+    working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
+    executor: ubuntu-executor
+    resource_class: large
+    parameters:
+      app-dir:
+        type: string
+    steps:
+      - checkout:
+          path: ~/ms-commerce
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Lint << parameters.app-dir >> service
+          command: yarn run lint
+      - run:
+          command: yarn prisma generate --schema=src/prisma/schema.prisma
+          name: Generate Prisma client
+      - run:
+          command: yarn run typecheck
+          name: Typecheck services/<< parameters.app-dir >>
+      - run:
+          name: Starting Postgres database
+          command: docker-compose up -d
+      - run:
+          name: Deploying Prisma schema
+          command: yarn prisma migrate deploy --schema=src/prisma/schema.prisma
+      - run:
+          command: yarn run test:ci
+          name: Run tests ./services/<< parameters.app-dir >>
+  deploy_service:
+    executor: gcp-executor
+    resource_class: large
+    parameters:
+      chart_name:
+        type: string
+      helm_release_name:
+        type: string
+    steps:
+      - checkout
+      - gcp-cli/setup
+      - run:
+          name: Deploying << parameters.chart_name >>
+          command: ./.circleci/deploy_service.sh
+          environment:
+            CHART_NAME: << parameters.chart_name >>
+            HELM_RELEASE_NAME: << parameters.helm_release_name >>
+            GIT_REVISION: << pipeline.git.revision >>
 workflows:
-  configure:
+  test_branch:
+    when:
+      not:
+        matches:
+          pattern: '^main$'
+          value: << pipeline.git.branch >>
     jobs:
-      - path-filtering/filter:
-          name: detect_modified_files
-          mapping: |
-            services/auth/.* trigger_auth true
-            services/cart/.* trigger_cart true
-            infra/k8s/.* trigger_infra true
-          config-path: .circleci/workflows.yml
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_cart
+          app-dir: cart
+          requires:
+            - shell_check
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_auth
+          app-dir: auth
+          requires:
+            - shell_check
+  test_and_deploy:
+    when:
+      equal: [main, << pipeline.git.branch >>]
+    jobs:
+      - shellcheck/check:
+          name: shell_check
+          dir: ./.circleci
+          # Cart service jobs
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_cart
+          app-dir: cart
+          requires:
+            - shell_check
+      - gcp-gcr/build-and-push-image:
+          name: build_and_publish_cart_image
+          docker-context: ./services/cart
+          image: $REPO_NAME/cart
+          path: ./services/cart
+          registry-url: $REGISTRY_URL
+          tag: << pipeline.git.revision >>
+          requires:
+            - lint_typecheck_and_test_cart
+      - can_deploy_service:
+          name: can_deploy_cart_service
+          type: approval
+          requires:
+            - build_and_publish_cart_image
+      - deploy_service:
+          name: deploy_cart_service
+          chart_name: ms-commerce-cart
+          helm_release_name: ms-cart
+          requires:
+            - can_deploy_cart_service
+          # Auth service jobs
+      - lint_typecheck_and_test:
+          name: lint_typecheck_and_test_auth
+          app-dir: auth
+          requires:
+            - shell_check
+      - gcp-gcr/build-and-push-image:
+          name: build_and_publish_auth_image
+          docker-context: ./services/auth
+          image: $REPO_NAME/auth
+          path: ./services/auth
+          registry-url: $REGISTRY_URL
+          tag: << pipeline.git.revision >>
+          requires:
+            - lint_typecheck_and_test_auth
+      - can_deploy_service:
+          name: can_deploy_auth_service
+          type: approval
+          requires:
+            - build_and_publish_auth_image
+      - deploy_service:
+          name: deploy_auth_service
+          chart_name: ms-commerce-auth
+          helm_release_name: ms-auth
+          requires:
+            - can_deploy_auth_service
+          # Ingress (optional) deployment job
+      - can_deploy_service:
+          name: can_deploy_ingress
+          type: approval
+      - deploy_service:
+          name: deploy_ingress
+          chart_name: ms-commerce-ingress
+          helm_release_name: ms-ingress
+          requires:
+            - can_deploy_ingress

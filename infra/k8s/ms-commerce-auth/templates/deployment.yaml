@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ms-commerce-auth.fullname" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ms-commerce-auth.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ms-commerce-auth.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{  .Values.serviceAccount.name }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env: 
+            {{- $chartName := .Chart.Name -}}
+            {{- range $key, $val := .Values.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $chartName }}-secret
+                  key: {{ $key }}
+              {{- end}}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Values.postgresql.name | quote }}
+          image: {{ .Values.postgresql.image | quote }}
+          command:
+            - "/cloud_sql_proxy"
+            - {{ include "ms-commerce-auth.postgresql-instances" . }}
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
