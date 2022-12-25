@@ -1,6 +1,6 @@
 FROM node:lts-alpine as builder
 
-RUN apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
+RUN apk add --update openssl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN yarn run build
 
 FROM node:lts-alpine as production
 
-RUN apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
+RUN apk add --update openssl && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
