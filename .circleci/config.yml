@@ -75,6 +75,8 @@ jobs:
     resource_class: large
     steps:
       - checkout
+      - gcp-cli/install
+      - gcp-cli/setup
       - run:
           name: Cleaning up Artifact Registry
           command: ./.circleci/clean_up_artifact_registry.sh
