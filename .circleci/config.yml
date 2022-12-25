@@ -11,6 +11,9 @@ executors:
   gcp-executor:
     docker:
       - image: cimg/gcp:2022.11
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
   ubuntu-executor:
     machine:
       image: ubuntu-2204:2022.10.2
@@ -80,6 +83,8 @@ jobs:
       - run:
           name: Cleaning up Artifact Registry
           command: ./.circleci/clean_up_artifact_registry.sh
+          environment:
+            GCRCLEANER_LOG: debug
 workflows:
   test_branch:
     when:
