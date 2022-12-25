@@ -2,4 +2,4 @@ apiVersion: v2
 name: ms-commerce-cart
 description: A Helm chart for Cart service for ms-commmerce microservices HTTP API
 type: application
-version: 1.0.2
+version: 1.0.3
