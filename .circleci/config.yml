@@ -73,16 +73,6 @@ jobs:
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
-  clean_up_artifact_registry:
-    executor: gcp-executor
-    resource_class: large
-    steps:
-      - checkout
-      - setup_remote_docker
-      - gcp-cli/setup
-      - run:
-          name: Cleaning up Artifact Registry
-          command: ./.circleci/clean_up_artifact_registry.sh
 workflows:
   test_branch:
     when:
@@ -111,13 +101,6 @@ workflows:
       - shellcheck/check:
           name: shell_check
           dir: ./.circleci
-      - can_clean_up_artifact_registry:
-          type: approval
-          requires:
-            - shell_check
-      - clean_up_artifact_registry:
-          requires:
-            - can_clean_up_artifact_registry
           # Cart service jobs
       - typecheck_and_test:
           name: typecheck_and_test_cart
