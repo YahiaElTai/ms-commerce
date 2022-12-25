@@ -1,7 +1,5 @@
 FROM node:lts-alpine as builder
 
-RUN apk add --update openssl && rm -rf /var/cache/apk/*
-
 WORKDIR /app
 
 COPY package.json ./
@@ -17,14 +15,12 @@ RUN yarn run build
 
 FROM node:lts-alpine as production
 
-RUN apk add --update openssl && rm -rf /var/cache/apk/*
-
 WORKDIR /app
 
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN yarn install --production --frozen-lockfile
+RUN yarn install --frozen-lockfile
 
 COPY --from=builder /app/build ./build
 
