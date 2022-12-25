@@ -150,6 +150,8 @@ workflows:
       - can_deploy_service:
           name: can_deploy_ingress
           type: approval
+          requires:
+            - shell_check
       - deploy_service:
           name: deploy_ingress
           chart_name: ms-commerce-ingress

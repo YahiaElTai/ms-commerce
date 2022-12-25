@@ -27,14 +27,6 @@ apply_prisma_migrations() {
     fi
 }
 
-# Decrypt k8s secrets
-gcloud kms decrypt \
-    --key ms-commerce-key \
-    --keyring ms-commerce-key-ring \
-    --location "$GOOGLE_COMPUTE_REGION" \
-    --ciphertext-file infra/k8s/"$CHART_NAME"/secrets.yaml.enc \
-    --plaintext-file infra/k8s/"$CHART_NAME"/secrets.yaml
-
 # Connect to k8s cluster on GCP
 gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
@@ -47,6 +39,14 @@ if [ "$HELM_RELEASE_NAME" == "ms-ingress" ]; then
         -f "infra/k8s/$CHART_NAME/values.yaml" \
         "$HELM_RELEASE_NAME" "infra/k8s/$CHART_NAME"
 else
+    # Decrypt k8s secrets
+    gcloud kms decrypt \
+        --key ms-commerce-key \
+        --keyring ms-commerce-key-ring \
+        --location "$GOOGLE_COMPUTE_REGION" \
+        --ciphertext-file infra/k8s/"$CHART_NAME"/secrets.yaml.enc \
+        --plaintext-file infra/k8s/"$CHART_NAME"/secrets.yaml
+
     helm upgrade \
         --install \
         --wait \
