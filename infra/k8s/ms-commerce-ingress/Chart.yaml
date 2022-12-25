@@ -3,4 +3,4 @@ name: ms-commerce-ingress
 description: A Helm chart for Ingress for ms-commerce microservices HTTP API
 type: application
 # This chart version should be updated every time a new service is added or the ingress config changes
-version: 1.0.0
+version: 1.0.1
