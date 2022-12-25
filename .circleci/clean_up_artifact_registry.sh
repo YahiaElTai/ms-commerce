@@ -10,4 +10,6 @@ REPO="$REGISTRY_URL/$GOOGLE_PROJECT_ID/$REPO_NAME"
 
 echo -e "\033[32mCleaning up artifact registry old images"
 
+export GCRCLEANER_LOG=debug
+
 docker run -v "${HOME}/.config/gcloud:/.config/gcloud" -it europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli -repo "$REPO" -recursive -keep 3
