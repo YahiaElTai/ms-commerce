@@ -14,27 +14,35 @@
 
 3.  Add `GCLOUD_SERVICE_KEY` env variable to authenticate CI with Artifact Registry & Kubernetes Engine
 
-    1. Create service account and add the required roles to it.
+    1.  Create service account and add the required roles to it.
 
-       ```bash
+             ```bash
 
-       # Create service account
-       gcloud iam service-accounts create [SA_NAME] --display-name=[DISPLAY_NAME]
+             # Create service account
+             gcloud iam service-accounts create [SA_NAME] --display-name=[DISPLAY_NAME]
 
-       # Add required roles to sevice account
-       gcloud projects add-iam-policy-binding [PROJECT_ID] \
-       --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-       --role=roles/artifactregistry.admin
+             # Add required roles to sevice account
+             gcloud projects add-iam-policy-binding [PROJECT_ID] \
+             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
+             --role=roles/artifactregistry.admin
 
-       gcloud projects add-iam-policy-binding [PROJECT_ID] \
-       --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-       --role=roles/container.admin
+            gcloud projects add-iam-policy-binding ms-commerce-auto-1 \
+            --member "serviceAccount:circleci@ms-commerce-auto-1.iam.gserviceaccount.com" \
+            --role "roles/browser"
 
-       gcloud projects add-iam-policy-binding [PROJECT_ID] \
-       --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-       --role=roles/cloudkms.cryptoKeyDecrypter
-       ```
+             gcloud projects add-iam-policy-binding [PROJECT_ID] \
+             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
+             --role=roles/storage.objectViewer
 
-    2. Create key file in JSON format and download it.
+             gcloud projects add-iam-policy-binding [PROJECT_ID] \
+             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
+             --role=roles/container.admin
 
-    3. Create env variable in CircleCI GCLOUD_SERVICE_KEY with the content of the file downloaded as is.
+             gcloud projects add-iam-policy-binding [PROJECT_ID] \
+             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
+             --role=roles/cloudkms.cryptoKeyDecrypter
+             ```
+
+    2.  Create key file in JSON format and download it.
+
+    3.  Create env variable in CircleCI GCLOUD_SERVICE_KEY with the content of the file downloaded as is.
