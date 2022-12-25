@@ -11,9 +11,6 @@ executors:
   gcp-executor:
     docker:
       - image: cimg/gcp:2022.11
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
   ubuntu-executor:
     machine:
       image: ubuntu-2204:2022.10.2
@@ -34,6 +31,11 @@ jobs:
       - run:
           name: Lint << parameters.app-dir >> service
           command: yarn run lint
+      - run:
+          name: generate test env for << parameters.app-dir >> service
+          command: ./.circleci/generate_test_env.sh
+          environment:
+            SERVICE_NAME: << parameters.app-dir >>
       - run:
           command: yarn prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client

@@ -4,8 +4,6 @@
 
 2.  Add required env variables:
 
-    - `DATABASE_URL`: PostgreSQL URL as configured in docker-compose.yaml
-    - `DATABASE_URL_CART`: PostgreSQL URL as configured in docker-compose.yaml for `cart` service
     - `DOCKERHUB_USERNAME`
     - `DOCKERHUB_PASSWORD`
     - `GCLOUD_SERVICE_KEY`: See below for setup
@@ -15,7 +13,6 @@
     - `CLUSTER_NAME`: Kubernetes cluster name
     - `REGISTRY_URL`: Artifact Registry URL
     - `REPO_NAME`: Artifact Registry repository name
-    - `JWT_KEY`: Secure random string
 
 3.  Add `GCLOUD_SERVICE_KEY` env variable to authenticate CI with Artifact Registry & Kubernetes Engine
 

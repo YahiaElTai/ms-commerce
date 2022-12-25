@@ -11,30 +11,30 @@ set -e
 
 apply_prisma_migrations() {
     if [ "$HELM_RELEASE_NAME" == "ms-auth" ] || [ "$HELM_RELEASE_NAME" == "ms-cart" ]; then
-        echo "Applying pending Prisma migrations from inside K8s pod"
+        echo -e "\033[32mApplying pending Prisma migrations from inside K8s pod"
 
         # Get the name of one of the settings pods running
         pod_name=$(kubectl get pods --field-selector=status.phase=Running --sort-by=.metadata.creationTimestamp -l instance="${HELM_RELEASE_NAME}" -o=name | tail -1)
 
-        echo "Using pod $pod_name"
+        echo -e "\033[32mUsing pod $pod_name"
 
         # Trigger a migration deployment using the running pod (to ensure the DB connection works)
         kubectl exec -it "$pod_name" -- \
             npx prisma migrate deploy --schema=./prisma/schema.prisma
 
     else
-        echo "${HELM_RELEASE_NAME} does not use Prisma"
+        echo -e "\033[32m${HELM_RELEASE_NAME} does not use Prisma"
     fi
 }
 
-echo "Linting helm chart"
+echo -e "\033[32mLinting helm chart"
 helm lint infra/k8s/"$CHART_NAME"
 
 # Connect to k8s cluster on GCP
 gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
 if [ "$HELM_RELEASE_NAME" == "ms-ingress" ]; then
-    echo "Upgrading $CHART_NAME"
+    echo -e "\033[32mUpgrading $CHART_NAME"
     helm upgrade \
         --install \
         --wait \
@@ -42,7 +42,7 @@ if [ "$HELM_RELEASE_NAME" == "ms-ingress" ]; then
         -f "infra/k8s/$CHART_NAME/values.yaml" \
         "$HELM_RELEASE_NAME" "infra/k8s/$CHART_NAME"
 else
-    echo "Decrypting helm secrets..."
+    echo -e "\033[32mDecrypting helm secrets..."
     gcloud kms decrypt \
         --key ms-commerce-key \
         --keyring ms-commerce-key-ring \
@@ -50,7 +50,7 @@ else
         --ciphertext-file infra/k8s/"$CHART_NAME"/secrets.yaml.enc \
         --plaintext-file infra/k8s/"$CHART_NAME"/secrets.yaml
 
-    echo "Upgrading $CHART_NAME"
+    echo -e "\033[32mUpgrading $CHART_NAME"
     helm upgrade \
         --install \
         --wait \
