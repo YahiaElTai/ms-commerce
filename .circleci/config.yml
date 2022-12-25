@@ -77,7 +77,7 @@ jobs:
       - checkout
       - gcp-cli/setup
       - run:
-          name: Cleaning up Artifact Registry << parameters.chart_name >>
+          name: Cleaning up Artifact Registry
           command: ./.circleci/clean_up_artifact_registry.sh
 workflows:
   test_branch:
