@@ -78,13 +78,11 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - gcp-cli/setup
       - setup_remote_docker
+      - gcp-cli/setup
       - run:
           name: Cleaning up Artifact Registry
           command: ./.circleci/clean_up_artifact_registry.sh
-          environment:
-            GCRCLEANER_LOG: debug
 workflows:
   test_branch:
     when:
