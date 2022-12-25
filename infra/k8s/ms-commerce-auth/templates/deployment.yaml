@@ -33,6 +33,8 @@ spec:
                   name: {{ $chartName }}-secret
                   key: {{ $key }}
               {{- end}}
+            - name: ROARR_LOG
+              value: {{ .Values.lightship.logging.enabled }}
           ports:
             {{- range $key, $val := .Values.service.ports }}
               - name: {{ $val.name }}

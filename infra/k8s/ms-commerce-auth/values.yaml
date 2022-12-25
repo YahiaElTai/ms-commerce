@@ -22,8 +22,9 @@ service:
       port: 9000
       targetPort: 9000
 
-appPortName: internal-port
-statusPortName: status-port
+lightship:
+  logging:
+    enabled: true
 
 autoscaling:
   enabled: true
