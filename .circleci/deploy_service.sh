@@ -27,11 +27,14 @@ apply_prisma_migrations() {
     fi
 }
 
+echo "Linting helm chart"
+helm lint infra/k8s/"$CHART_NAME"
+
 # Connect to k8s cluster on GCP
 gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
-# Upgrade helm release
 if [ "$HELM_RELEASE_NAME" == "ms-ingress" ]; then
+    echo "Upgrading $CHART_NAME"
     helm upgrade \
         --install \
         --wait \
@@ -39,7 +42,7 @@ if [ "$HELM_RELEASE_NAME" == "ms-ingress" ]; then
         -f "infra/k8s/$CHART_NAME/values.yaml" \
         "$HELM_RELEASE_NAME" "infra/k8s/$CHART_NAME"
 else
-    # Decrypt k8s secrets
+    echo "Decrypting helm secrets..."
     gcloud kms decrypt \
         --key ms-commerce-key \
         --keyring ms-commerce-key-ring \
@@ -47,6 +50,7 @@ else
         --ciphertext-file infra/k8s/"$CHART_NAME"/secrets.yaml.enc \
         --plaintext-file infra/k8s/"$CHART_NAME"/secrets.yaml
 
+    echo "Upgrading $CHART_NAME"
     helm upgrade \
         --install \
         --wait \
