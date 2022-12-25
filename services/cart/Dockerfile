@@ -1,4 +1,4 @@
-FROM node:lts as builder
+FROM node:lts-alpine as builder
 
 WORKDIR /app
 
@@ -13,11 +13,7 @@ RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
 RUN yarn run build
 
-FROM node:lts-slim as production
-
-# openssl library is required and it's not provided by the slim version
-RUN apt-get update
-RUN apt-get install -y openssl
+FROM node:lts-alpine as production
 
 WORKDIR /app
 
