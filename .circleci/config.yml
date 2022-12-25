@@ -33,7 +33,7 @@ jobs:
           command: yarn run lint
       - run:
           name: generate test env for << parameters.app-dir >> service
-          command: ./.circleci/generate_test_env.sh
+          command: ../../.circleci/generate_test_env.sh
           environment:
             SERVICE_NAME: << parameters.app-dir >>
       - run:
