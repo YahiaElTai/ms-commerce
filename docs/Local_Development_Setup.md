@@ -50,9 +50,9 @@ There are 2 options to start developing locally:
       $ kubectl config view
       ```
 
-2. Install [helm](https://helm.sh/)
+   4. Install [helm](https://helm.sh/)
 
-3. Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start) chart
+2. Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start) chart
 
    ```bash
       helm upgrade --install ingress-nginx ingress-nginx \
@@ -60,7 +60,7 @@ There are 2 options to start developing locally:
       --namespace ingress-nginx --create-namespace
    ```
 
-4. Add environment variables
+3. Add environment variables
    Replace `.env.template` with `.env` and add the required variables.
 
    ```bash
@@ -68,11 +68,11 @@ There are 2 options to start developing locally:
    DATABASE_URL=postgresql://[DB_USER]:[DB_PASSWORD]@host.docker.internal:[DB_PORT]/[DB]
    ```
 
-5. configure Cloud Pub/Sub for the services that needs it
+4. configure Cloud Pub/Sub for the services that needs it
 
    Setup Cloud Pub/Sub emulator following [this guide](https://cloud.google.com/pubsub/docs/emulator)
 
-6. Install and configure `skaffold`
+5. Install and configure `skaffold`
 
    1. Install [skaffold](https://skaffold.dev)
 
@@ -83,7 +83,7 @@ There are 2 options to start developing locally:
    127.0.0.1 ms-commerce.dev
    ```
 
-7. Start skaffold
+6. Start skaffold
 
    ```bash
    # Start `docker-compose` in each service

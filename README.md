@@ -9,15 +9,15 @@ The project is a simplified version of commercetools HTTP API written as microse
 | Languages                   | **TypeScript**: Authentication & Cart services |
 | Database                    | **PostgreSQL** (GCP Cloud SQL): All services   |
 | Database ORM                | **Prisma** for TypeScript                      |
-| Docker Image Registry       | **Artifact Registry** on GCP                   |
-| Inter-service Communication | **Cloud Pub/Sub**                              |
 | Kubernetes Package Manager  | **Helm**                                       |
-| CI/CD                       | **CircleCI**                                   |
 | API Gateway                 | **Ingress Nginx**                              |
+| Inter-service Communication | **Cloud Pub/Sub**                              |
+| Docker Image Registry       | **Artifact Registry** on GCP                   |
+| CI/CD                       | **CircleCI**                                   |
 
 ### Services
 
-1. **Authentication**
+1. **Authentication** ✅
 2. **Cart** (In progress)
 3. **Order** (Not yet implemented)
 4. **Customer** (Not yet implemented)

@@ -8,9 +8,9 @@
     - `GOOGLE_COMPUTE_ZONE`
     - `GOOGLE_COMPUTE_REGION`
     - `GOOGLE_PROJECT_ID`
-    - `CLUSTER_NAME`: Kubernetes cluster name
-    - `REGISTRY_URL`: Artifact Registry URL
-    - `REPO_NAME`: Artifact Registry repository name
+    - `CLUSTER_NAME`
+    - `REGISTRY_URL`
+    - `REPO_NAME`
 
 3.  Add `GCLOUD_SERVICE_KEY` env variable to authenticate CI with Artifact Registry & Kubernetes Engine
 
