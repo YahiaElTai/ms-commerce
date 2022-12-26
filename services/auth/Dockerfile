@@ -1,21 +1,13 @@
 FROM node:lts as builder
 
-USER node
-
 WORKDIR /app
 
-RUN mkdir -p /app/node_modules
-RUN chown -R node /app/node_modules
-
-RUN mkdir -p /app/build
-RUN chown -R node /app/build
-
-COPY --chown=node:node package.json ./
-COPY --chown=node:node yarn.lock ./
+COPY package.json ./
+COPY yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
-COPY --chown=node:node . .
+COPY . .
 
 RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
@@ -27,29 +19,20 @@ FROM node:lts-slim as production
 RUN apt-get update
 RUN apt-get install -y openssl
 
-USER node
-
 WORKDIR /app
 
-RUN mkdir -p /app/node_modules
-RUN chown -R node /app/node_modules
-
-RUN mkdir -p /app/build
-RUN chown -R node /app/build
-
-COPY --chown=node:node package.json ./
-COPY --chown=node:node yarn.lock ./
+COPY package.json ./
+COPY yarn.lock ./
 
 RUN yarn install --production --frozen-lockfile
 
-COPY --chown=node:node --from=builder /app/build ./build
+COPY --from=builder /app/build ./build
 
-COPY --chown=node:node --from=builder /app/src/prisma/ ./prisma/
+COPY --from=builder /app/src/prisma/ ./prisma/
 
 RUN yarn prisma generate --schema=./prisma/schema.prisma
 
 ENV NODE_ENV production
-
 EXPOSE 3000
 
-CMD ["node", "build/index.js"]
+CMD ["yarn", "start"]
