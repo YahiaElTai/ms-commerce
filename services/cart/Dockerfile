@@ -1,8 +1,11 @@
 FROM node:lts as builder
 
-USER node
-
 WORKDIR /app
+
+RUN mkdir -p /app/node_modules
+RUN chown -R node /app/node_modules
+
+USER node
 
 COPY package.json ./
 COPY yarn.lock ./
@@ -21,9 +24,12 @@ FROM node:lts-slim as production
 RUN apt-get update
 RUN apt-get install -y openssl
 
-USER node
-
 WORKDIR /app
+
+RUN mkdir -p /app/node_modules
+RUN chown -R node /app/node_modules
+
+USER node
 
 COPY package.json ./
 COPY yarn.lock ./
