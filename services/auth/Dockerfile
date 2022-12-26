@@ -4,12 +4,18 @@ USER node
 
 WORKDIR /app
 
-COPY package.json ./
-COPY yarn.lock ./
+RUN mkdir -p ./node_modules
+RUN chown -R node ./node_modules
+
+RUN mkdir -p ./build
+RUN chown -R node ./build
+
+COPY --chown=node:node package.json ./
+COPY --chown=node:node yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
-COPY . .
+COPY --chown=node:node . .
 
 RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
@@ -25,14 +31,20 @@ USER node
 
 WORKDIR /app
 
-COPY package.json ./
-COPY yarn.lock ./
+RUN mkdir -p /app/node_modules
+RUN chown -R node /app/node_modules
+
+RUN mkdir -p /app/build
+RUN chown -R node /app/build
+
+COPY --chown=node:node package.json ./
+COPY --chown=node:node yarn.lock ./
 
 RUN yarn install --production --frozen-lockfile
 
-COPY --from=builder /app/build ./build
+COPY --chown=node:node --from=builder /app/build ./build
 
-COPY --from=builder /app/src/prisma/ ./prisma/
+COPY --chown=node:node --from=builder /app/src/prisma/ ./prisma/
 
 RUN yarn prisma generate --schema=./prisma/schema.prisma
 
