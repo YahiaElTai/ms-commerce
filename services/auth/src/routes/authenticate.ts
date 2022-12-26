@@ -15,11 +15,7 @@ const router = express.Router();
 router.post('/api/users/authenticate', async (req: Request, res: Response) => {
   const originalURI = req.header('x-original-uri');
 
-  if (!originalURI) {
-    throw new Error();
-  }
-
-  if (UNAUTHENTICATED_URLS.includes(originalURI)) {
+  if (originalURI && UNAUTHENTICATED_URLS.includes(originalURI)) {
     return res.status(200).send();
   }
 
