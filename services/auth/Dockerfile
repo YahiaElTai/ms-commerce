@@ -4,11 +4,11 @@ USER node
 
 WORKDIR /app
 
-RUN mkdir -p ./node_modules
-RUN chown -R node ./node_modules
+RUN mkdir -p /app/node_modules
+RUN chown -R node /app/node_modules
 
-RUN mkdir -p ./build
-RUN chown -R node ./build
+RUN mkdir -p /app/build
+RUN chown -R node /app/build
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node yarn.lock ./
