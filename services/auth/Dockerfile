@@ -35,4 +35,6 @@ RUN yarn prisma generate --schema=./prisma/schema.prisma
 ENV NODE_ENV production
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+USER node
+
+CMD ["node", "build/index.js"]

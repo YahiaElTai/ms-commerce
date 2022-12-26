@@ -1,7 +1,5 @@
 FROM node:lts as builder
 
-USER node
-
 WORKDIR /app
 
 COPY package.json ./
@@ -21,8 +19,6 @@ FROM node:lts-slim as production
 RUN apt-get update
 RUN apt-get install -y openssl
 
-USER node
-
 WORKDIR /app
 
 COPY package.json ./
@@ -39,4 +35,6 @@ RUN yarn prisma generate --schema=./prisma/schema.prisma
 ENV NODE_ENV production
 EXPOSE 3001
 
-CMD ["yarn", "start"]
+USER node
+
+CMD ["node", "build/index.js"]
