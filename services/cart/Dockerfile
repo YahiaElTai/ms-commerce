@@ -1,6 +1,6 @@
-FROM node:lts-alpine as builder
+FROM node:lts as builder
 
-RUN apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
+USER node
 
 WORKDIR /app
 
@@ -15,9 +15,13 @@ RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
 RUN yarn run build
 
-FROM node:lts-alpine as production
+FROM node:lts-slim as production
 
-RUN apk upgrade --update-cache --available && apk add openssl && rm -rf /var/cache/apk/*
+# openssl library is required and it's not provided by the slim version
+RUN apt-get update
+RUN apt-get install -y openssl
+
+USER node
 
 WORKDIR /app
 
@@ -33,6 +37,7 @@ COPY --from=builder /app/src/prisma/ ./prisma/
 RUN yarn prisma generate --schema=./prisma/schema.prisma
 
 ENV NODE_ENV production
+
 EXPOSE 3001
 
-CMD ["yarn", "start"]
+CMD ["node", "build/index.js"]
