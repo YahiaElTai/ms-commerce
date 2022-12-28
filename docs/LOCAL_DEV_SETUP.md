@@ -102,6 +102,9 @@ There are 2 options to start developing locally:
 # Install pre-commit
 brew install pre-commit
 
+# Shellcheck is required
+brew install shellcheck
+
 # install required hooks
 pre-commit install
 ```
