@@ -29,16 +29,16 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
+          name: generate test env for << parameters.app-dir >> service
+          command: ../../.circleci/generate_test_env.sh
+          environment:
+            SERVICE_NAME: << parameters.app-dir >>
+      - run:
           command: yarn prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client
       - run:
           name: Lint << parameters.app-dir >> service
           command: yarn run lint
-      - run:
-          name: generate test env for << parameters.app-dir >> service
-          command: ../../.circleci/generate_test_env.sh
-          environment:
-            SERVICE_NAME: << parameters.app-dir >>
       - run:
           command: yarn run typecheck
           name: Typecheck services/<< parameters.app-dir >>
