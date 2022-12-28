@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { BadRequestError, VersionMistachError } from '../errors';
 import { prisma } from '../prisma';
-import { CartUpdateSchema } from '../validators';
+import { CartDraftUpdateSchema } from '../validators';
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ const router = express.Router();
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.put('/api/carts/:id', async (req: Request, res: Response) => {
-  const { version } = CartUpdateSchema.parse(req.body);
+  const { version } = CartDraftUpdateSchema.parse(req.body);
 
   const id = parseInt(req.params.id);
 

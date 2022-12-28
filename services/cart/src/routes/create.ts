@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { prisma } from '../prisma';
-import { CartSchema } from '../validators';
+import { CartDraftCreateSchema } from '../validators';
 
 const router = express.Router();
 
@@ -10,9 +10,8 @@ router.post(
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const { customerEmail, lineItems, shippingMethodId } = CartSchema.parse(
-      req.body
-    );
+    const { customerEmail, lineItems, shippingMethodId } =
+      CartDraftCreateSchema.parse(req.body);
 
     const cart = await prisma.cart.create({
       data: {
