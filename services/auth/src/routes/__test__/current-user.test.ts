@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { UserPayload } from '../../types';
 
 const authenticate = async () => {
   // sign in to get the cookie
@@ -30,7 +31,7 @@ const authenticate = async () => {
 it('responds with details about current user', async () => {
   const user = await authenticate();
 
-  const respone = await request(app)
+  const respone: { body: { user: UserPayload } } = await request(app)
     .get('/api/users/currentuser')
     .set({ UserId: user.userId, UserEmail: user.userEmail })
     .send()

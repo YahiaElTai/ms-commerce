@@ -1,18 +1,14 @@
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { NotAuthorized } from '@ms-commerce/common';
-
-interface UserPayload {
-  id: string;
-  email: string;
-}
+import { JWTUndefinedError, NotAuthorized } from '../errors';
+import { IJwtRequest, UserPayload } from '../types';
 
 // These URIs should not be authenticated
 const UNAUTHENTICATED_URLS = ['/api/users/signup', '/api/users/signin'];
 
 const router = express.Router();
 
-router.post('/api/users/authenticate', async (req: Request, res: Response) => {
+router.post('/api/users/authenticate', (req: IJwtRequest, res: Response) => {
   const originalURI = req.header('x-original-uri');
 
   if (originalURI && UNAUTHENTICATED_URLS.includes(originalURI)) {
@@ -23,12 +19,14 @@ router.post('/api/users/authenticate', async (req: Request, res: Response) => {
     throw new NotAuthorized();
   }
 
-  // jwt.verify will throw an error if the jwt token is invalid
+  if (!process.env.JWT_KEY) {
+    throw new JWTUndefinedError();
+  }
+
   try {
     const payload = jwt.verify(
       req.cookies.access_token,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      process.env.JWT_KEY!
+      process.env.JWT_KEY
     ) as UserPayload;
 
     return res

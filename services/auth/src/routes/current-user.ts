@@ -1,4 +1,4 @@
-import { NotAuthorized } from '@ms-commerce/common';
+import { NotAuthorized } from '../errors';
 import express, { Request, Response } from 'express';
 
 const router = express.Router();

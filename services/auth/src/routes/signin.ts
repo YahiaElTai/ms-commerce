@@ -1,24 +1,18 @@
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
-import { BadRequestError, validateRequest } from '@ms-commerce/common';
-import { Password } from '../services/password';
+import { Password, generateToken } from '../utils';
 import { prisma } from '../prisma';
-import { generateToken } from '../utils';
+import { BadRequestError } from '../errors';
+import { UserSchema } from '../validators';
 
 const router = express.Router();
 
 router.post(
   '/api/users/signin',
-  [
-    body('email').isEmail().withMessage('Email must be valid'),
-    body('password')
-      .trim()
-      .notEmpty()
-      .withMessage('You must supply a password'),
-  ],
-  validateRequest,
+  // As of Express@5 This syntax is supported however the types are not updated yet
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { email, password } = UserSchema.parse(req.body);
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -34,7 +28,7 @@ router.post(
     );
 
     if (!passwordsMatch) {
-      throw new BadRequestError('Invalid credentials');
+      throw new BadRequestError('Incorrect password');
     }
 
     const token = generateToken(existingUser.id, existingUser.email);
@@ -45,7 +39,7 @@ router.post(
         secure: process.env.NODE_ENV === 'production',
       })
       .status(200)
-      .send({ message: 'Successfully signed in' });
+      .send([{ message: 'Successfully signed in' }]);
   }
 );
 

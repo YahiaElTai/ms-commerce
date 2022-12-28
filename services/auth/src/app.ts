@@ -1,18 +1,20 @@
 import express from 'express';
 import 'express-async-errors';
-import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
 import { authenticateRouter } from './routes/authenticate';
-import { errorHandler, NotFoundError } from '@ms-commerce/common';
+import { NotFoundError } from './errors';
+import { errorHandler } from './middlewares';
 
 const app = express();
+
 app.set('trust proxy', true);
-app.use(json());
+app.use(express.json());
 app.use(cookieParser());
+
 app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
