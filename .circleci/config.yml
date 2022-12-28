@@ -28,6 +28,9 @@ jobs:
           path: ~/ms-commerce
       - node/install-packages:
           pkg-manager: yarn
+      - run: yarn cache clean --all
+      - node/install-packages:
+          pkg-manager: yarn
       - run:
           name: Lint << parameters.app-dir >> service
           command: yarn run lint
