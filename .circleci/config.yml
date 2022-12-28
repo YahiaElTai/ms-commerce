@@ -28,7 +28,9 @@ jobs:
           path: ~/ms-commerce
       - node/install-packages:
           pkg-manager: yarn
-          with-cache: false
+      - run:
+          command: yarn prisma generate --schema=src/prisma/schema.prisma
+          name: Generate Prisma client
       - run:
           name: Lint << parameters.app-dir >> service
           command: yarn run lint
@@ -37,9 +39,6 @@ jobs:
           command: ../../.circleci/generate_test_env.sh
           environment:
             SERVICE_NAME: << parameters.app-dir >>
-      - run:
-          command: yarn prisma generate --schema=src/prisma/schema.prisma
-          name: Generate Prisma client
       - run:
           command: yarn run typecheck
           name: Typecheck services/<< parameters.app-dir >>
