@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "schedule:weekly"],
-  "circleci": { "enabled": false },
+  "extends": ["config:base", ":preserveSemverRanges", "schedule:weekly"],
+  "circleci": { "enabled": true },
   "lockFileMaintenance": {
     "enabled": true
   },
