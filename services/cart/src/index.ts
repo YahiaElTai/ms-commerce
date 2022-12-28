@@ -1,4 +1,5 @@
 import { createLightship } from 'lightship';
+import { DatabaseUrlUndefinedError } from './errors';
 
 import { app } from './app';
 
@@ -6,7 +7,7 @@ const start = async () => {
   const lightship = await createLightship();
 
   if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL must be defined');
+    throw new DatabaseUrlUndefinedError();
   }
 
   const server = app
@@ -15,7 +16,15 @@ const start = async () => {
       lightship.signalReady();
     })
     .on('error', () => {
-      lightship.shutdown();
+      lightship
+        .shutdown()
+        .then(() => {
+          console.log('Shutting down');
+        })
+        .catch((error) => {
+          console.log('Lightship: Error shutting down...');
+          console.log(error);
+        });
     });
 
   lightship.registerShutdownHandler(() => {
@@ -23,4 +32,4 @@ const start = async () => {
   });
 };
 
-start();
+void start();

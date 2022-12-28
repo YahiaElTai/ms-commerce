@@ -110,29 +110,9 @@
 
    **Note**: Ensure gcloud service account is connected to all k8s service account that uses it.
 
-10. Enable and configure Cloud Pub/Sub
-
-    1. Enable Cloud Pub/Sub API
-
-    ```bash
-    gcloud services enable pubsub.googleapis.com
-    ```
-
-    2. Create needed topics
-
-    ```bash
-    gcloud pubsub topics create [TOPIC_ID] --message-encoding=[ENCODING_TYPE]  --schema=[SCHEMA_ID]
-    ```
-
-    3. Create needed subscriptions [Pull or Push]
-
-11. Allow KGE workloads to connect Cloud Pub/Sub via [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity)
-
-    - Make sure to use the kuberentes service account you create in all services which needs to connect to Cloud Pub/Sub and annotate it properly as described.
-
-12. Create key ring and key for KMS encryption for helm secrets
+10. Create key ring and key for KMS encryption for helm secrets
     Follow [this guide](https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets)
 
-13. Install helm charts on CI
+11. Install helm charts on CI
 
-14. point your domain name to ingress load balancer external IP address.
+12. point your domain name to ingress load balancer external IP address.

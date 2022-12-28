@@ -68,11 +68,7 @@ There are 2 options to start developing locally:
    DATABASE_URL=postgresql://[DB_USER]:[DB_PASSWORD]@host.docker.internal:[DB_PORT]/[DB]
    ```
 
-4. configure Cloud Pub/Sub for the services that needs it
-
-   Setup Cloud Pub/Sub emulator following [this guide](https://cloud.google.com/pubsub/docs/emulator)
-
-5. Install and configure `skaffold`
+4. Install and configure `skaffold`
 
    1. Install [skaffold](https://skaffold.dev)
 
@@ -83,7 +79,7 @@ There are 2 options to start developing locally:
    127.0.0.1 ms-commerce.dev
    ```
 
-6. Start skaffold
+5. Start skaffold
 
    ```bash
    # Start `docker-compose` in each service

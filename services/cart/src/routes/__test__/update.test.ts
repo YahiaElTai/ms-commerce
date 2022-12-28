@@ -1,9 +1,7 @@
 // import request from 'supertest';
 // import { app } from '../../app';
 
-// jest.mock('../../pub-sub');
-
-it('should make file work fine', async () => {
+it('should make file work fine', () => {
   expect(1).toBe(1);
 });
 // it('should responds with 401 status code for unauthenticated users', async () => {

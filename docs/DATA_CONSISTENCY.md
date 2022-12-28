@@ -14,7 +14,7 @@ There are generally 2 approaches to ensure data consistency across microservices
 
 The approach selected for this project: **Eventual consistency**
 
-Eventual consistency can be achieved using the Materialized View Pattern with event based communication via Cloud Pub/Sub.
+Eventual consistency can be achieved using the Materialized View Pattern with event based communication.
 
 A materialized view is a read-only representation of the source data in a format that best serves that specific microservice.
 
@@ -24,7 +24,7 @@ This approach ensures loose coupling between microservices at the trade-off of e
 
 - A POST request is sent to the cart service to create a new cart.
 - The cart service creates the cart and stores it in its own database and then sends an event `cart_created` containing JSON of the new cart with all its fields.
-- This event is sent via Cloud Pub/Sub to a specific topic `cart_created`, the later can have many subscribers for example the order service and the customer service need to know when a new cart is created.
+- This event is sent to a specific topic `cart_created`, the later can have many subscribers for example the order service and the customer service need to know when a new cart is created.
 - Each service that cares about `cart_created` event subscribes to that topic and creates a handler to receive incoming events from that topic.
 - A handler's responsibility is to ensure data is synchronized between its local version and the source data (cart service) by duplicating the data.
 - The services that care about the `cart` data never updates its own local version of the data since it's read-only but only updates it when it receives events.
