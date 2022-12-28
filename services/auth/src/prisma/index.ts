@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { hashingMiddlware } from '../middlewares/hashing';
 
-const prisma = new PrismaClient();
+const prisma: PrismaClient = new PrismaClient();
 
 prisma.$use(hashingMiddlware);
 
