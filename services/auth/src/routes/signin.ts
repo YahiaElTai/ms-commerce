@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
-import { Password, generateToken } from '../utils';
+import { PasswordHashing, generateToken } from '../utils';
 import { prisma } from '../prisma';
 import { BadRequestError } from '../errors';
-import { UserSchema } from '../validators';
+import { UserDraftSchema } from '../validators';
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.post(
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const { email, password } = UserSchema.parse(req.body);
+    const { email, password } = UserDraftSchema.parse(req.body);
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -22,7 +22,7 @@ router.post(
       throw new BadRequestError('Invalid credentials');
     }
 
-    const passwordsMatch = await Password.compare(
+    const passwordsMatch = await PasswordHashing.compare(
       existingUser.password,
       password
     );

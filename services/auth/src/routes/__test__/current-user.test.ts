@@ -1,10 +1,10 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { UserPayload } from '../../types';
+import { UserSchema } from '../../validators';
 
 const authenticate = async () => {
   // sign in to get the cookie
-  const email = 'test@test.com';
+  const email = 'test3@test.com';
   const password = 'password';
 
   const signupResponse = await request(app)
@@ -31,13 +31,15 @@ const authenticate = async () => {
 it('responds with details about current user', async () => {
   const user = await authenticate();
 
-  const respone: { body: { user: UserPayload } } = await request(app)
+  const response = await request(app)
     .get('/api/users/currentuser')
     .set({ UserId: user.userId, UserEmail: user.userEmail })
     .send()
     .expect(200);
 
-  expect(respone.body.user.email).toEqual('test@test.com');
+  const validatedUser = UserSchema.parse(response.body);
+
+  expect(validatedUser.email).toEqual('test3@test.com');
 });
 
 it('responds with 401 if not authenticated', async () => {

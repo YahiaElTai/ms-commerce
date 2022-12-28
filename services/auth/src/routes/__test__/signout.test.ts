@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { BasicResponseSchema } from '../../validators';
 
 it('clears the cookie after signing out', async () => {
   const response = await request(app)
@@ -12,11 +13,13 @@ it('clears the cookie after signing out', async () => {
 
   const cookie = response.get('Set-Cookie');
 
-  const responseSignOut: { body: [{ message: string }] } = await request(app)
+  const responseSignOut = await request(app)
     .post('/api/users/signout')
     .set('Cookie', cookie)
     .send()
     .expect(200);
 
-  expect(responseSignOut.body[0].message).toEqual('Successfully signed out');
+  const validatedResponse = BasicResponseSchema.parse(responseSignOut.body);
+
+  expect(validatedResponse[0].message).toEqual('Successfully signed out');
 });

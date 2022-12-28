@@ -11,7 +11,7 @@ router.get('/api/users/currentuser', (req: Request, res: Response) => {
     throw new NotAuthorized();
   }
 
-  res.status(200).send({ user: { id, email } });
+  res.status(200).send({ id, email });
 });
 
 export { router as currentUserRouter };

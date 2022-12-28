@@ -5,7 +5,7 @@ it('fails when an email does not exist', async () => {
   return request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test1@test.com',
+      email: 'test@test.com',
       password: 'password',
     })
     .expect(400);
@@ -15,7 +15,7 @@ it('fails when an incorrect password is supplied', async () => {
   await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test2@test.com',
+      email: 'test1@test.com',
       password: 'password',
     })
     .expect(201);
@@ -23,17 +23,17 @@ it('fails when an incorrect password is supplied', async () => {
   return request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test2@test.com',
+      email: 'test1@test.com',
       password: 'incorrectpassword',
     })
     .expect(400);
 });
 
-it('responds when a cookie when given valid credentials', async () => {
+it('responds with a cookie when given valid credentials', async () => {
   await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test3@test.com',
+      email: 'test2@test.com',
       password: 'password',
     })
     .expect(201);
@@ -41,7 +41,7 @@ it('responds when a cookie when given valid credentials', async () => {
   const response = await request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test3@test.com',
+      email: 'test2@test.com',
       password: 'password',
     })
     .expect(200);
