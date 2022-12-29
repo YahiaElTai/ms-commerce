@@ -20,5 +20,5 @@ model Cart {
   customerEmail     String          @db.VarChar(255)
   lineItems         LineItem[]
   shippingMethodId  String
-  version           Int             @default(0)
+  version           Int             @default(1)
 }

@@ -52,7 +52,7 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
     where: { id: parseInt(req.params.id) },
   });
 
-  return res.send({ cart: updatedCart });
+  return res.send(updatedCart);
 });
 
 export { router as UpdateCartRouter };

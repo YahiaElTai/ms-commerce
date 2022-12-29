@@ -19,11 +19,8 @@ it('should make file work fine', () => {
 //     .set('Cookie', cookie)
 //     .send({
 //       customerEmail: 'test@test.com',
-//       currency: 'EUR',
 //       lineItems: [{}],
 //       shippingMethodId: 'shipping-method-id',
-//       shippingAddress: {},
-//       billingAddress: {},
 //     });
 
 //   const response = await request(app)
@@ -54,11 +51,8 @@ it('should make file work fine', () => {
 //     .set('Cookie', cookie)
 //     .send({
 //       customerEmail: 'test@test.com',
-//       currency: 'EUR',
 //       lineItems: [{}],
 //       shippingMethodId: 'shipping-method-id',
-//       shippingAddress: {},
-//       billingAddress: {},
 //     });
 
 //   await request(app)

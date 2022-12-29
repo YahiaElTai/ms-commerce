@@ -19,7 +19,7 @@ router.get('/api/carts/:id', async (req: Request, res: Response) => {
     );
   }
 
-  res.send({ cart });
+  res.send(cart);
 });
 
 export { router as GetCartRouter };

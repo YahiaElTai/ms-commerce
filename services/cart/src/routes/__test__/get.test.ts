@@ -1,10 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
-
-interface Cart {
-  id: number;
-  customerEmail: string;
-}
+import { CartSchema } from '../../validators';
 
 it('should responds with 404 and error message if cart is not found', async () => {
   await request(app)
@@ -14,20 +10,23 @@ it('should responds with 404 and error message if cart is not found', async () =
 });
 
 it('should responds with correct cart', async () => {
-  const response: { body: { cart: Cart } } = await request(app)
+  const response = await request(app)
     .post('/api/carts')
     .send({
       customerEmail: 'test@test.com',
-      currency: 'EUR',
       lineItems: [{ quantity: 12, sku: '1234' }],
       shippingMethodId: 'shipping-method-id',
     })
     .expect(201);
 
-  const response2: { body: { cart: Cart } } = await request(app)
-    .get(`/api/carts/${response.body.cart.id}`)
+  const validatedResponse = CartSchema.parse(response.body);
+
+  const response2 = await request(app)
+    .get(`/api/carts/${validatedResponse.id}`)
     .send()
     .expect(200);
 
-  expect(response2.body.cart.customerEmail).toEqual('test@test.com');
+  const validatedResponse2 = CartSchema.parse(response2.body);
+
+  expect(validatedResponse2.customerEmail).toEqual('test@test.com');
 });

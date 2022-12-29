@@ -28,7 +28,7 @@ router.post(
       },
     });
 
-    res.status(201).send({ cart });
+    res.status(201).send(cart);
   }
 );
 
