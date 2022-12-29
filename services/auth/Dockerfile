@@ -1,4 +1,4 @@
-FROM node:lts as builder
+FROM node:19.3.0 as builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
 RUN yarn run build
 
-FROM node:lts-slim as production
+FROM node:19.3.0-slim as production
 
 # openssl library is required and it's not provided by the slim version
 RUN apt-get update && apt-get install --no-install-recommends -y openssl && apt-get clean && rm -rf /var/lib/apt/lists/*
