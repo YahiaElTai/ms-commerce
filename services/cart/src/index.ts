@@ -6,7 +6,7 @@ import { app } from './app';
 const start = async () => {
   const lightship = await createLightship();
 
-  if (!process.env.DATABASE_URL) {
+  if (!process.env['DATABASE_URL']) {
     throw new DatabaseUrlUndefinedError();
   }
 

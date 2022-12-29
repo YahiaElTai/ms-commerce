@@ -21,5 +21,5 @@ it('clears the cookie after signing out', async () => {
 
   const validatedResponse = BasicResponseSchema.parse(responseSignOut.body);
 
-  expect(validatedResponse[0].message).toEqual('Successfully signed out');
+  expect(validatedResponse[0]?.message).toEqual('Successfully signed out');
 });

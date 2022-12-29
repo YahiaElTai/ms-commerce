@@ -5,11 +5,11 @@ import { DatabaseUrlUndefinedError, JWTUndefinedError } from './errors';
 const start = async () => {
   const lightship = await createLightship();
 
-  if (!process.env.JWT_KEY) {
+  if (!process.env['JWT_KEY']) {
     throw new JWTUndefinedError();
   }
 
-  if (!process.env.DATABASE_URL) {
+  if (!process.env['DATABASE_URL']) {
     throw new DatabaseUrlUndefinedError();
   }
 

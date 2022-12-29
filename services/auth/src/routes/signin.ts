@@ -36,7 +36,7 @@ router.post(
     res
       .cookie('access_token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env['NODE_ENV'] === 'production',
       })
       .status(200)
       .send([{ message: 'Successfully signed in' }]);

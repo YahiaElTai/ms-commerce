@@ -21,14 +21,14 @@ router.post('/api/users/authenticate', (req: Request, res: Response) => {
     throw new NotAuthorized();
   }
 
-  if (!process.env.JWT_KEY) {
+  if (!process.env['JWT_KEY']) {
     throw new JWTUndefinedError();
   }
 
   try {
     const payload = jwt.verify(
       validatedCookies.data.access_token,
-      process.env.JWT_KEY
+      process.env['JWT_KEY']
     );
 
     const user = UserSchema.parse(payload);

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { CustomError } from '../errors';
 import { ZodError, ZodIssue } from 'zod';
 
@@ -31,5 +31,5 @@ export const errorHandler = (
   }
 
   console.error(err);
-  res.status(500).send([{ message: GENERIC_ERROR_MESSAGE }]);
+  return res.status(500).send([{ message: GENERIC_ERROR_MESSAGE }]);
 };

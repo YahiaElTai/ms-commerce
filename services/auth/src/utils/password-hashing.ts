@@ -1,5 +1,6 @@
 import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
+import { z } from 'zod';
 
 const scryptAsync = promisify(scrypt);
 
@@ -19,8 +20,14 @@ export class PasswordHashing {
     // extract the hashed password from the string
     const [hashedPassword, salt] = storedPassword.split('.');
 
+    const validatedSalt = z.string().parse(salt);
+
     // has the supplied password
-    const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
+    const buf = (await scryptAsync(
+      suppliedPassword,
+      validatedSalt,
+      64
+    )) as Buffer;
 
     return buf.toString('hex') === hashedPassword;
   }

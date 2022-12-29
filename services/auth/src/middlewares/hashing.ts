@@ -1,7 +1,7 @@
-import { Prisma } from '@prisma/client';
-import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import type { z } from 'zod';
 import { PasswordHashing } from '../utils';
-import { UserDraftSchema } from '../validators';
+import type { UserDraftSchema } from '../validators';
 
 export type User = z.infer<typeof UserDraftSchema>;
 
