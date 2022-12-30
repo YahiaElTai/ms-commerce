@@ -1,4 +1,7 @@
-FROM node:19.3.0 as builder
+ARG NODE_VERSION="19.3.0"
+ARG ALPINE_VERSION="3.17"
+
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} as builder
 
 WORKDIR /app
 
@@ -13,10 +16,7 @@ RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
 RUN yarn run build
 
-FROM node:19.3.0-slim as production
-
-# openssl library is required and it's not provided by the slim version
-RUN apt-get update && apt-get install --no-install-recommends -y openssl && apt-get clean && rm -rf /var/lib/apt/lists/*
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} as production
 
 WORKDIR /app
 
