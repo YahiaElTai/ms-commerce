@@ -9,7 +9,7 @@ COPY package.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
-RUN yarn prisma generate --schema=./prisma/schema.prisma
+RUN yarn prisma generate --schema=src/prisma/schema.prisma
 
 COPY . .
 
@@ -24,7 +24,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --production --frozen-lockfile
 
 COPY --from=builder /app/src/prisma/ ./prisma/
-RUN yarn prisma generate --schema=./prisma/schema.prisma
+RUN yarn prisma generate --schema=prisma/schema.prisma
 
 COPY --from=builder /app/build ./build
 
