@@ -9,6 +9,8 @@ COPY package.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
+RUN yarn prisma generate --schema=./prisma/schema.prisma
+
 COPY . .
 
 RUN yarn run build
