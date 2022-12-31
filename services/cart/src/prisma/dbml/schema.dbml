@@ -1,0 +1,20 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table LineItem {
+  id Int [pk, increment]
+  quantity Int [not null]
+  sku String [not null]
+  Cart Cart
+  cartId Int
+}
+
+Table Cart {
+  id Int [pk, increment]
+  customerEmail String [not null]
+  lineItems LineItem [not null]
+  version Int [not null, default: 1]
+}
+
+Ref: LineItem.cartId > Cart.id [delete: Cascade]
