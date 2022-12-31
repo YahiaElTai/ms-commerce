@@ -1,29 +1,22 @@
 import { z } from 'zod';
 
-export const QuantitySchema = z
-  .number({
-    required_error: 'Line item quantity is required',
-  })
-  .int('Line item quantity must be a whole number (Integer)')
-  .gt(
-    0,
-    'Line item quantity must be greater than 0. If you intend to remove the item, use `removeLineItem` update action'
-  );
+export const QuantitySchema = z.number().int().gt(0);
 
-export const IdSchema = z
-  .number({ required_error: 'Id is required' })
-  .int('Id must be a whole number (Integer)');
+export const IdSchema = z.number().int().positive();
 
-export const SKUSchema = z.string({
-  required_error: 'Line item SKU is required',
+export const SKUSchema = z.string();
+
+export const CartVersionSchema = z.number().int();
+
+export const CustomerEmailSchema = z.string().email();
+
+export const LineItemSchema = z.object({
+  id: IdSchema,
+  quantity: QuantitySchema,
+  sku: SKUSchema,
 });
 
-export const CartVersionSchema = z
-  .number({ required_error: 'Cart version is required' })
-  .int('Cart version must be a number');
-
-export const CustomerEmailSchema = z
-  .string({
-    required_error: 'Customer email is required',
-  })
-  .email('Not a valid email');
+export const LineItemDraftSchema = z.object({
+  quantity: QuantitySchema,
+  sku: SKUSchema,
+});

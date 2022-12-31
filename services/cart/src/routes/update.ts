@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { BadRequestError, VersionMistachError } from '../errors';
+import { computeCartFields } from '../model';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import {
   Actions,
@@ -99,7 +100,9 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
     select: excludeCartIdFromLineItem,
   });
 
-  return res.send(updatedCart);
+  const computedCart = computeCartFields(updatedCart);
+
+  return res.send(computedCart);
 });
 
 export { router as UpdateCartRouter };

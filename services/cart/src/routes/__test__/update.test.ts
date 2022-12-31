@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { CartSchema, FormattedErrors } from '../../validators';
+import { CartResponseSchema, FormattedErrors } from '../../validators';
 
 describe('when incorrect update action is provided', () => {
   it('should respond with 400 and helpful error messages', async () => {
@@ -11,7 +11,7 @@ describe('when incorrect update action is provided', () => {
         lineItems: [{ quantity: 12, sku: 'product-sku' }],
       });
 
-    const validatedCart = CartSchema.parse(createdCart.body);
+    const validatedCart = CartResponseSchema.parse(createdCart.body);
 
     const response: { body: FormattedErrors[] } = await request(app)
       .put(`/api/carts/${validatedCart.id}`)
@@ -27,8 +27,8 @@ describe('when incorrect update action is provided', () => {
       .expect(400);
 
     expect(response.body).toHaveLength(2);
-    expect(response.body[0]?.message).toEqual('Line item quantity is required');
-    expect(response.body[1]?.message).toEqual('Line item SKU is required');
+    expect(response.body[0]?.message).toEqual('Required');
+    expect(response.body[1]?.message).toEqual('Required');
   });
 });
 
@@ -41,7 +41,7 @@ describe('when correct update action is provided', () => {
         lineItems: [{ quantity: 12, sku: 'sku-1' }],
       });
 
-    const validatedCart = CartSchema.parse(createdCart.body);
+    const validatedCart = CartResponseSchema.parse(createdCart.body);
 
     const updatedResponse = await request(app)
       .put(`/api/carts/${validatedCart.id}`)
@@ -63,6 +63,7 @@ describe('when correct update action is provided', () => {
       expect.objectContaining({
         customerEmail: 'test@test.com',
         version: 2,
+        totalLineItemQuantity: 17,
       })
     );
   });

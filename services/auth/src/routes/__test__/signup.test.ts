@@ -51,7 +51,7 @@ describe('when incorrect email or password is provided', () => {
     expect(response.body[0]?.message).toBe(
       'String must contain at least 5 character(s)'
     );
-    expect(response.body[1]?.message).toBe('Not a valid email');
+    expect(response.body[1]?.message).toBe('Invalid email');
   });
 
   it('should respond with 400 when both email and password are missing', async () => {

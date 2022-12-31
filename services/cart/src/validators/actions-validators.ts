@@ -11,13 +11,10 @@ export const Actions = z.enum([
 // Validators for update actions used to update the cart
 export const AddLineItemActionSchema = z.object({
   type: z.literal(Actions.Enum.addLineItem),
-  value: z.object(
-    {
-      quantity: QuantitySchema,
-      sku: SKUSchema,
-    },
-    { required_error: 'SKU and quantity are required on LineItem' }
-  ),
+  value: z.object({
+    quantity: QuantitySchema,
+    sku: SKUSchema,
+  }),
 });
 
 export const RemoveLineItemActionSchema = z.object({
@@ -41,7 +38,6 @@ export const ActionsSchema = z
     z.object({
       type: Actions,
       value: z.record(z.union([z.string(), z.number()])),
-    }),
-    { required_error: 'You must add at least one update action' }
+    })
   )
-  .nonempty({ message: 'You must add at least one update action' });
+  .nonempty();

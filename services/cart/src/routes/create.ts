@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { computeCartFields } from '../model';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import { CartDraftCreateSchema } from '../validators';
 
@@ -24,7 +25,9 @@ router.post(
       select: excludeCartIdFromLineItem,
     });
 
-    res.status(201).send(cart);
+    const computedCart = computeCartFields(cart);
+
+    res.status(201).send(computedCart);
   }
 );
 

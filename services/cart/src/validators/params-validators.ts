@@ -1,9 +1,7 @@
 import { z } from 'zod';
 
 export const IdParamSchema = z.object({
-  id: z
-    .string({ required_error: 'Cart ID is not defined' })
-    .transform((id) => parseInt(id)),
+  id: z.string().transform((id) => parseInt(id)),
 });
 
 export const ParseQueryParamsSchema = z.object({

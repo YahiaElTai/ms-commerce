@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { computeCartFields } from '../model';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import {
   ParseQueryParamsSchema,
@@ -33,7 +34,12 @@ router.get('/api/carts', async (req: Request, res: Response) => {
     orderBy,
   });
 
-  res.send({ offset, limit, count: carts.length, results: carts });
+  res.send({
+    offset,
+    limit,
+    count: carts.length,
+    results: carts.map(computeCartFields),
+  });
 });
 
 export { router as CartsRouter };

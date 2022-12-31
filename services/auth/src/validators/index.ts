@@ -1,30 +1,13 @@
 import { z } from 'zod';
 
 export const UserDraftSchema = z.object({
-  password: z
-    .string({
-      required_error: 'Password is required',
-    })
-    .min(5),
-  email: z
-    .string({
-      required_error: 'Email is required',
-    })
-    .email('Not a valid email'),
+  password: z.string().min(5),
+  email: z.string().email(),
 });
 
 export const UserSchema = z.object({
-  id: z.union([
-    z.string({
-      required_error: 'User ID is required',
-    }),
-    z.number({ required_error: 'User ID is required' }),
-  ]),
-  email: z
-    .string({
-      required_error: 'Email is required',
-    })
-    .email('Not a valid email'),
+  id: z.union([z.string(), z.number()]),
+  email: z.string().email(),
 });
 
 export const CookiesSchema = z.object({
