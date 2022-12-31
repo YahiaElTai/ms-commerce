@@ -39,3 +39,10 @@ export const CartDraftUpdateSchema = z.object({
   version: CartVersionSchema,
   actions: ActionsSchema,
 });
+
+export const CartListResponseSchema = z.object({
+  results: z.array(CartSchema),
+  limit: z.number(),
+  offset: z.number(),
+  count: z.number(),
+});
