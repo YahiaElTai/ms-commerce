@@ -15,7 +15,6 @@ it('should responds with correct cart', async () => {
     .send({
       customerEmail: 'test@test.com',
       lineItems: [{ quantity: 12, sku: '1234' }],
-      shippingMethodId: 'shipping-method-id',
     })
     .expect(201);
 

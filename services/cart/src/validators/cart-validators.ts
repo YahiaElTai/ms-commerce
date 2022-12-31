@@ -3,23 +3,33 @@ import { ActionsSchema } from './actions-validators';
 import {
   CartVersionSchema,
   CustomerEmailSchema,
-  LineItemsSchema,
-  ShippigMethodSchema,
+  QuantitySchema,
+  SKUSchema,
 } from './nested-validators';
+
+const LineItemsSchema = z
+  .array(
+    z.object(
+      {
+        quantity: QuantitySchema,
+        sku: SKUSchema,
+      },
+      { required_error: 'SKU and quantity are required on LineItem' }
+    )
+  )
+  .nonempty({ message: 'You must add at least one line item to the cart' });
 
 // Validator for the cart response that gets sent to the user
 export const CartSchema = z.object({
   id: z.number().positive(),
   version: CartVersionSchema,
   customerEmail: CustomerEmailSchema,
-  shippingMethodId: ShippigMethodSchema,
   lineItems: LineItemsSchema,
 });
 
 // Validator used when creating a cart
 export const CartDraftCreateSchema = z.object({
   customerEmail: CustomerEmailSchema,
-  shippingMethodId: ShippigMethodSchema,
   lineItems: LineItemsSchema,
 });
 

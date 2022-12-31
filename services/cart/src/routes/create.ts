@@ -10,8 +10,7 @@ router.post(
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const { customerEmail, lineItems, shippingMethodId } =
-      CartDraftCreateSchema.parse(req.body);
+    const { customerEmail, lineItems } = CartDraftCreateSchema.parse(req.body);
 
     const cart = await prisma.cart.create({
       data: {
@@ -21,7 +20,6 @@ router.post(
             data: lineItems,
           },
         },
-        shippingMethodId,
       },
       include: {
         lineItems: true,

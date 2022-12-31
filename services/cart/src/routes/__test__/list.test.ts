@@ -9,7 +9,6 @@ it('should responds with list of carts', async () => {
     .send({
       customerEmail: 'test12@test.com',
       lineItems: [{ quantity: 12, sku: '12345' }],
-      shippingMethodId: 'shipping-method-id',
     })
     .expect(201);
 
@@ -18,7 +17,6 @@ it('should responds with list of carts', async () => {
     .send({
       customerEmail: 'test12@test.com',
       lineItems: [{ quantity: 12, sku: '12345' }],
-      shippingMethodId: 'shipping-method-id',
     })
     .expect(201);
 

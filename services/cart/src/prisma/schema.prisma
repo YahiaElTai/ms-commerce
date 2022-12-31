@@ -16,9 +16,8 @@ model LineItem {
 }
 
 model Cart {
-  id               Int        @id @default(autoincrement())
-  customerEmail    String     @db.VarChar(255)
-  lineItems        LineItem[]
-  shippingMethodId String
-  version          Int        @default(1)
+  id            Int        @id @default(autoincrement())
+  customerEmail String     @db.VarChar(255)
+  lineItems     LineItem[]
+  version       Int        @default(1)
 }

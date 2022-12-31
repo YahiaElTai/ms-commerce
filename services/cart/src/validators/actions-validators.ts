@@ -1,41 +1,46 @@
 import { z } from 'zod';
-import { LineItemSchema, ShippigMethodSchema } from './nested-validators';
+import { SKUSchema, QuantitySchema, IdSchema } from './nested-validators';
 
 // supported update actions to update the cart
 export const Actions = z.enum([
   'addLineItem',
   'removeLineItem',
   'changeLineItemQuantity',
-  'updateShippingMethod',
 ]);
 
 // Validators for update actions used to update the cart
 export const AddLineItemActionSchema = z.object({
   type: z.literal(Actions.Enum.addLineItem),
-  value: LineItemSchema,
+  value: z.object(
+    {
+      quantity: QuantitySchema,
+      sku: SKUSchema,
+    },
+    { required_error: 'SKU and quantity are required on LineItem' }
+  ),
 });
 
 export const RemoveLineItemActionSchema = z.object({
   type: z.literal(Actions.Enum.removeLineItem),
-  value: LineItemSchema,
+  value: z.object({
+    id: IdSchema,
+  }),
 });
 
 // If quantity is changed to 0 then remove the item.
 export const ChangeLineItemQuantityActionSchema = z.object({
   type: z.literal(Actions.Enum.changeLineItemQuantity),
-  value: LineItemSchema,
-});
-
-export const UpdateShippingMethodActionSchema = z.object({
-  type: z.literal(Actions.Enum.updateShippingMethod),
-  value: ShippigMethodSchema,
+  value: z.object({
+    id: IdSchema,
+    quantity: QuantitySchema,
+  }),
 });
 
 export const ActionsSchema = z
   .array(
     z.object({
       type: Actions,
-      value: z.union([LineItemSchema, ShippigMethodSchema]),
+      value: z.record(z.union([z.string(), z.number()])),
     }),
     { required_error: 'You must add at least one update action' }
   )
