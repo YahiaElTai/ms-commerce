@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { prisma } from '../prisma';
+import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import { CartDraftCreateSchema } from '../validators';
 
 const router = express.Router();
@@ -21,9 +21,7 @@ router.post(
           },
         },
       },
-      include: {
-        lineItems: true,
-      },
+      select: excludeCartIdFromLineItem,
     });
 
     res.status(201).send(cart);

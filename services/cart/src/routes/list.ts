@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { prisma } from '../prisma';
+import { excludeCartIdFromLineItem, prisma } from '../prisma';
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 router.get('/api/carts', async (_req: Request, res: Response) => {
   const carts = await prisma.cart.findMany({
-    include: { lineItems: true },
+    select: excludeCartIdFromLineItem,
   });
 
   res.send(carts);

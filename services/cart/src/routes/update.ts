@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { BadRequestError, VersionMistachError } from '../errors';
-import { prisma } from '../prisma';
+import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import {
   Actions,
   AddLineItemActionSchema,
@@ -96,7 +96,7 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
 
   const updatedCart = await prisma.cart.findUnique({
     where: { id },
-    include: { lineItems: true },
+    select: excludeCartIdFromLineItem,
   });
 
   return res.send(updatedCart);
