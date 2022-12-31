@@ -24,7 +24,6 @@ export const RemoveLineItemActionSchema = z.object({
   }),
 });
 
-// If quantity is changed to 0 then remove the item.
 export const ChangeLineItemQuantityActionSchema = z.object({
   type: z.literal(Actions.Enum.changeLineItemQuantity),
   value: z.object({

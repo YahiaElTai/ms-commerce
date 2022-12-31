@@ -8,7 +8,7 @@ import {
   QuantitySchema,
 } from './nested-validators';
 
-// Validator for the cart response that gets sent to the user
+// validator for the initial created cart before adding the computed fields
 export const CartSchema = z.object({
   id: z.number().positive(),
   version: CartVersionSchema,
@@ -16,12 +16,17 @@ export const CartSchema = z.object({
   lineItems: z.array(LineItemSchema),
 });
 
-export const CartResponseSchema = z.object({
-  id: z.number().positive(),
-  version: CartVersionSchema,
-  customerEmail: CustomerEmailSchema,
-  lineItems: z.array(LineItemSchema),
+// Validator for the cart response that gets sent to the user after adding the computed fields
+export const CartResponseSchema = CartSchema.extend({
   totalLineItemQuantity: QuantitySchema,
+});
+
+// Validator for the list of carts that gets sent to the user
+export const CartListResponseSchema = z.object({
+  results: z.array(CartResponseSchema),
+  limit: z.number(),
+  offset: z.number(),
+  count: z.number(),
 });
 
 // Validator used when creating a cart
@@ -34,11 +39,4 @@ export const CartDraftCreateSchema = z.object({
 export const CartDraftUpdateSchema = z.object({
   version: CartVersionSchema,
   actions: ActionsSchema,
-});
-
-export const CartListResponseSchema = z.object({
-  results: z.array(CartSchema),
-  limit: z.number(),
-  offset: z.number(),
-  count: z.number(),
 });

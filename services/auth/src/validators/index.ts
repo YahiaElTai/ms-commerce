@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const UserDraftSchema = z.object({
-  password: z.string().min(5),
+  password: z.string().min(5).max(20),
   email: z.string().email(),
 });
 
@@ -13,5 +13,3 @@ export const UserSchema = z.object({
 export const CookiesSchema = z.object({
   access_token: z.string(),
 });
-
-export const BasicResponseSchema = z.array(z.object({ message: z.string() }));

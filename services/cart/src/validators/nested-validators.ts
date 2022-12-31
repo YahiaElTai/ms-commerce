@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const QuantitySchema = z.number().int().gt(0);
 
-export const IdSchema = z.number().int().positive();
+export const IdSchema = z.number().int();
 
 export const SKUSchema = z.string();
 
