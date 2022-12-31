@@ -34,7 +34,7 @@ helm lint infra/k8s/"$CHART_NAME"
 gcloud container clusters get-credentials "$CLUSTER_NAME" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
 
 if [ "$HELM_RELEASE_NAME" == "ms-ingress" ]; then
-    echo -e "\033[32mUpgrading $CHART_NAME"
+    echo -e "\033[32mUpgrading $HELM_RELEASE_NAME"
     helm upgrade \
         --install \
         --wait \
@@ -50,7 +50,7 @@ else
         --ciphertext-file infra/k8s/"$CHART_NAME"/secrets.yaml.enc \
         --plaintext-file infra/k8s/"$CHART_NAME"/secrets.yaml
 
-    echo -e "\033[32mUpgrading $CHART_NAME"
+    echo -e "\033[32mUpgrading $HELM_RELEASE_NAME"
     helm upgrade \
         --install \
         --wait \
