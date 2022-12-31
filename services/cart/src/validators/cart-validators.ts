@@ -13,11 +13,15 @@ export const CartSchema = z.object({
   id: z.number().positive(),
   version: CartVersionSchema,
   customerEmail: CustomerEmailSchema,
+  createdAt: z.date(),
+  updatedAt: z.date(),
   lineItems: z.array(LineItemSchema),
 });
 
 // Validator for the cart response that gets sent to the user after adding the computed fields
 export const CartResponseSchema = CartSchema.extend({
+  updatedAt: z.string(),
+  createdAt: z.string(),
   totalLineItemQuantity: QuantitySchema,
 });
 

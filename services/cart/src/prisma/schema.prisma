@@ -21,6 +21,8 @@ model LineItem {
 
 model Cart {
   id            Int        @id @default(autoincrement())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   customerEmail String     @db.VarChar(255)
   lineItems     LineItem[]
   version       Int        @default(1)

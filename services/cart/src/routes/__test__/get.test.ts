@@ -38,6 +38,8 @@ describe('when cart is found', () => {
       expect.objectContaining({
         version: 1,
         customerEmail: 'test@test.com',
+        createdAt: validatedCart2.createdAt,
+        updatedAt: validatedCart2.updatedAt,
         totalLineItemQuantity: 12,
         lineItems: [
           { quantity: 12, sku: '1234', id: validatedCart2.lineItems[0]?.id },

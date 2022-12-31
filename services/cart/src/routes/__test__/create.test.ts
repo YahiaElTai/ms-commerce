@@ -64,6 +64,8 @@ describe('when correct draft object is provided', () => {
         version: 1,
         customerEmail: 'test@test.com',
         totalLineItemQuantity: 22,
+        createdAt: validatedCart.createdAt,
+        updatedAt: validatedCart.updatedAt,
         lineItems: [
           { quantity: 12, sku: '123', id: validatedCart.lineItems[0]?.id },
           { quantity: 10, sku: '124', id: validatedCart.lineItems[1]?.id },

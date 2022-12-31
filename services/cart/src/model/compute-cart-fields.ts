@@ -15,6 +15,8 @@ export const computeCartFields = (cart: Cart): CartResponse => {
   return {
     id: cart.id,
     version: cart.version,
+    createdAt: cart.createdAt.toISOString(),
+    updatedAt: cart.updatedAt.toISOString(),
     customerEmail: cart.customerEmail,
     totalLineItemQuantity,
     lineItems: cart.lineItems,

@@ -5,6 +5,8 @@ export const excludeCartIdFromLineItem = {
   id: true,
   version: true,
   customerEmail: true,
+  createdAt: true,
+  updatedAt: true,
   lineItems: {
     select: {
       id: true,

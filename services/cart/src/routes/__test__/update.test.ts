@@ -59,11 +59,16 @@ describe('when correct update action is provided', () => {
       })
       .expect(200);
 
-    expect(updatedResponse.body).toEqual(
+    const validatedCart2 = CartResponseSchema.parse(updatedResponse.body);
+
+    expect(validatedCart2).toEqual(
       expect.objectContaining({
+        id: validatedCart2.id,
         customerEmail: 'test@test.com',
         version: 2,
         totalLineItemQuantity: 17,
+        createdAt: validatedCart2.createdAt,
+        updatedAt: validatedCart2.updatedAt,
       })
     );
   });
