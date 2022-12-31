@@ -4,8 +4,8 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "node build/index.js",
-    "test": "jest --watchAll --no-cache ./src",
-    "test:ci": "jest ./src",
+    "test": "jest --watchAll --no-cache --verbose ./src",
+    "test:ci": "jest --verbose ./src",
     "build": "rimraf build && tsc",
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate --schema=src/prisma/schema.prisma",
