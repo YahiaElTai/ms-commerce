@@ -4,6 +4,7 @@ import { CartsRouter } from './routes/list';
 import { GetCartRouter } from './routes/get';
 import { CreateCartRouter } from './routes/create';
 import { UpdateCartRouter } from './routes/update';
+import { DeleteCartsRouter } from './routes/delete';
 import { errorHandler } from './middlewares';
 import { NotFoundError } from './errors';
 
@@ -15,6 +16,7 @@ app.use(CartsRouter);
 app.use(GetCartRouter);
 app.use(CreateCartRouter);
 app.use(UpdateCartRouter);
+app.use(DeleteCartsRouter);
 
 app.all('*', () => {
   throw new NotFoundError();
