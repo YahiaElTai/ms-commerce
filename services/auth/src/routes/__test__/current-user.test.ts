@@ -28,18 +28,25 @@ const authenticate = async () => {
   return { userId, userEmail };
 };
 
-it('responds with details about current user', async () => {
-  const user = await authenticate();
+describe('when user is authenticated', () => {
+  it('should respond with details about current user', async () => {
+    const user = await authenticate();
 
-  const response = await request(app)
-    .get('/api/users/currentuser')
-    .set({ UserId: user.userId, UserEmail: user.userEmail })
-    .send()
-    .expect(200);
+    const response = await request(app)
+      .get('/api/users/currentuser')
+      .set({ UserId: user.userId, UserEmail: user.userEmail })
+      .send()
+      .expect(200);
 
-  const validatedUser = UserSchema.parse(response.body);
+    const validatedUser = UserSchema.parse(response.body);
 
-  expect(validatedUser.email).toEqual('test3@test.com');
+    expect(validatedUser).toEqual(
+      expect.objectContaining({
+        id: user.userId,
+        email: user.userEmail,
+      })
+    );
+  });
 });
 
 it('responds with 401 if not authenticated', async () => {

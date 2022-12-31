@@ -1,11 +1,12 @@
 import type { NextFunction, Request, Response } from 'express';
+import type { FormattedErrors } from '../validators/types';
 import { CustomError } from '../errors';
 import { ZodError, ZodIssue } from 'zod';
 
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong. If the issue persist, please contact our support team.';
 
-const formatZodError = (err: ZodError) => {
+const formatZodError = (err: ZodError): FormattedErrors[] => {
   const errors = err.flatten((issue: ZodIssue) => ({
     message: issue.message,
     errorCode: issue.code,

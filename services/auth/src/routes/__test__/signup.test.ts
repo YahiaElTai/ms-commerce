@@ -1,66 +1,82 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { UserSchema } from '../../validators';
+import type { FormattedErrors } from '../../validators/types';
 
-it('returns 201 on successful signup', async () => {
-  return request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test5@test.com',
-      password: 'password',
-    })
-    .expect(201);
+describe('when valid email and password are provided', () => {
+  it('should respond with 201 and return the created user', async () => {
+    const response = await request(app)
+      .post('/api/users/signup')
+      .send({
+        email: 'test5@test.com',
+        password: 'password',
+      })
+      .expect(201);
+
+    const validatedUser = UserSchema.parse(response.body);
+
+    expect(validatedUser).toEqual(
+      expect.objectContaining({
+        email: 'test5@test.com',
+        id: validatedUser.id,
+      })
+    );
+  });
+
+  it('sets a cookie after successful signup', async () => {
+    const response = await request(app)
+      .post('/api/users/signup')
+      .send({
+        email: 'test7@test.com',
+        password: 'password',
+      })
+      .expect(201);
+
+    expect(response.get('Set-Cookie')).toBeDefined();
+  });
 });
 
-it('returns 400 with an invalid email', async () => {
-  return request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test.com',
-      password: 'password',
-    })
-    .expect(400);
+describe('when incorrect email or password is provided', () => {
+  it('should respond with 400 and provide helpful error messages', async () => {
+    const response: { body: FormattedErrors[] } = await request(app)
+      .post('/api/users/signup')
+      .send({
+        email: 'test.com',
+        password: 'p',
+      })
+      .expect(400);
+
+    expect(response.body).toHaveLength(2);
+
+    expect(response.body[0]?.message).toBe(
+      'String must contain at least 5 character(s)'
+    );
+    expect(response.body[1]?.message).toBe('Not a valid email');
+  });
+
+  it('should respond with 400 when both email and password are missing', async () => {
+    await request(app).post('/api/users/signup').send({}).expect(400);
+  });
 });
 
-it('returns 400 with an invalid password', async () => {
-  return request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test@test.com',
-      password: 'p',
-    })
-    .expect(400);
-});
+describe('when email is already in use', () => {
+  it('should not allow creating a new user with the same email', async () => {
+    await request(app)
+      .post('/api/users/signup')
+      .send({
+        email: 'test6@test.com',
+        password: 'password',
+      })
+      .expect(201);
 
-it('returns 400 with missing email and password', async () => {
-  return request(app).post('/api/users/signup').send({}).expect(400);
-});
+    const response: { body: { message: string }[] } = await request(app)
+      .post('/api/users/signup')
+      .send({
+        email: 'test6@test.com',
+        password: 'password',
+      })
+      .expect(400);
 
-it('disallows duplicate emails', async () => {
-  await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test6@test.com',
-      password: 'password',
-    })
-    .expect(201);
-
-  return request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test6@test.com',
-      password: 'password',
-    })
-    .expect(400);
-});
-
-it('sets a cookie after successful signup', async () => {
-  const response = await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test7@test.com',
-      password: 'password',
-    })
-    .expect(201);
-
-  expect(response.get('Set-Cookie')).toBeDefined();
+    expect(response.body[0]?.message).toBe('Email is already in use.');
+  });
 });

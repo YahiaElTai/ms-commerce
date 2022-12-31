@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { BadRequestError } from '../errors';
+import { NotFoundError } from '../errors';
 import { prisma } from '../prisma';
 import { IdParamSchema } from '../validators/params-validators';
 
@@ -17,7 +17,7 @@ router.get('/api/carts/:id', async (req: Request, res: Response) => {
   });
 
   if (!cart) {
-    throw new BadRequestError(`Cart with ID '${id}' could not be found`);
+    throw new NotFoundError(`Cart with ID '${id}' could not be found`);
   }
 
   res.send(cart);

@@ -15,7 +15,8 @@ const LineItemsSchema = z
         sku: SKUSchema,
       },
       { required_error: 'SKU and quantity are required on LineItem' }
-    )
+    ),
+    { required_error: 'You must add at least one line item to the cart' }
   )
   .nonempty({ message: 'You must add at least one line item to the cart' });
 
