@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.3
   gcp-cli: circleci/gcp-cli@3.0.1
-  gcp-gcr: circleci/gcp-gcr@0.15.0
+  gcp-gcr: circleci/gcp-gcr@0.15.1
   shellcheck: circleci/shellcheck@3.1.2
   helm: circleci/helm@2.0.1
 
