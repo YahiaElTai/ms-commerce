@@ -1,6 +1,11 @@
 import express, { Request, Response } from 'express';
 import { BadRequestError, VersionMistachError } from '../errors';
 import { computeCartFields } from '../model';
+import {
+  lineItemExistsInCart,
+  validateVariantsExists,
+  variantSKUExistsInCart,
+} from '../utils';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import {
   Actions,
@@ -10,6 +15,12 @@ import {
   RemoveLineItemActionSchema,
 } from '../validators';
 import { IdParamSchema } from '../validators/params-validators';
+
+// Currently there's no information given to the user if one of the update actions fail.
+// If all succeeds then great, the new updated cart will be send to the user
+// if one of them fail, then the execution of update actions will stop as it is an array
+// eg: 10 update actions sent, and the 5th one fails, then 6th ... 10th are not executed
+// and the error of the 5th update action is sent to the user
 
 const router = express.Router();
 
@@ -24,6 +35,7 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
 
   const existingCart = await prisma.cart.findUnique({
     where: { id },
+    select: excludeCartIdFromLineItem,
   });
 
   if (!existingCart) {
@@ -38,6 +50,13 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
     switch (action.type) {
       case Actions.Enum.addLineItem: {
         const validatedAction = AddLineItemActionSchema.parse(action);
+
+        // validate line item doesn't exist already with the provided SKU
+        // if it exists throw an error
+        variantSKUExistsInCart(existingCart, validatedAction.value.sku);
+
+        // validate that a variant exist with the provided sku
+        await validateVariantsExists([validatedAction.value.sku]);
 
         await prisma.cart.update({
           where: { id },
@@ -54,6 +73,10 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
       }
       case Actions.Enum.removeLineItem: {
         const validatedAction = RemoveLineItemActionSchema.parse(action);
+
+        // validate line item does exist already with the provided ID
+        // throw an error if item doesn't exist already
+        lineItemExistsInCart(existingCart, validatedAction.value.id);
 
         await prisma.cart.update({
           where: { id },
@@ -73,6 +96,8 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
       case Actions.Enum.changeLineItemQuantity: {
         const validatedAction =
           ChangeLineItemQuantityActionSchema.parse(action);
+
+        lineItemExistsInCart(existingCart, validatedAction.value.id);
 
         await prisma.cart.update({
           where: { id },
@@ -100,7 +125,13 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
     select: excludeCartIdFromLineItem,
   });
 
-  const computedCart = computeCartFields(updatedCart);
+  if (!updatedCart) {
+    throw new BadRequestError(
+      `Cart with ID '${id}' could not be found. This is likely a server error. If this issue persist, please contact our support team.`
+    );
+  }
+
+  const computedCart = await computeCartFields(updatedCart);
 
   return res.send(computedCart);
 });

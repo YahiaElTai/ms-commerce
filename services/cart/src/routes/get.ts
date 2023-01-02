@@ -21,7 +21,7 @@ router.get('/api/carts/:id', async (req: Request, res: Response) => {
     throw new NotFoundError(`Cart with ID '${id}' could not be found`);
   }
 
-  const computedCart = computeCartFields(cart);
+  const computedCart = await computeCartFields(cart);
 
   res.send(computedCart);
 });

@@ -7,7 +7,7 @@ import type { FormattedErrors } from '../validators';
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong. If the issue persist, please contact our support team.';
 
-const formatZodError = (err: ZodError): FormattedErrors[] => {
+const formatZodError = (err: ZodError): (FormattedErrors | undefined)[] => {
   const errors = err.flatten((issue: ZodIssue) => ({
     message: issue.message,
     errorCode: issue.code,

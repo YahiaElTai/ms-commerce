@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SKUSchema, QuantitySchema, IdSchema } from './nested-validators';
+import { SKUSchema, QuantitySchema, IdSchema } from './common-validators';
 
 // supported update actions to update the cart
 export const Actions = z.enum([

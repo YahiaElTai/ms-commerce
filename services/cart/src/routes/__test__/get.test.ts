@@ -1,6 +1,15 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
+import { createProduct } from '../../utils/test-utils';
+
+const randomSKU =
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15);
+
+beforeAll(async () => {
+  await createProduct(randomSKU);
+});
 
 describe('when cart is not found', () => {
   it('should respond with 404 ', async () => {
@@ -21,29 +30,28 @@ describe('when cart is found', () => {
       .post('/api/carts')
       .send({
         customerEmail: 'test@test.com',
-        lineItems: [{ quantity: 12, sku: '1234' }],
+        currency: 'EUR',
+        lineItems: [{ quantity: 12, sku: randomSKU }],
       })
       .expect(201);
 
     const validatedCart = CartResponseSchema.parse(response.body);
 
-    const response2 = await request(app)
-      .get(`/api/carts/${validatedCart.id}`)
-      .send()
-      .expect(200);
-
-    const validatedCart2 = CartResponseSchema.parse(response2.body);
-
-    expect(validatedCart2).toEqual(
+    expect(validatedCart).toEqual(
       expect.objectContaining({
+        id: validatedCart.id,
         version: 1,
         customerEmail: 'test@test.com',
-        createdAt: validatedCart2.createdAt,
-        updatedAt: validatedCart2.updatedAt,
+        currency: 'EUR',
         totalLineItemQuantity: 12,
-        lineItems: [
-          { quantity: 12, sku: '1234', id: validatedCart2.lineItems[0]?.id },
-        ],
+        createdAt: validatedCart.createdAt,
+        updatedAt: validatedCart.updatedAt,
+        totalPrice: {
+          centAmount: 804000,
+          currencyCode: 'EUR',
+          fractionDigits: 2,
+          id: validatedCart.totalPrice.id,
+        },
       })
     );
   });

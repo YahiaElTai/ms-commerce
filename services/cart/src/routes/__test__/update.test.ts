@@ -1,19 +1,30 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
+import { createProduct } from '../../utils/test-utils';
+
+const randomSKU =
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15);
+
+beforeAll(async () => {
+  await createProduct(randomSKU);
+});
 
 describe('when incorrect update action is provided', () => {
   it('should respond with 400 and helpful error messages', async () => {
-    const createdCart = await request(app)
+    const response = await request(app)
       .post('/api/carts')
       .send({
         customerEmail: 'test@test.com',
-        lineItems: [{ quantity: 12, sku: 'product-sku' }],
-      });
+        currency: 'EUR',
+        lineItems: [{ quantity: 12, sku: randomSKU }],
+      })
+      .expect(201);
 
-    const validatedCart = CartResponseSchema.parse(createdCart.body);
+    const validatedCart = CartResponseSchema.parse(response.body);
 
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response2: { body: FormattedErrors[] } = await request(app)
       .put(`/api/carts/${validatedCart.id}`)
       .send({
         version: 1,
@@ -26,22 +37,22 @@ describe('when incorrect update action is provided', () => {
       })
       .expect(400);
 
-    expect(response.body).toHaveLength(2);
-    expect(response.body[0]?.message).toEqual('Required');
-    expect(response.body[1]?.message).toEqual('Required');
+    expect(response2.body).toHaveLength(1);
+    expect(response2.body[0]?.message).toEqual('Required');
   });
 });
 
 describe('when correct update action is provided', () => {
   it('should respond with 200 and return the updated cart with correct version', async () => {
-    const createdCart = await request(app)
+    const response = await request(app)
       .post('/api/carts')
       .send({
         customerEmail: 'test@test.com',
-        lineItems: [{ quantity: 12, sku: 'sku-1' }],
+        currency: 'EUR',
+        lineItems: [{ quantity: 12, sku: randomSKU }],
       });
 
-    const validatedCart = CartResponseSchema.parse(createdCart.body);
+    const validatedCart = CartResponseSchema.parse(response.body);
 
     const updatedResponse = await request(app)
       .put(`/api/carts/${validatedCart.id}`)
@@ -49,9 +60,11 @@ describe('when correct update action is provided', () => {
         version: 1,
         actions: [
           {
-            type: 'addLineItem',
+            type: 'changeLineItemQuantity',
             value: {
-              sku: 'sku-2',
+              id: validatedCart.lineItems.find(
+                (lineItem) => lineItem.sku === randomSKU
+              )?.id,
               quantity: 5,
             },
           },
@@ -66,7 +79,13 @@ describe('when correct update action is provided', () => {
         id: validatedCart2.id,
         customerEmail: 'test@test.com',
         version: 2,
-        totalLineItemQuantity: 17,
+        totalLineItemQuantity: 5,
+        totalPrice: {
+          centAmount: 335000,
+          currencyCode: 'EUR',
+          fractionDigits: 2,
+          id: validatedCart2.totalPrice.id,
+        },
         createdAt: validatedCart2.createdAt,
         updatedAt: validatedCart2.updatedAt,
       })

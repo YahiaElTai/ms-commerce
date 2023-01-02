@@ -5,6 +5,10 @@ import {
   ParseQueryParamsSchema,
   QueryParamsSchema,
 } from '../validators/params-validators';
+import { CartResponseSchema } from '../validators';
+import type { z } from 'zod';
+
+type CartResponseList = z.infer<typeof CartResponseSchema>;
 
 const router = express.Router();
 
@@ -34,11 +38,20 @@ router.get('/api/carts', async (req: Request, res: Response) => {
     orderBy,
   });
 
+  const computedCarts: CartResponseList[] = [];
+
+  for (const cart of carts) {
+    const computedCart = await computeCartFields(cart);
+    const validatedComputedCart = CartResponseSchema.parse(computedCart);
+
+    computedCarts.push(validatedComputedCart);
+  }
+
   res.send({
     offset,
     limit,
-    count: carts.length,
-    results: carts.map(computeCartFields),
+    count: computedCarts.length,
+    results: computedCarts,
   });
 });
 

@@ -1,6 +1,15 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
+import { createProduct } from '../../utils/test-utils';
+
+const randomSKU =
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15);
+
+beforeAll(async () => {
+  await createProduct(randomSKU);
+});
 
 describe('when cart draft object is not provided', () => {
   it('should respond with 400', async () => {
@@ -9,9 +18,8 @@ describe('when cart draft object is not provided', () => {
       .send({})
       .expect(400);
 
-    expect(response.body).toHaveLength(2);
+    expect(response.body).toHaveLength(3);
     expect(response.body[0]?.message).toBe('Required');
-    expect(response.body[1]?.message).toBe('Required');
   });
 });
 
@@ -22,7 +30,7 @@ describe('when only customer email is provided', () => {
       .send({ customerEmail: 'test@test.com' })
       .expect(400);
 
-    expect(response.body).toHaveLength(1);
+    expect(response.body).toHaveLength(2);
     expect(response.body[0]?.message).toBe('Required');
   });
 });
@@ -49,10 +57,8 @@ describe('when correct draft object is provided', () => {
       .post('/api/carts')
       .send({
         customerEmail: 'test@test.com',
-        lineItems: [
-          { quantity: 12, sku: '123' },
-          { quantity: 10, sku: '124' },
-        ],
+        currency: 'EUR',
+        lineItems: [{ quantity: 12, sku: randomSKU }],
       })
       .expect(201);
 
@@ -63,13 +69,16 @@ describe('when correct draft object is provided', () => {
         id: validatedCart.id,
         version: 1,
         customerEmail: 'test@test.com',
-        totalLineItemQuantity: 22,
+        currency: 'EUR',
+        totalLineItemQuantity: 12,
         createdAt: validatedCart.createdAt,
         updatedAt: validatedCart.updatedAt,
-        lineItems: [
-          { quantity: 12, sku: '123', id: validatedCart.lineItems[0]?.id },
-          { quantity: 10, sku: '124', id: validatedCart.lineItems[1]?.id },
-        ],
+        totalPrice: {
+          centAmount: 804000,
+          currencyCode: 'EUR',
+          fractionDigits: 2,
+          id: validatedCart.totalPrice.id,
+        },
       })
     );
   });
