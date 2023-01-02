@@ -24,6 +24,20 @@ type CartResponse = z.infer<typeof CartResponseSchema>;
 // and then using the found variant and its parent product, computed fields are added to each line item
 
 export const computeCartFields = async (cart: Cart): Promise<CartResponse> => {
+  if (!cart.lineItems.length) {
+    return {
+      ...cart,
+      createdAt: cart.createdAt.toISOString(),
+      updatedAt: cart.updatedAt.toISOString(),
+      totalLineItemQuantity: 0,
+      lineItems: [],
+      totalPrice: {
+        currencyCode: cart.currency,
+        fractionDigits: 2,
+        centAmount: 0,
+      },
+    };
+  }
   const skus = cart.lineItems.map((lineItem) => lineItem.sku);
 
   const validatedProducts = await validateVariantsExists(skus);
@@ -42,7 +56,8 @@ export const computeCartFields = async (cart: Cart): Promise<CartResponse> => {
     const validatedVariant = VariantSchema.parse(variantForLineItem);
 
     const totalPrice = {
-      ...validatedVariant.price,
+      currencyCode: validatedVariant.price.currencyCode,
+      fractionDigits: validatedVariant.price.fractionDigits,
       centAmount: validatedVariant.price.centAmount * lineItem.quantity,
     };
 
@@ -57,8 +72,11 @@ export const computeCartFields = async (cart: Cart): Promise<CartResponse> => {
     };
   });
 
+  const validatedLineItemPrice = PriceSchema.parse(lineItems[0]?.price);
+
   const cartTotalPrice = {
-    ...PriceSchema.parse(lineItems[0]?.price),
+    currencyCode: validatedLineItemPrice.currencyCode,
+    fractionDigits: validatedLineItemPrice.fractionDigits,
     centAmount: lineItems.reduce(
       (acc, current) => acc + current.totalPrice.centAmount,
       0
@@ -71,12 +89,9 @@ export const computeCartFields = async (cart: Cart): Promise<CartResponse> => {
   );
 
   return {
-    id: cart.id,
-    currency: cart.currency,
-    version: cart.version,
+    ...cart,
     createdAt: cart.createdAt.toISOString(),
     updatedAt: cart.updatedAt.toISOString(),
-    customerEmail: cart.customerEmail,
     totalLineItemQuantity,
     totalPrice: cartTotalPrice,
     lineItems,

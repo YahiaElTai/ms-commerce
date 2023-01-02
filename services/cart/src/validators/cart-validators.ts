@@ -4,6 +4,7 @@ import {
   LineItemSchema,
   LineItemDraftSchema,
   LineItemResponseSchema,
+  LineItemPriceSchema,
 } from './line-item-validators';
 import {
   CurrencySchema,
@@ -12,7 +13,6 @@ import {
   QuantitySchema,
   VersionSchema,
 } from './common-validators';
-import { PriceSchema } from './product-validators';
 
 // validator for the initial created cart before adding the computed fields
 export const CartSchema = z.object({
@@ -35,7 +35,7 @@ export const CartResponseSchema = z.object({
   createdAt: z.string(),
   lineItems: z.array(LineItemResponseSchema),
   totalLineItemQuantity: QuantitySchema,
-  totalPrice: PriceSchema,
+  totalPrice: LineItemPriceSchema,
 });
 
 // Validator for the list of carts that gets sent to the user

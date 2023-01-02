@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
-import { createProduct } from '../../utils/test-utils';
+import { createCart, createProduct } from '../../utils/test-utils';
 
 const randomSKU =
   Math.random().toString(36).substring(2, 15) +
@@ -26,14 +26,7 @@ describe('when cart is not found', () => {
 
 describe('when cart is found', () => {
   it('should respond with the found cart', async () => {
-    const response = await request(app)
-      .post('/api/carts')
-      .send({
-        customerEmail: 'test@test.com',
-        currency: 'EUR',
-        lineItems: [{ quantity: 12, sku: randomSKU }],
-      })
-      .expect(201);
+    const response = await createCart(randomSKU);
 
     const validatedCart = CartResponseSchema.parse(response.body);
 
@@ -50,7 +43,6 @@ describe('when cart is found', () => {
           centAmount: 804000,
           currencyCode: 'EUR',
           fractionDigits: 2,
-          id: validatedCart.totalPrice.id,
         },
       })
     );

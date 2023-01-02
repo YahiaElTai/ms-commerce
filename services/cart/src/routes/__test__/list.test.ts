@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartListResponseSchema, FormattedErrors } from '../../validators';
-import { createProduct } from '../../utils/test-utils';
+import { createCart, createProduct } from '../../utils/test-utils';
 
 const randomSKU =
   Math.random().toString(36).substring(2, 15) +
@@ -13,20 +13,14 @@ beforeAll(async () => {
 
 describe('when no pagination or sorting is provided', () => {
   it('should responds with list of carts with default pagination and sorting', async () => {
-    await request(app)
-      .post('/api/carts')
-      .send({
-        customerEmail: 'test@test.com',
-        currency: 'EUR',
-        lineItems: [{ quantity: 12, sku: randomSKU }],
-      })
-      .expect(201);
+    await createCart(randomSKU);
 
     const response = await request(app).get('/api/carts').send().expect(200);
 
     const validatedResponse = CartListResponseSchema.parse(response.body);
 
     expect(validatedResponse.results.length).toBeGreaterThan(0);
+    expect(validatedResponse.results[0]?.currency).toBe('EUR');
     expect(validatedResponse.offset).toBe(0);
     expect(validatedResponse.limit).toBe(20);
     expect(validatedResponse.count).toBeDefined();
@@ -35,14 +29,7 @@ describe('when no pagination or sorting is provided', () => {
 
 describe('when pagination and sorting is provided', () => {
   it('should responds with list of carts with provided pagination and sorting', async () => {
-    await request(app)
-      .post('/api/carts')
-      .send({
-        customerEmail: 'test@test.com',
-        currency: 'EUR',
-        lineItems: [{ quantity: 12, sku: randomSKU }],
-      })
-      .expect(201);
+    await createCart(randomSKU);
 
     const response = await request(app)
       .get(
@@ -54,6 +41,7 @@ describe('when pagination and sorting is provided', () => {
     const validatedResponse = CartListResponseSchema.parse(response.body);
 
     expect(validatedResponse.results.length).toBeGreaterThan(0);
+    expect(validatedResponse.results[0]?.currency).toBe('EUR');
     expect(validatedResponse.offset).toBe(0);
     expect(validatedResponse.limit).toBe(10);
     expect(validatedResponse.count).toBeDefined();

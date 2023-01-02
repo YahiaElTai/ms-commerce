@@ -5,12 +5,21 @@ import {
   ProductKeySchema,
   QuantitySchema,
   SKUSchema,
+  CentAmountSchema,
+  CurrencySchema,
+  FractionDigitsSchema,
+  QuantityDraftSchema,
 } from './common-validators';
-import { PriceSchema } from './product-validators';
+
+export const LineItemPriceSchema = z.object({
+  centAmount: CentAmountSchema,
+  currencyCode: CurrencySchema,
+  fractionDigits: FractionDigitsSchema,
+});
 
 // validator for creating a line item, sku is required to fetch the correct variant data.
 export const LineItemDraftSchema = z.object({
-  quantity: QuantitySchema,
+  quantity: QuantityDraftSchema,
   sku: SKUSchema,
 });
 
@@ -26,8 +35,8 @@ export const LineItemResponseSchema = z.object({
   id: IdSchema,
   quantity: QuantitySchema,
   sku: SKUSchema,
-  price: PriceSchema,
-  totalPrice: PriceSchema,
+  price: LineItemPriceSchema,
+  totalPrice: LineItemPriceSchema,
   productName: ProductNameSchema,
   productKey: ProductKeySchema,
 });

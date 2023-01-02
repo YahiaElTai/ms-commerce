@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
-import { createProduct } from '../../utils/test-utils';
+import { createCart, createProduct } from '../../utils/test-utils';
 
 const randomSKU =
   Math.random().toString(36).substring(2, 15) +
@@ -13,14 +13,7 @@ beforeAll(async () => {
 
 describe('when incorrect update action is provided', () => {
   it('should respond with 400 and helpful error messages', async () => {
-    const response = await request(app)
-      .post('/api/carts')
-      .send({
-        customerEmail: 'test@test.com',
-        currency: 'EUR',
-        lineItems: [{ quantity: 12, sku: randomSKU }],
-      })
-      .expect(201);
+    const response = await createCart(randomSKU);
 
     const validatedCart = CartResponseSchema.parse(response.body);
 
@@ -42,15 +35,56 @@ describe('when incorrect update action is provided', () => {
   });
 });
 
-describe('when correct update action is provided', () => {
-  it('should respond with 200 and return the updated cart with correct version', async () => {
-    const response = await request(app)
-      .post('/api/carts')
+describe('when addLineItem update action is provided', () => {
+  const randomSKU2 =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
+
+  beforeEach(async () => {
+    await createProduct(randomSKU2);
+  });
+
+  it('should add the line item and recalculate the cart', async () => {
+    const response = await createCart(randomSKU);
+
+    const validatedCart = CartResponseSchema.parse(response.body);
+
+    const updatedResponse = await request(app)
+      .put(`/api/carts/${validatedCart.id}`)
       .send({
-        customerEmail: 'test@test.com',
-        currency: 'EUR',
-        lineItems: [{ quantity: 12, sku: randomSKU }],
-      });
+        version: 1,
+        actions: [
+          {
+            type: 'addLineItem',
+            value: {
+              sku: randomSKU2,
+              quantity: 6,
+            },
+          },
+        ],
+      })
+      .expect(200);
+
+    const validatedCart2 = CartResponseSchema.parse(updatedResponse.body);
+
+    expect(validatedCart2).toEqual(
+      expect.objectContaining({
+        id: validatedCart2.id,
+        version: 2,
+        totalLineItemQuantity: 18,
+        totalPrice: {
+          centAmount: 1206000,
+          currencyCode: 'EUR',
+          fractionDigits: 2,
+        },
+      })
+    );
+  });
+});
+
+describe('when changeLineItemQuantity update action is provided', () => {
+  it('should update the quantity and recalculate the cart', async () => {
+    const response = await createCart(randomSKU);
 
     const validatedCart = CartResponseSchema.parse(response.body);
 
@@ -77,17 +111,52 @@ describe('when correct update action is provided', () => {
     expect(validatedCart2).toEqual(
       expect.objectContaining({
         id: validatedCart2.id,
-        customerEmail: 'test@test.com',
         version: 2,
         totalLineItemQuantity: 5,
         totalPrice: {
           centAmount: 335000,
           currencyCode: 'EUR',
           fractionDigits: 2,
-          id: validatedCart2.totalPrice.id,
         },
-        createdAt: validatedCart2.createdAt,
-        updatedAt: validatedCart2.updatedAt,
+      })
+    );
+  });
+});
+
+describe('when removeLineItem update action is provided', () => {
+  it('should remove the item and recalculate the cart', async () => {
+    const response = await createCart(randomSKU);
+
+    const validatedCart = CartResponseSchema.parse(response.body);
+
+    const updatedResponse = await request(app)
+      .put(`/api/carts/${validatedCart.id}`)
+      .send({
+        version: 1,
+        actions: [
+          {
+            type: 'removeLineItem',
+            value: {
+              id: validatedCart.lineItems.find(
+                (lineItem) => lineItem.sku === randomSKU
+              )?.id,
+            },
+          },
+        ],
+      });
+
+    const validatedCart2 = CartResponseSchema.parse(updatedResponse.body);
+    expect(validatedCart2).toEqual(
+      expect.objectContaining({
+        id: validatedCart2.id,
+        version: 2,
+        totalLineItemQuantity: 0,
+        lineItems: [],
+        totalPrice: {
+          centAmount: 0,
+          currencyCode: 'EUR',
+          fractionDigits: 2,
+        },
       })
     );
   });

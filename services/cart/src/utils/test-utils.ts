@@ -18,3 +18,13 @@ export const createProduct = (sku: string) =>
       ],
     })
     .expect(201);
+
+export const createCart = (sku: string) =>
+  request(app)
+    .post('/api/carts')
+    .send({
+      customerEmail: 'test@test.com',
+      currency: 'EUR',
+      lineItems: [{ quantity: 12, sku }],
+    })
+    .expect(201);
