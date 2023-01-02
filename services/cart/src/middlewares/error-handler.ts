@@ -12,9 +12,11 @@ const formatZodError = (err: ZodError): FormattedErrors[] => {
     message: issue.message,
     errorCode: issue.code,
     path: issue.path,
-  })).fieldErrors;
+  }));
 
-  return Object.values(errors).flatMap((err) => err);
+  return Object.values(errors.fieldErrors)
+    .flatMap((err) => err)
+    .concat(errors.formErrors);
 };
 
 export const errorHandler = (

@@ -4,6 +4,7 @@
 export const excludeCartIdFromLineItem = {
   id: true,
   version: true,
+  currency: true,
   customerEmail: true,
   createdAt: true,
   updatedAt: true,
@@ -12,6 +13,29 @@ export const excludeCartIdFromLineItem = {
       id: true,
       quantity: true,
       sku: true,
+    },
+  },
+};
+
+export const excludeIdsFromProduct = {
+  id: true,
+  name: true,
+  description: true,
+  createdAt: true,
+  updatedAt: true,
+  version: true,
+  productKey: true,
+  variants: {
+    select: {
+      id: true,
+      sku: true,
+      price: {
+        select: {
+          centAmount: true,
+          currencyCode: true,
+          fractionDigits: true,
+        },
+      },
     },
   },
 };

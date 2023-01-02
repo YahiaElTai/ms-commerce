@@ -7,6 +7,8 @@ import { UpdateCartRouter } from './routes/update';
 import { DeleteCartsRouter } from './routes/delete';
 import { errorHandler } from './middlewares';
 import { NotFoundError } from './errors';
+import { CreateProductRouter } from './routes/products/create';
+import { ProductsRouter } from './routes/products/list';
 
 const app = express();
 app.set('trust proxy', true);
@@ -17,6 +19,10 @@ app.use(GetCartRouter);
 app.use(CreateCartRouter);
 app.use(UpdateCartRouter);
 app.use(DeleteCartsRouter);
+
+// products routes as a temp solution here until product service is built and can start publishing events
+app.use(CreateProductRouter);
+app.use(ProductsRouter);
 
 app.all('*', () => {
   throw new NotFoundError();
