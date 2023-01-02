@@ -7,6 +7,8 @@ it('clears the cookie after signing out', async () => {
     .send({
       email: 'test4@test.com',
       password: 'password',
+      firstName: 'Test',
+      lastName: 'User',
     })
     .expect(201);
 

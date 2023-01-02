@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { BadRequestError } from '../errors';
-import { prisma } from '../prisma';
+import { excludePasswordFromUser, prisma } from '../prisma';
 import { generateToken } from '../utils';
 import { UserDraftSchema } from '../validators';
 
@@ -12,7 +12,9 @@ router.post(
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const { email, password } = UserDraftSchema.parse(req.body);
+    const { email, password, firstName, lastName } = UserDraftSchema.parse(
+      req.body
+    );
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -23,8 +25,8 @@ router.post(
     }
 
     const user = await prisma.user.create({
-      data: { email, password },
-      select: { id: true, email: true },
+      data: { email, password, firstName, lastName },
+      select: excludePasswordFromUser,
     });
 
     const token = generateToken(user.id, user.email);

@@ -10,6 +10,8 @@ describe('when valid email and password are provided', () => {
       .send({
         email: 'test5@test.com',
         password: 'password',
+        firstName: 'Test',
+        lastName: 'User',
       })
       .expect(201);
 
@@ -19,6 +21,8 @@ describe('when valid email and password are provided', () => {
       expect.objectContaining({
         email: 'test5@test.com',
         id: validatedUser.id,
+        firstName: 'Test',
+        lastName: 'User',
       })
     );
   });
@@ -29,6 +33,8 @@ describe('when valid email and password are provided', () => {
       .send({
         email: 'test7@test.com',
         password: 'password',
+        firstName: 'Test',
+        lastName: 'User',
       })
       .expect(201);
 
@@ -48,10 +54,10 @@ describe('when incorrect email or password is provided', () => {
 
     expect(response.body).toHaveLength(2);
 
-    expect(response.body[0]?.message).toBe(
+    expect(response.body[0]?.message).toBe('Invalid email');
+    expect(response.body[1]?.message).toBe(
       'String must contain at least 5 character(s)'
     );
-    expect(response.body[1]?.message).toBe('Invalid email');
   });
 
   it('should respond with 400 when both email and password are missing', async () => {

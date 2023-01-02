@@ -6,10 +6,12 @@ const authenticate = async () => {
   // sign in to get the cookie
   const email = 'test3@test.com';
   const password = 'password';
+  const firstName = 'Test';
+  const lastName = 'User';
 
   const signupResponse = await request(app)
     .post('/api/users/signup')
-    .send({ email, password })
+    .send({ email, password, firstName, lastName })
     .expect(201);
 
   const cookie = signupResponse.get('Set-Cookie');
@@ -25,7 +27,7 @@ const authenticate = async () => {
   const userId = authenticateResponse.get('UserId');
   const userEmail = authenticateResponse.get('UserEmail');
 
-  return { userId, userEmail };
+  return { userId, userEmail, firstName, lastName };
 };
 
 describe('when user is authenticated', () => {
@@ -42,8 +44,10 @@ describe('when user is authenticated', () => {
 
     expect(validatedUser).toEqual(
       expect.objectContaining({
-        id: user.userId,
+        id: parseInt(user.userId),
         email: user.userEmail,
+        firstName: user.firstName,
+        lastName: user.lastName,
       })
     );
   });
