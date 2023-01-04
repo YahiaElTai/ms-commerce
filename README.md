@@ -17,10 +17,10 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 ### Services
 
-> Each service has basic CRUD operations with a highly simplified schema.
+> Most services have a README.md to give a general overview of how they work.
 
 1. **Authentication** ✅
-2. **Cart** ⏳
+2. **[Cart](/services/cart/README.md)** ⏳
 3. **Product** ⏳
 4. **Customer** ⏳
 5. **Order** ⏳
@@ -32,6 +32,12 @@ The project is a simplified version of commercetools HTTP API written as microse
 8. **Settings** ⏳
 
    Inlcudes: Taxes, Shipping methods, Currencies, Countries
+
+### High level overview of services by language
+
+- [Services written in TypeScript](/docs/OVERVIEW_TYPESCRIPT.md)
+
+- [Services written in Golang](/docs/OVERVIEW_GOLANG.md)
 
 ### API Documentation
 

@@ -1,4 +1,4 @@
-### Local development setup
+## Local development setup
 
 There are 2 options to start developing locally:
 
