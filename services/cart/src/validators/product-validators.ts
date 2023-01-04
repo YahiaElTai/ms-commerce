@@ -27,7 +27,7 @@ export const ProductDraftSchema = z.object({
   name: ProductNameSchema,
   description: DescriptionSchema,
   productKey: ProductKeySchema,
-  variants: z.array(VariantDraftSchema).nonempty(),
+  variants: z.array(VariantDraftSchema),
 });
 
 // validators are used to validate already created resources
@@ -52,5 +52,5 @@ export const ProductSchema = z.object({
   name: ProductNameSchema,
   description: DescriptionSchema,
   productKey: ProductKeySchema,
-  variants: z.array(VariantSchema).nonempty(),
+  variants: z.array(VariantSchema),
 });

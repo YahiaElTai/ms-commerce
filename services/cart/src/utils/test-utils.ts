@@ -3,7 +3,7 @@ import { app } from '../app';
 
 export const createProduct = (sku: string) =>
   request(app)
-    .post('/api/products')
+    .post('/api/carts/products')
     .send({
       name: 'HM pants',
       productKey: 'hm-pants-key',

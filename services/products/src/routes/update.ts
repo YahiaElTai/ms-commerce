@@ -1,0 +1,132 @@
+import express, { Request, Response } from 'express';
+import { BadRequestError, VersionMistachError } from '../errors';
+import { computeProductFields } from '../model';
+import { excludeIdsFromProduct, prisma } from '../prisma';
+import {
+  Actions,
+  ProductDraftUpdateSchema,
+  addVariantActionSchema,
+  removeVariantActionSchema,
+  changeVariantPriceActionSchema,
+  IdParamSchema,
+} from '../validators';
+
+// Currently there's no information given to the user if one of the update actions fail.
+// If all succeeds then great, the new updated product will be send to the user
+// if one of them fail, then the execution of update actions will stop as it is an array
+// eg: 10 update actions sent, and the 5th one fails, then 6th ... 10th are not executed
+// and the error of the 5th update action is sent to the user
+
+const router = express.Router();
+
+// As of Express@5 This syntax is supported however the types are not updated yet
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+router.put('/api/products/:id', async (req: Request, res: Response) => {
+  // Validate ID and parse it into a number as required by PostgreSQL
+  const { id } = IdParamSchema.parse(req.params);
+
+  const { actions, version } = ProductDraftUpdateSchema.parse(req.body);
+
+  const existingProduct = await prisma.product.findUnique({
+    where: { id },
+    select: excludeIdsFromProduct,
+  });
+
+  if (!existingProduct) {
+    throw new BadRequestError(`Product with ID '${id}' could not be found`);
+  }
+
+  if (existingProduct.version !== version) {
+    throw new VersionMistachError();
+  }
+
+  for (const action of actions) {
+    switch (action.type) {
+      case Actions.Enum.addVariant: {
+        const validatedAction = addVariantActionSchema.parse(action);
+
+        const createdVariant = await prisma.variant.create({
+          data: {
+            sku: validatedAction.value.sku,
+            price: {
+              create: validatedAction.value.price,
+            },
+          },
+        });
+
+        await prisma.product.update({
+          where: { id },
+          data: {
+            variants: {
+              connect: [{ id: createdVariant.id }],
+            },
+            version: {
+              increment: 1,
+            },
+          },
+        });
+        break;
+      }
+      case Actions.Enum.removeVariant: {
+        const validatedAction = removeVariantActionSchema.parse(action);
+
+        await prisma.product.update({
+          where: { id },
+          data: {
+            variants: {
+              delete: {
+                id: validatedAction.value.id,
+              },
+            },
+            version: {
+              increment: 1,
+            },
+          },
+        });
+        break;
+      }
+      case Actions.Enum.changeVariantPrice: {
+        const validatedAction = changeVariantPriceActionSchema.parse(action);
+
+        await prisma.product.update({
+          where: { id },
+          data: {
+            variants: {
+              update: {
+                where: { id: validatedAction.value.id },
+                data: {
+                  price: {
+                    update: validatedAction.value.price,
+                  },
+                },
+              },
+            },
+            version: {
+              increment: 1,
+            },
+          },
+        });
+
+        break;
+      }
+    }
+  }
+
+  const updatedProduct = await prisma.product.findUnique({
+    where: { id },
+    select: excludeIdsFromProduct,
+  });
+
+  if (!updatedProduct) {
+    throw new BadRequestError(
+      `Product with ID '${id}' could not be found. This is likely a server error. If this issue persist, please contact our support team.`
+    );
+  }
+
+  const computedProduct = computeProductFields(updatedProduct);
+
+  return res.send(computedProduct);
+});
+
+export { router as UpdateProductRouter };

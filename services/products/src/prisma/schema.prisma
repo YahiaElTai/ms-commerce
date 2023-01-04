@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Currency {
+  EUR
+  USD
+  GBP
+}
+
+model Price {
+  id             Int      @id @default(autoincrement())
+  centAmount     Int
+  currencyCode   Currency @default(EUR)
+  fractionDigits Int      @default(2)
+  variant        Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId      Int?     @unique
+}
+
+model Variant {
+  id        Int      @id @default(autoincrement())
+  sku       String   @unique
+  price     Price?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId Int?
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  name        String
+  description String?
+  productKey  String?
+  variants    Variant[]
+  version     Int       @default(1)
+}

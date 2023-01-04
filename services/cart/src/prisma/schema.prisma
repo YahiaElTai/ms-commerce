@@ -18,8 +18,8 @@ model Price {
   centAmount     Int
   currencyCode   Currency @default(EUR)
   fractionDigits Int      @default(2)
-  variant        Variant  @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId      Int      @unique
+  variant        Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId      Int?     @unique
 }
 
 model Variant {

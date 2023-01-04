@@ -1,0 +1,18 @@
+ARG NODE_VERSION="19.3.0"
+ARG ALPINE_VERSION="3.17"
+
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
+
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+RUN yarn prisma generate --schema=src/prisma/schema.prisma
+
+EXPOSE 3002
+
+CMD ["yarn", "run", "dev"]

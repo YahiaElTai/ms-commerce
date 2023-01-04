@@ -1,31 +1,30 @@
 import express, { Request, Response } from 'express';
-import { excludeIdsFromProduct, prisma } from '../../prisma';
-import {
-  ProductDraftSchema,
-  VariantDraftSchema,
-} from '../../validators/product-validators';
+import { computeProductFields } from '../model';
+import { excludeIdsFromProduct, prisma } from '../prisma';
+import { ProductDraftSchema } from '../validators';
 
 const router = express.Router();
 
 router.post(
-  '/api/carts/products',
+  '/api/products',
   // As of Express@5 This syntax is supported however the types are not updated yet
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const { variants, name, productKey, description } =
+    const { description, name, productKey, variants } =
       ProductDraftSchema.parse(req.body);
 
-    const validatedVariant = VariantDraftSchema.parse(variants[0]);
-
-    const variant = await prisma.variant.create({
-      data: {
-        sku: validatedVariant.sku,
-        price: {
-          create: validatedVariant.price,
+    // create all variants
+    for (const variant of variants) {
+      await prisma.variant.create({
+        data: {
+          sku: variant.sku,
+          price: {
+            create: variant.price,
+          },
         },
-      },
-    });
+      });
+    }
 
     const product = await prisma.product.create({
       data: {
@@ -33,13 +32,15 @@ router.post(
         productKey,
         description,
         variants: {
-          connect: { id: variant.id },
+          connect: variants.map((variant) => ({ sku: variant.sku })),
         },
       },
       select: excludeIdsFromProduct,
     });
 
-    res.status(201).send(product);
+    const computedProduct = computeProductFields(product);
+
+    res.status(201).send(computedProduct);
   }
 );
 

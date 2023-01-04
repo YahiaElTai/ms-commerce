@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { SKUSchema, QuantitySchema, IdSchema } from './common-validators';
+import { QuantitySchema, IdSchema } from './common-validators';
+import { LineItemDraftSchema } from './line-item-validators';
 
 // supported update actions to update the cart
 export const Actions = z.enum([
@@ -11,10 +12,7 @@ export const Actions = z.enum([
 // Validators for update actions used to update the cart
 export const AddLineItemActionSchema = z.object({
   type: z.literal(Actions.Enum.addLineItem),
-  value: z.object({
-    quantity: QuantitySchema,
-    sku: SKUSchema,
-  }),
+  value: LineItemDraftSchema,
 });
 
 export const RemoveLineItemActionSchema = z.object({
@@ -32,11 +30,9 @@ export const ChangeLineItemQuantityActionSchema = z.object({
   }),
 });
 
-export const ActionsSchema = z
-  .array(
-    z.object({
-      type: Actions,
-      value: z.record(z.union([z.string(), z.number()])),
-    })
-  )
-  .nonempty();
+export const ActionsSchema = z.array(
+  z.object({
+    type: Actions,
+    value: z.record(z.union([z.string(), z.number()])),
+  })
+);

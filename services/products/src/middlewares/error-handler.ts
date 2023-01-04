@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import { CustomError } from '../errors';
 import { ZodError, ZodIssue } from 'zod';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import type { FormattedErrors } from '../validators';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong. If the issue persist, please contact our support team.';
@@ -32,15 +32,6 @@ export const errorHandler = (
 
   if (err instanceof CustomError) {
     return res.status(err.statusCode).send([{ message: err.message }]);
-  }
-
-  // This logic can be refactored to account for other relevant error codes from Prisma
-  if (err instanceof PrismaClientKnownRequestError && err.code === 'P2017') {
-    return res
-      .status(400)
-      .send([
-        { message: 'The Line item id provided does not exist on this cart.' },
-      ]);
   }
 
   // This logic can be refactored to account for other relevant error codes from Prisma
