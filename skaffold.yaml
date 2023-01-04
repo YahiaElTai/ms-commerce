@@ -12,6 +12,10 @@ build:
       context: services/cart
       docker:
         dockerfile: Dockerfile.dev
+    - image: yahiaeltai/product
+      context: services/product
+      docker:
+        dockerfile: Dockerfile.dev
 manifests:
   rawYaml:
     - infra/k8s-dev/*

@@ -19,6 +19,10 @@ cart)
     DATABASE_URL=postgresql://prisma:prisma@localhost:5435/prisma
     ;;
 
+product)
+    DATABASE_URL=postgresql://prisma:prisma@localhost:5436/prisma
+    ;;
+
 *)
     DATABASE_URL=postgresql://prisma:prisma@localhost:5432/prisma
     ;;

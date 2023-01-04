@@ -12,3 +12,7 @@ ingress:
       path: /api/carts/?(.*)
       port: 3001
       pathType: Prefix
+    - name: ms-commerce-product
+      path: /api/products/?(.*)
+      port: 3002
+      pathType: Prefix

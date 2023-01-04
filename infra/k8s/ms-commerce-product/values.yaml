@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/ms-commerce-auto-1/ms-commerce/product
+  pullPolicy: IfNotPresent
+  tag: 'latest'
+
+nameOverride: 'product'
+
+serviceAccount:
+  name: 'ksa-cloud-sql-product'
+  annotations:
+    iam.gke.io/gcp-service-account: gke-cloud-sql-service-account@ms-commerce-auto-1.iam.gserviceaccount.com
+
+service:
+  type: ClusterIP
+  ports:
+    - name: internal-port
+      port: 3001
+      targetPort: 3001
+    - name: status-port
+      port: 9000
+      targetPort: 9000
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+rollingUpdateStrategy:
+  maxSurge: 1
+  maxUnavailable: 0
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 384Mi
+  limits:
+    memory: 384Mi
+    cpu: 300m
+
+postgresql:
+  name: cloud-sql-proxy
+  image: gcr.io/cloudsql-docker/gce-proxy:latest
+  instance: ms-commerce-auto-1:europe-west1:ms-commerce=tcp:5432
+
+# Secrets are encryped with Cloud KMS
+secrets: {}

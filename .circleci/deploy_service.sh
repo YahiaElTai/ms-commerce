@@ -10,7 +10,7 @@ set -e
 : "${GIT_REVISION?Required env variable GIT_REVISION}"
 
 apply_prisma_migrations() {
-    if [ "$HELM_RELEASE_NAME" == "ms-auth" ] || [ "$HELM_RELEASE_NAME" == "ms-cart" ]; then
+    if [ "$HELM_RELEASE_NAME" == "ms-auth" ] || [ "$HELM_RELEASE_NAME" == "ms-cart" ] || [ "$HELM_RELEASE_NAME" == "ms-product" ]; then
         echo -e "\033[32mApplying pending Prisma migrations from inside K8s pod"
 
         # Get the name of one of the settings pods running

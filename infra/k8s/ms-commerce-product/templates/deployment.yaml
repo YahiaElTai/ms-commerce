@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ms-commerce-product.fullname" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "ms-commerce-product.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+{{ toYaml .Values.rollingUpdateStrategy | indent 6 }}
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        {{- include "ms-commerce-product.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{  .Values.serviceAccount.name }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env: 
+            {{- $chartName := .Chart.Name -}}
+            {{- range $key, $val := .Values.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $chartName }}-secret
+                  key: {{ $key }}
+              {{- end}}
+            - name: ROARR_LOG
+              value: 'true'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            {{- range $key, $val := .Values.service.ports }}
+              - name: {{ $val.name }}
+                containerPort: {{ $val.port }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 9000
+            failureThreshold: 5
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+        - name: {{ .Values.postgresql.name | quote }}
+          image: {{ .Values.postgresql.image | quote }}
+          command:
+            - "/cloud_sql_proxy"
+            - {{ include "ms-commerce-product.postgresql-instances" . }}
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
