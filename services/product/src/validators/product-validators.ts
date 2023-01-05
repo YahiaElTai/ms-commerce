@@ -32,6 +32,7 @@ export const ProductDraftSchema = z.object({
 
 // validators used to validate already created resources -----------------
 export const PriceSchema = z.object({
+  id: IdSchema,
   centAmount: CentAmountSchema,
   currencyCode: CurrencySchema,
   fractionDigits: FractionDigitsSchema,
@@ -40,7 +41,7 @@ export const PriceSchema = z.object({
 export const VariantSchema = z.object({
   id: IdSchema,
   sku: SKUSchema,
-  price: PriceSchema.nullable(),
+  price: PriceSchema,
 });
 
 export const ProductSchema = z.object({

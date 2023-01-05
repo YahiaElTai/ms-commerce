@@ -6,6 +6,7 @@ import {
   ParseQueryParamsSchema,
   QueryParamsSchema,
   ProductResponseSchema,
+  ProductSchema,
 } from '../validators';
 
 type ProductResponse = z.infer<typeof ProductResponseSchema>;
@@ -41,7 +42,9 @@ router.get('/api/products', async (req: Request, res: Response) => {
   const computedProducts: ProductResponse[] = [];
 
   for (const product of products) {
-    const computedProduct = computeProductFields(product);
+    const validatedProduct = ProductSchema.parse(product);
+    const computedProduct = computeProductFields(validatedProduct);
+
     const validatedComputedProduct =
       ProductResponseSchema.parse(computedProduct);
 

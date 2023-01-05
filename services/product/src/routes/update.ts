@@ -9,6 +9,7 @@ import {
   removeVariantActionSchema,
   changeVariantPriceActionSchema,
   IdParamSchema,
+  ProductSchema,
 } from '../validators';
 
 // Currently there's no information given to the user if one of the update actions fail.
@@ -124,7 +125,9 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
     );
   }
 
-  const computedProduct = computeProductFields(updatedProduct);
+  const validatedProduct = ProductSchema.parse(updatedProduct);
+
+  const computedProduct = computeProductFields(validatedProduct);
 
   return res.send(computedProduct);
 });

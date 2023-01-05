@@ -15,6 +15,7 @@ export const excludeIdsFromProduct = {
       sku: true,
       price: {
         select: {
+          id: true,
           centAmount: true,
           currencyCode: true,
           fractionDigits: true,

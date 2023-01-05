@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { computeProductFields } from '../model';
 import { excludeIdsFromProduct, prisma } from '../prisma';
-import { ProductDraftSchema } from '../validators';
+import { ProductDraftSchema, ProductSchema } from '../validators';
 
 const router = express.Router();
 
@@ -38,7 +38,9 @@ router.post(
       select: excludeIdsFromProduct,
     });
 
-    const computedProduct = computeProductFields(product);
+    const validatedProduct = ProductSchema.parse(product);
+
+    const computedProduct = computeProductFields(validatedProduct);
 
     res.status(201).send(computedProduct);
   }

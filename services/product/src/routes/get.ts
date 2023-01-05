@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import { computeProductFields } from '../model';
 import { excludeIdsFromProduct, prisma } from '../prisma';
-import { IdParamSchema } from '../validators';
+import { IdParamSchema, ProductSchema } from '../validators';
 
 const router = express.Router();
 
@@ -21,7 +21,9 @@ router.get('/api/products/:id', async (req: Request, res: Response) => {
     throw new NotFoundError(`Product with ID '${id}' could not be found`);
   }
 
-  const computedProduct = computeProductFields(product);
+  const validatedProduct = ProductSchema.parse(product);
+
+  const computedProduct = computeProductFields(validatedProduct);
 
   res.send(computedProduct);
 });
