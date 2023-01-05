@@ -81,7 +81,7 @@ describe('when addLineItem update action is provided', () => {
         updatedAt: validatedCart2.updatedAt,
         totalLineItemQuantity: 18,
         totalPrice: {
-          id: 2,
+          id: 1,
           centAmount: 1206000,
           currencyCode: 'EUR',
           fractionDigits: 2,
@@ -133,7 +133,7 @@ describe('when changeLineItemQuantity update action is provided', () => {
         version: 2,
         totalLineItemQuantity: 5,
         totalPrice: {
-          id: 2,
+          id: 1,
           centAmount: 335000,
           currencyCode: 'EUR',
           fractionDigits: 2,

@@ -5,7 +5,6 @@ type Cart = z.infer<typeof CartSchema>;
 
 type CartResponse = z.infer<typeof CartResponseSchema>;
 
-// When a cart is created, at least one line item must be cretaed
 // to create a line item, a variant sku is provided. This sku is stored on the line item.
 // with that sku we can fetch the variant and its associated product
 
@@ -52,7 +51,7 @@ export const computeCartFields = (cart: Cart): CartResponse => {
   const validatedLineItemPrice = PriceSchema.parse(lineItems[0]?.price);
 
   const cartTotalPrice = {
-    id: 2,
+    id: 1,
     currencyCode: validatedLineItemPrice.currencyCode,
     fractionDigits: validatedLineItemPrice.fractionDigits,
     centAmount: lineItems.reduce(

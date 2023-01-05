@@ -75,7 +75,7 @@ describe('when correct draft object is provided', () => {
         createdAt: validatedCart.createdAt,
         updatedAt: validatedCart.updatedAt,
         totalPrice: {
-          id: 2,
+          id: 1,
           centAmount: 804000,
           currencyCode: 'EUR',
           fractionDigits: 2,
