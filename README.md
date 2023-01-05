@@ -17,7 +17,7 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 ### Services
 
-> Most services have a README.md to give a general overview of how they work.
+> some services have a README.md to give a general overview of how they work.
 
 1. **Authentication** ✅
 2. **[Cart](/services/cart/README.md)** ⏳
@@ -42,13 +42,6 @@ The project is a simplified version of commercetools HTTP API written as microse
 ### API Documentation
 
 Postman docs can be found [here](https://documenter.getpostman.com/view/8722825/2s8YsryZiW).
-
-### Events
-
-- **Cart service**: `cart_created`, `cart_updated`, `cart_deleted`
-- **Product service**: `product_created`, `product_updated`, `product_deleted`
-- **Customer service**: `customer_created`, `customer_updated`, `customer_deleted`
-- **Order service**: `order_created`, `order_updated`
 
 ### [Infrastructure Provisioning](/docs/INFRASTRUCTURE_PROVISIONING_ON_GCP.md)
 

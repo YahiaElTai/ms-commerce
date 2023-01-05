@@ -11,11 +11,17 @@ The model has 2 parts
 - The actual data stored in the database using Prisma modeling
 - Computed fields that are not stored in the database but calculated on the fly to avoid sync issues.
 
-  All Caluclated fields are mentioned below
+  All Caluclated fields are mentioned as comment in the code snippet.
 
 The following is the prisma model which contains also comments regarding the computed fields.
 
 ```prisma
+
+enum Currency {
+  EUR
+  USD
+  GBP
+}
 
 model Cart {
   id            Int        @id @default(autoincrement())
@@ -25,6 +31,7 @@ model Cart {
   customerEmail String?
   lineItems     LineItem[]
   version       Int        @default(1)
+
   // computed fields for carts: totalLineItemQuantity, totalPrice
   // - `totalLineItemQuantity` is the sum of all line item quantities
   // - `totalPrice` is the sum of all totalPrice from line items
@@ -41,7 +48,7 @@ model LineItem {
   cartId Int?
 
   // computed fields include: totalPrice
-  // totalPrice is the price * the quantity
+  // - totalPrice is the price * the quantity
 }
 
 ```
@@ -73,8 +80,21 @@ Currently the following update actions are supported:
 
 - `addLineItem`
 - `removeLineItem`
-- `ChangeLineItemQuantity`
+- `changeLineItemQuantity`
 
 ### Listing carts
 
 Pagination and sorting are added when fetching carts. the default limit is `20` carts fetched at a time.
+
+### Events
+
+The cart service publishes its own events and also listens to events from other services.
+
+**Published events**:
+
+- `cart_created`, `cart_updated`, `cart_deleted`
+
+**Events Listened to**:
+
+- `product_created`, `product_updated`, `product_deleted`
+- `customer_created`, `customer_updated`, `customer_deleted`
