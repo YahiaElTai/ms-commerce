@@ -2,7 +2,12 @@ import express, { Request, Response } from 'express';
 import { computeCartFields } from '../model';
 import { validateCurrencyWithVariants, validateVariantsExists } from '../utils';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
-import { CartDraftCreateSchema } from '../validators';
+import {
+  CartDraftCreateSchema,
+  CartSchema,
+  ProductSchema,
+  VariantSchema,
+} from '../validators';
 
 const router = express.Router();
 
@@ -20,28 +25,80 @@ router.post(
       req.body
     );
 
-    // validate that a variant exist matching the SKU provided at lineItems[0].sku
+    // validate that a variant exist matching the SKUs provided
     const skus = lineItems.map((lineItem) => lineItem.sku);
 
     const validatedProducts = await validateVariantsExists(skus);
 
     validateCurrencyWithVariants(currency, validatedProducts);
 
-    // create the cart with the validated line item
+    for (const lineItem of lineItems) {
+      // for each line item find the related product and validate it
+      const relatedProduct = validatedProducts.find((product) =>
+        product.variants.some((variant) => variant.sku === lineItem.sku)
+      );
+      const validatedProduct = ProductSchema.parse(relatedProduct);
+
+      // for each sku in line items find the variant and validate it
+      const variant = validatedProduct.variants.find(
+        (variant) => variant.sku === lineItem.sku
+      );
+      const validatedVariant = VariantSchema.parse(variant);
+
+      // create a line item and connect both price and variant as a snapshot
+      await prisma.lineItem.create({
+        data: {
+          productName: validatedProduct.name,
+          productKey: validatedProduct.productKey,
+          quantity: lineItem.quantity,
+          variant: {
+            create: {
+              sku: validatedVariant.sku,
+              price: {
+                create: {
+                  centAmount: validatedVariant.price.centAmount,
+                  currencyCode: validatedVariant.price.currencyCode,
+                  fractionDigits: validatedVariant.price.fractionDigits,
+                },
+              },
+            },
+          },
+          price: {
+            create: {
+              centAmount: validatedVariant.price.centAmount,
+              currencyCode: validatedVariant.price.currencyCode,
+              fractionDigits: validatedVariant.price.fractionDigits,
+            },
+          },
+        },
+      });
+    }
+
+    const createdLineItems = await prisma.lineItem.findMany({
+      where: {
+        variant: {
+          sku: {
+            in: skus,
+          },
+        },
+      },
+    });
+
+    // create a cart and connect all created line items above
     const cart = await prisma.cart.create({
       data: {
         customerEmail,
         currency,
         lineItems: {
-          createMany: {
-            data: lineItems,
-          },
+          connect: createdLineItems.map((lineItem) => ({ id: lineItem.id })),
         },
       },
       select: excludeCartIdFromLineItem,
     });
 
-    const computedCart = await computeCartFields(cart);
+    const validatedCart = CartSchema.parse(cart);
+
+    const computedCart = computeCartFields(validatedCart);
 
     res.status(201).send(computedCart);
   }

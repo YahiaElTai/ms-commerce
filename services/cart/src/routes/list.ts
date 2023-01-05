@@ -5,7 +5,7 @@ import {
   ParseQueryParamsSchema,
   QueryParamsSchema,
 } from '../validators/params-validators';
-import { CartResponseSchema } from '../validators';
+import { CartResponseSchema, CartSchema } from '../validators';
 import type { z } from 'zod';
 
 type CartResponse = z.infer<typeof CartResponseSchema>;
@@ -41,7 +41,8 @@ router.get('/api/carts', async (req: Request, res: Response) => {
   const computedCarts: CartResponse[] = [];
 
   for (const cart of carts) {
-    const computedCart = await computeCartFields(cart);
+    const validatedCart = CartSchema.parse(cart);
+    const computedCart = computeCartFields(validatedCart);
     const validatedComputedCart = CartResponseSchema.parse(computedCart);
 
     computedCarts.push(validatedComputedCart);

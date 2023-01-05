@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.post(
-  '/api/carts/products',
+  '/api/cartsp/',
   // As of Express@5 This syntax is supported however the types are not updated yet
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -18,11 +18,15 @@ router.post(
 
     const validatedVariant = VariantDraftSchema.parse(variants[0]);
 
-    const variant = await prisma.variant.create({
+    const variant = await prisma.variantForProduct.create({
       data: {
         sku: validatedVariant.sku,
         price: {
-          create: validatedVariant.price,
+          create: {
+            centAmount: validatedVariant.price.centAmount,
+            currencyCode: validatedVariant.price.currencyCode,
+            fractionDigits: validatedVariant.price.fractionDigits,
+          },
         },
       },
     });

@@ -6,7 +6,7 @@ const router = express.Router();
 // As of Express@5 This syntax is supported however the types are not updated yet
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.get('/api/carts/products', async (_req: Request, res: Response) => {
+router.get('/api/cartsp', async (_req: Request, res: Response) => {
   const products = await prisma.product.findMany({
     select: excludeIdsFromProduct,
   });

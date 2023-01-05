@@ -23,3 +23,16 @@ export const ProductKeySchema = z.string().nullable().default(null);
 export const CentAmountSchema = z.number().int();
 
 export const FractionDigitsSchema = z.number().int().min(2).max(10).default(2);
+
+export const PriceSchema = z.object({
+  id: IdSchema,
+  centAmount: CentAmountSchema,
+  currencyCode: CurrencySchema,
+  fractionDigits: FractionDigitsSchema,
+});
+
+export const VariantSchema = z.object({
+  id: IdSchema,
+  sku: SKUSchema,
+  price: PriceSchema,
+});

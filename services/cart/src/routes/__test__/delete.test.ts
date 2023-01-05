@@ -1,7 +1,10 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
-import { createCart, createProduct } from '../../utils/test-utils';
+import {
+  createCartWithoutLineItems,
+  createProduct,
+} from '../../utils/test-utils';
 
 const randomSKU =
   Math.random().toString(36).substring(2, 15) +
@@ -13,7 +16,7 @@ beforeAll(async () => {
 
 describe('when cart is found', () => {
   it('should delete the cart and informs the user', async () => {
-    const cartResponse = await createCart(randomSKU);
+    const cartResponse = await createCartWithoutLineItems();
 
     const validatedCart = CartResponseSchema.parse(cartResponse.body);
 

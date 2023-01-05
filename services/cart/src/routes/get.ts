@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import { computeCartFields } from '../model';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
+import { CartSchema } from '../validators';
 import { IdParamSchema } from '../validators/params-validators';
 
 const router = express.Router();
@@ -21,7 +22,9 @@ router.get('/api/carts/:id', async (req: Request, res: Response) => {
     throw new NotFoundError(`Cart with ID '${id}' could not be found`);
   }
 
-  const computedCart = await computeCartFields(cart);
+  const validatedCart = CartSchema.parse(cart);
+
+  const computedCart = computeCartFields(validatedCart);
 
   res.send(computedCart);
 });

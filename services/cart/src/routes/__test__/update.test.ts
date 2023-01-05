@@ -3,15 +3,15 @@ import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
 import { createCart, createProduct } from '../../utils/test-utils';
 
-const randomSKU =
-  Math.random().toString(36).substring(2, 15) +
-  Math.random().toString(36).substring(2, 15);
-
-beforeAll(async () => {
-  await createProduct(randomSKU);
-});
-
 describe('when incorrect update action is provided', () => {
+  const randomSKU =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
+
+  beforeEach(async () => {
+    await createProduct(randomSKU);
+  });
+
   it('should respond with 400 and helpful error messages', async () => {
     const response = await createCart(randomSKU);
 
@@ -36,11 +36,15 @@ describe('when incorrect update action is provided', () => {
 });
 
 describe('when addLineItem update action is provided', () => {
+  const randomSKU =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
   const randomSKU2 =
     Math.random().toString(36).substring(2, 15) +
     Math.random().toString(36).substring(2, 15);
 
   beforeEach(async () => {
+    await createProduct(randomSKU);
     await createProduct(randomSKU2);
   });
 
@@ -71,8 +75,13 @@ describe('when addLineItem update action is provided', () => {
       expect.objectContaining({
         id: validatedCart2.id,
         version: 2,
+        customerEmail: 'test@test.com',
+        currency: 'EUR',
+        createdAt: validatedCart2.createdAt,
+        updatedAt: validatedCart2.updatedAt,
         totalLineItemQuantity: 18,
         totalPrice: {
+          id: 2,
           centAmount: 1206000,
           currencyCode: 'EUR',
           fractionDigits: 2,
@@ -83,6 +92,14 @@ describe('when addLineItem update action is provided', () => {
 });
 
 describe('when changeLineItemQuantity update action is provided', () => {
+  const randomSKU =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
+
+  beforeEach(async () => {
+    await createProduct(randomSKU);
+  });
+
   it('should update the quantity and recalculate the cart', async () => {
     const response = await createCart(randomSKU);
 
@@ -96,9 +113,7 @@ describe('when changeLineItemQuantity update action is provided', () => {
           {
             type: 'changeLineItemQuantity',
             value: {
-              id: validatedCart.lineItems.find(
-                (lineItem) => lineItem.sku === randomSKU
-              )?.id,
+              id: validatedCart.lineItems[0]?.id,
               quantity: 5,
             },
           },
@@ -111,9 +126,14 @@ describe('when changeLineItemQuantity update action is provided', () => {
     expect(validatedCart2).toEqual(
       expect.objectContaining({
         id: validatedCart2.id,
+        customerEmail: 'test@test.com',
+        currency: 'EUR',
+        createdAt: validatedCart2.createdAt,
+        updatedAt: validatedCart2.updatedAt,
         version: 2,
         totalLineItemQuantity: 5,
         totalPrice: {
+          id: 2,
           centAmount: 335000,
           currencyCode: 'EUR',
           fractionDigits: 2,
@@ -124,6 +144,14 @@ describe('when changeLineItemQuantity update action is provided', () => {
 });
 
 describe('when removeLineItem update action is provided', () => {
+  const randomSKU =
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15);
+
+  beforeEach(async () => {
+    await createProduct(randomSKU);
+  });
+
   it('should remove the item and recalculate the cart', async () => {
     const response = await createCart(randomSKU);
 
@@ -137,9 +165,7 @@ describe('when removeLineItem update action is provided', () => {
           {
             type: 'removeLineItem',
             value: {
-              id: validatedCart.lineItems.find(
-                (lineItem) => lineItem.sku === randomSKU
-              )?.id,
+              id: validatedCart.lineItems[0]?.id,
             },
           },
         ],
@@ -149,10 +175,15 @@ describe('when removeLineItem update action is provided', () => {
     expect(validatedCart2).toEqual(
       expect.objectContaining({
         id: validatedCart2.id,
+        customerEmail: 'test@test.com',
+        currency: 'EUR',
+        createdAt: validatedCart2.createdAt,
+        updatedAt: validatedCart2.updatedAt,
         version: 2,
         totalLineItemQuantity: 0,
         lineItems: [],
         totalPrice: {
+          id: 1,
           centAmount: 0,
           currencyCode: 'EUR',
           fractionDigits: 2,

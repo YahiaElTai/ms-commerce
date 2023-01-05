@@ -11,8 +11,11 @@ import {
   Actions,
   AddLineItemActionSchema,
   CartDraftUpdateSchema,
+  CartSchema,
   ChangeLineItemQuantityActionSchema,
+  ProductSchema,
   RemoveLineItemActionSchema,
+  VariantSchema,
 } from '../validators';
 import { IdParamSchema } from '../validators/params-validators';
 
@@ -46,6 +49,8 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
     throw new VersionMistachError();
   }
 
+  const validatedExistingCart = CartSchema.parse(existingCart);
+
   for (const action of actions) {
     switch (action.type) {
       case Actions.Enum.addLineItem: {
@@ -53,16 +58,55 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
 
         // validate line item doesn't exist already with the provided SKU
         // if it exists throw an error
-        variantSKUExistsInCart(existingCart, validatedAction.value.sku);
+        variantSKUExistsInCart(
+          validatedExistingCart,
+          validatedAction.value.sku
+        );
 
         // validate that a variant exist with the provided sku
-        await validateVariantsExists([validatedAction.value.sku]);
+        const products = await validateVariantsExists([
+          validatedAction.value.sku,
+        ]);
+
+        const validatedProduct = ProductSchema.parse(products[0]);
+        const validatedVariant = VariantSchema.parse(
+          validatedProduct.variants.find(
+            (variant) => variant.sku === validatedAction.value.sku
+          )
+        );
+
+        const createdLineItem = await prisma.lineItem.create({
+          data: {
+            productName: validatedProduct.name,
+            productKey: validatedProduct.productKey,
+            quantity: validatedAction.value.quantity,
+            variant: {
+              create: {
+                sku: validatedVariant.sku,
+                price: {
+                  create: {
+                    centAmount: validatedVariant.price.centAmount,
+                    currencyCode: validatedVariant.price.currencyCode,
+                    fractionDigits: validatedVariant.price.fractionDigits,
+                  },
+                },
+              },
+            },
+            price: {
+              create: {
+                centAmount: validatedVariant.price.centAmount,
+                currencyCode: validatedVariant.price.currencyCode,
+                fractionDigits: validatedVariant.price.fractionDigits,
+              },
+            },
+          },
+        });
 
         await prisma.cart.update({
           where: { id },
           data: {
             lineItems: {
-              create: validatedAction.value,
+              connect: [{ id: createdLineItem.id }],
             },
             version: {
               increment: 1,
@@ -76,7 +120,7 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
 
         // validate line item does exist already with the provided ID
         // throw an error if item doesn't exist already
-        lineItemExistsInCart(existingCart, validatedAction.value.id);
+        lineItemExistsInCart(validatedExistingCart, validatedAction.value.id);
 
         await prisma.cart.update({
           where: { id },
@@ -97,7 +141,7 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
         const validatedAction =
           ChangeLineItemQuantityActionSchema.parse(action);
 
-        lineItemExistsInCart(existingCart, validatedAction.value.id);
+        lineItemExistsInCart(validatedExistingCart, validatedAction.value.id);
 
         await prisma.cart.update({
           where: { id },
@@ -131,7 +175,9 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
     );
   }
 
-  const computedCart = await computeCartFields(updatedCart);
+  const validatedCart = CartSchema.parse(updatedCart);
+
+  const computedCart = computeCartFields(validatedCart);
 
   return res.send(computedCart);
 });

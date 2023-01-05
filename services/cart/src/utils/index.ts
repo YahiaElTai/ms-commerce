@@ -18,7 +18,9 @@ type ID = z.infer<typeof IdSchema>;
 
 // -----------------
 export const variantSKUExistsInCart = (cart: Cart, sku: SKU) => {
-  const index = cart.lineItems.findIndex((lineItem) => lineItem.sku === sku);
+  const index = cart.lineItems.findIndex(
+    (lineItem) => lineItem.variant.sku === sku
+  );
 
   if (index !== -1) {
     throw new BadRequestError(`Line item with SKU '${sku}' already exists.'`);

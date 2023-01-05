@@ -9,6 +9,7 @@ import {
   ProductNameSchema,
   SKUSchema,
   VersionSchema,
+  VariantSchema,
 } from './common-validators';
 
 // Draft validators are used to validate when resources are created
@@ -28,20 +29,6 @@ export const ProductDraftSchema = z.object({
   description: DescriptionSchema,
   productKey: ProductKeySchema,
   variants: z.array(VariantDraftSchema),
-});
-
-// validators are used to validate already created resources
-export const PriceSchema = z.object({
-  id: IdSchema,
-  centAmount: CentAmountSchema,
-  currencyCode: CurrencySchema,
-  fractionDigits: FractionDigitsSchema,
-});
-
-export const VariantSchema = z.object({
-  id: IdSchema,
-  sku: SKUSchema,
-  price: PriceSchema,
 });
 
 export const ProductSchema = z.object({

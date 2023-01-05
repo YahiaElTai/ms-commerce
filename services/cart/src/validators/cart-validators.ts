@@ -4,12 +4,12 @@ import {
   LineItemSchema,
   LineItemDraftSchema,
   LineItemResponseSchema,
-  LineItemPriceSchema,
 } from './line-item-validators';
 import {
   CurrencySchema,
   EmailSchema,
   IdSchema,
+  PriceSchema,
   QuantitySchema,
   VersionSchema,
 } from './common-validators';
@@ -35,7 +35,7 @@ export const CartResponseSchema = z.object({
   createdAt: z.string(),
   lineItems: z.array(LineItemResponseSchema),
   totalLineItemQuantity: QuantitySchema,
-  totalPrice: LineItemPriceSchema,
+  totalPrice: PriceSchema,
 });
 
 // Validator for the list of carts that gets sent to the user

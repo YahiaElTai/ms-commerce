@@ -12,7 +12,30 @@ export const excludeCartIdFromLineItem = {
     select: {
       id: true,
       quantity: true,
-      sku: true,
+      productName: true,
+      productKey: true,
+      price: {
+        select: {
+          id: true,
+          centAmount: true,
+          currencyCode: true,
+          fractionDigits: true,
+        },
+      },
+      variant: {
+        select: {
+          id: true,
+          sku: true,
+          price: {
+            select: {
+              id: true,
+              centAmount: true,
+              currencyCode: true,
+              fractionDigits: true,
+            },
+          },
+        },
+      },
     },
   },
 };

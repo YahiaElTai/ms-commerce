@@ -3,7 +3,7 @@ import { app } from '../app';
 
 export const createProduct = (sku: string) =>
   request(app)
-    .post('/api/carts/products')
+    .post('/api/cartsp')
     .send({
       name: 'HM pants',
       productKey: 'hm-pants-key',
@@ -26,5 +26,15 @@ export const createCart = (sku: string) =>
       customerEmail: 'test@test.com',
       currency: 'EUR',
       lineItems: [{ quantity: 12, sku }],
+    })
+    .expect(201);
+
+export const createCartWithoutLineItems = () =>
+  request(app)
+    .post('/api/carts')
+    .send({
+      customerEmail: 'test@test.com',
+      currency: 'EUR',
+      lineItems: [],
     })
     .expect(201);

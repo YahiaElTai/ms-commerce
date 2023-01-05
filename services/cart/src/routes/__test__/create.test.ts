@@ -1,6 +1,10 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { CartResponseSchema, FormattedErrors } from '../../validators';
+import {
+  CartResponseSchema,
+  FormattedErrors,
+  LineItemResponseSchema,
+} from '../../validators';
 import { createProduct, createCart } from '../../utils/test-utils';
 
 const randomSKU =
@@ -57,6 +61,10 @@ describe('when correct draft object is provided', () => {
 
     const validatedCart = CartResponseSchema.parse(response.body);
 
+    const validatedLineItem = LineItemResponseSchema.parse(
+      validatedCart.lineItems[0]
+    );
+
     expect(validatedCart).toEqual(
       expect.objectContaining({
         id: validatedCart.id,
@@ -67,10 +75,26 @@ describe('when correct draft object is provided', () => {
         createdAt: validatedCart.createdAt,
         updatedAt: validatedCart.updatedAt,
         totalPrice: {
+          id: 2,
           centAmount: 804000,
           currencyCode: 'EUR',
           fractionDigits: 2,
         },
+        lineItems: [
+          {
+            id: validatedLineItem.id,
+            quantity: validatedLineItem.quantity,
+            price: {
+              ...validatedLineItem.price,
+            },
+            totalPrice: {
+              ...validatedLineItem.totalPrice,
+            },
+            variant: { ...validatedLineItem.variant },
+            productName: validatedLineItem.productName,
+            productKey: validatedLineItem.productKey,
+          },
+        ],
       })
     );
   });

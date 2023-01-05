@@ -13,32 +13,40 @@ enum Currency {
   GBP
 }
 
-model Price {
+model PriceForProduct {
   id             Int      @id @default(autoincrement())
   centAmount     Int
   currencyCode   Currency @default(EUR)
   fractionDigits Int      @default(2)
-  variant        Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId      Int?     @unique
+
+  // each price is connected to one variant
+  variant   VariantForProduct? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int?               @unique
 }
 
-model Variant {
-  id        Int      @id @default(autoincrement())
-  sku       String   @unique
-  price     Price?
+model VariantForProduct {
+  id  Int    @id @default(autoincrement())
+  sku String @unique
+
+  // each variant can have one price connected
+  price PriceForProduct?
+
+  // many variants can be connected to a single product
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId Int?
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   name        String
   description String?
   productKey  String?
-  variants    Variant[]
-  version     Int       @default(1)
+  version     Int      @default(1)
+
+  // a product can contain multiple variants
+  variants VariantForProduct[]
 }
 
 // Workflow 
@@ -47,27 +55,61 @@ model Product {
 // More variants can be added later, with their own prices. (These will be events from the product service)
 // Variants can be added to the cart as line item with a unique identifier "SKU"
 
+model Price {
+  id             Int      @id @default(autoincrement())
+  centAmount     Int
+  currencyCode   Currency @default(EUR)
+  fractionDigits Int      @default(2)
+
+  // each price is connected to one variant
+  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  variantId Int?     @unique
+
+  // each price is connected to one variant
+  lineItem   LineItem? @relation(fields: [lineItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lineItemId Int?      @unique
+}
+
+model Variant {
+  id  Int    @id @default(autoincrement())
+  sku String @unique
+
+  // each variant can have one price connected
+  price Price?
+
+  // many variants can be connected to a single product
+  lineItem   LineItem? @relation(fields: [lineItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lineItemId Int?      @unique
+}
+
 model LineItem {
-  id       Int    @id @default(autoincrement())
-  quantity Int    @default(1)
-  sku      String
-  cart     Cart?  @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  cartId   Int?
-  // In the Database, line items will contain only id and quantity but computed fields will be added
-  // computed fields include: variant (object), price, totalPrice, name (product name), productKey, sku
-  // price is the exact price from the variant
+  id          Int     @id @default(autoincrement())
+  quantity    Int     @default(1)
+  productName String
+  productKey  String?
+
+  price Price?
+
+  // each line item can have one variant connected
+  variant Variant?
+
+  // many line items can be connected to a single cart
+  cart   Cart? @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cartId Int?
+  // computed fields include: totalPrice
   // totalPrice is the price * the quantity
 }
 
 model Cart {
-  id            Int        @id @default(autoincrement())
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  // This current must match with the currency of the price on the variant of the line item.
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   currency      Currency
   customerEmail String?
-  lineItems     LineItem[]
-  version       Int        @default(1)
+
+  // a cart can have many line items
+  lineItems LineItem[]
+  version   Int        @default(1)
   // computed fields for carts: totalLineItemQuantity, totalPrice
   // totalLineItemQuantity is the sum of all line item quantities
   // totalPrice is the sum of all totalPrice from line items

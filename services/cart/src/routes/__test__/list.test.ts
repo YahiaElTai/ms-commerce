@@ -1,7 +1,10 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { CartListResponseSchema, FormattedErrors } from '../../validators';
-import { createCart, createProduct } from '../../utils/test-utils';
+import {
+  createCartWithoutLineItems,
+  createProduct,
+} from '../../utils/test-utils';
 
 const randomSKU =
   Math.random().toString(36).substring(2, 15) +
@@ -13,7 +16,7 @@ beforeAll(async () => {
 
 describe('when no pagination or sorting is provided', () => {
   it('should responds with list of carts with default pagination and sorting', async () => {
-    await createCart(randomSKU);
+    await createCartWithoutLineItems();
 
     const response = await request(app).get('/api/carts').send().expect(200);
 
@@ -29,7 +32,7 @@ describe('when no pagination or sorting is provided', () => {
 
 describe('when pagination and sorting is provided', () => {
   it('should responds with list of carts with provided pagination and sorting', async () => {
-    await createCart(randomSKU);
+    await createCartWithoutLineItems();
 
     const response = await request(app)
       .get(
