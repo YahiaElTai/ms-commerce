@@ -20,8 +20,8 @@ The project is a simplified version of commercetools HTTP API written as microse
 > some services have a README.md to give a general overview of how they work.
 
 1. **Authentication** ✅
-2. **[Cart](/services/cart/README.md)** ⏳
-3. **Product** ⏳
+2. **[Cart](/services/cart/README.md)** ✅
+3. **[Product](/services/product/README.md)** ✅
 4. **Customer** ⏳
 5. **Order** ⏳
 6. **Pricing** ⏳
