@@ -72,7 +72,7 @@ model Price {
 
 model Variant {
   id  Int    @id @default(autoincrement())
-  sku String @unique
+  sku String
 
   // each variant can have one price connected
   price Price?

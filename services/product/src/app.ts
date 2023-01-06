@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import 'express-async-errors';
 
 import { errorHandler } from './middlewares';
@@ -12,6 +13,7 @@ import { DeleteProductsRouter } from './routes/delete-all';
 import { UpdateProductRouter } from './routes/update';
 
 const app = express();
+app.use(compression());
 app.set('trust proxy', true);
 app.use(express.json());
 

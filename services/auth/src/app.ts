@@ -1,6 +1,8 @@
 import express from 'express';
+import compression from 'compression';
 import 'express-async-errors';
 import cookieParser from 'cookie-parser';
+
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
@@ -11,6 +13,7 @@ import { errorHandler } from './middlewares';
 
 const app = express();
 
+app.use(compression());
 app.set('trust proxy', true);
 app.use(express.json());
 app.use(cookieParser());
