@@ -15,7 +15,7 @@ import {
   ChangeLineItemQuantityActionSchema,
   ProductSchema,
   RemoveLineItemActionSchema,
-  VariantSchema,
+  VariantDraftSchema,
 } from '../validators';
 import { IdParamSchema } from '../validators/params-validators';
 
@@ -69,44 +69,32 @@ router.put('/api/carts/:id', async (req: Request, res: Response) => {
         ]);
 
         const validatedProduct = ProductSchema.parse(products[0]);
-        const validatedVariant = VariantSchema.parse(
+        const validatedVariant = VariantDraftSchema.parse(
           validatedProduct.variants.find(
             (variant) => variant.sku === validatedAction.value.sku
           )
         );
 
-        const createdLineItem = await prisma.lineItem.create({
-          data: {
-            productName: validatedProduct.name,
-            productKey: validatedProduct.productKey,
-            quantity: validatedAction.value.quantity,
-            variant: {
-              create: {
-                sku: validatedVariant.sku,
-                price: {
-                  create: {
-                    centAmount: validatedVariant.price.centAmount,
-                    currencyCode: validatedVariant.price.currencyCode,
-                    fractionDigits: validatedVariant.price.fractionDigits,
-                  },
-                },
-              },
-            },
-            price: {
-              create: {
-                centAmount: validatedVariant.price.centAmount,
-                currencyCode: validatedVariant.price.currencyCode,
-                fractionDigits: validatedVariant.price.fractionDigits,
-              },
-            },
-          },
-        });
-
         await prisma.cart.update({
           where: { id },
           data: {
             lineItems: {
-              connect: [{ id: createdLineItem.id }],
+              create: {
+                productName: validatedProduct.name,
+                productKey: validatedProduct.productKey,
+                quantity: validatedAction.value.quantity,
+                variant: {
+                  create: {
+                    sku: validatedVariant.sku,
+                    price: {
+                      create: validatedVariant.price,
+                    },
+                  },
+                },
+                price: {
+                  create: validatedVariant.price,
+                },
+              },
             },
             version: {
               increment: 1,

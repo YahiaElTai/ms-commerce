@@ -47,20 +47,16 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
       case Actions.Enum.addVariant: {
         const validatedAction = addVariantActionSchema.parse(action);
 
-        const createdVariant = await prisma.variant.create({
-          data: {
-            sku: validatedAction.value.sku,
-            price: {
-              create: validatedAction.value.price,
-            },
-          },
-        });
-
         await prisma.product.update({
           where: { id },
           data: {
             variants: {
-              connect: [{ id: createdVariant.id }],
+              create: {
+                sku: validatedAction.value.sku,
+                price: {
+                  create: validatedAction.value.price,
+                },
+              },
             },
             version: {
               increment: 1,
