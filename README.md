@@ -39,16 +39,16 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 - [Services written in Golang](/docs/OVERVIEW_GOLANG.md)
 
-### API Documentation
-
-Postman docs can be found [here](https://documenter.getpostman.com/view/8722825/2s8YsryZiW).
-
-### [Infrastructure Provisioning](/docs/INFRASTRUCTURE_PROVISIONING_ON_GCP.md)
-
-### [Local Development Setup](/docs/LOCAL_DEV_SETUP.md)
-
 ### Microservices Architecture Decisions
 
 - [Authentication strategy](/docs/AUTHENTICATION_STRATEGY.md)
 
 - [Data consistency](/docs/DATA_CONSISTENCY.md)
+
+### Documentations
+
+- [API Documentation](https://documenter.getpostman.com/view/8722825/2s8YsryZiW).
+
+- [Infrastructure Provisioning](/docs/INFRASTRUCTURE_PROVISIONING_ON_GCP.md)
+
+- [Local Development Setup](/docs/LOCAL_DEV_SETUP.md)
