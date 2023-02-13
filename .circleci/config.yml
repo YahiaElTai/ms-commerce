@@ -10,7 +10,7 @@ orbs:
 executors:
   gcp-executor:
     docker:
-      - image: cimg/gcp:2022.11
+      - image: cimg/gcp:2023.02
   ubuntu-executor:
     machine:
       image: ubuntu-2204:2022.10.2
