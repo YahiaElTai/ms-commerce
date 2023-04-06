@@ -5,3 +5,5 @@ coverage
 junit.xml
 .env
 .env.test
+.yarn/
+.yarnrc.yml

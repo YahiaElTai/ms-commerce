@@ -16,6 +16,7 @@
     "lint": "eslint --ext .ts .",
     "format": "prettier --write '**/*.ts'"
   },
+  "packageManager": "yarn@3.5.0",
   "dependencies": {
     "@prisma/client": "^4.8.0",
     "compression": "^1.7.4",
