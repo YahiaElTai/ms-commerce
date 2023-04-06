@@ -5,7 +5,8 @@
     "rootDir": "src",
     "outDir": "build",
     "noEmitOnError": true,
-    "checkJs": false
+    "checkJs": false,
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src/**/*", "./.eslintrc.js"],
   "exclude": ["src/**/*.spec.ts"]

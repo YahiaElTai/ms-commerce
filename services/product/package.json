@@ -2,6 +2,7 @@
   "name": "product",
   "version": "1.0.0",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "nodemon src/index.ts",
     "start": "node build/index.js",
     "test": "jest --watchAll --no-cache --verbose ./src",
@@ -16,7 +17,7 @@
     "lint": "eslint --ext .ts .",
     "format": "prettier --write '**/*.ts'"
   },
-  "packageManager": "yarn@3.5.0",
+  "packageManager": "pnpm@8.1.1",
   "dependencies": {
     "@prisma/client": "^4.8.0",
     "compression": "^1.7.4",

@@ -5,14 +5,16 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --frozen-lockfile
+RUN corepack enable && corepack prepare --activate
+
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN yarn prisma generate --schema=src/prisma/schema.prisma
+RUN pnpm exec prisma generate --schema=src/prisma/schema.prisma
 
 EXPOSE 3000
 
-CMD ["yarn", "run", "dev"]
+CMD ["pnpm", "run", "dev"]

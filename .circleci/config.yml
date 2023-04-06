@@ -15,6 +15,29 @@ executors:
     machine:
       image: ubuntu-2204:2022.10.2
 
+commands:
+  install-pnpm:
+    description: Install pnpm via corepack
+    steps:
+      - restore_cache:
+          name: Restore pnpm Package Cache
+          keys:
+            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare --activate
+      - run:
+          name: Install Dependencies
+          command: |
+            pnpm install
+      - save_cache:
+          name: Save pnpm Package Cache
+          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - node_modules
+
 jobs:
   typecheck_and_test:
     working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
@@ -26,30 +49,29 @@ jobs:
     steps:
       - checkout:
           path: ~/ms-commerce
-      - node/install-packages:
-          pkg-manager: yarn
+      - install-pnpm
       - run:
           name: generate test env for << parameters.app-dir >> service
           command: ../../.circleci/generate_test_env.sh
           environment:
             SERVICE_NAME: << parameters.app-dir >>
       - run:
-          command: yarn prisma generate --schema=src/prisma/schema.prisma
+          command: pnpm exec prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client
       - run:
           name: Lint << parameters.app-dir >> service
-          command: yarn run lint
+          command: pnpm lint
       - run:
-          command: yarn run typecheck
+          command: pnpm typecheck
           name: Typecheck services/<< parameters.app-dir >>
       - run:
           name: Starting Postgres database
           command: docker-compose up -d
       - run:
           name: Deploying Prisma schema
-          command: yarn prisma migrate deploy --schema=src/prisma/schema.prisma
+          command: pnpm exec prisma migrate deploy --schema=src/prisma/schema.prisma
       - run:
-          command: yarn run test:ci
+          command: pnpm test:ci
           name: Run tests ./services/<< parameters.app-dir >>
   deploy_service:
     executor: gcp-executor

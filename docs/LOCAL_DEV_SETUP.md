@@ -16,10 +16,10 @@ There are 2 options to start developing locally:
    docker-compose up -d
 
    # Deploy Prisma database to apply all migrations within the service you want to work on
-   yarn run prisma:dev
+   pnpm prisma:dev
 
    # Run this command within the service you want to work on
-   yarn run start:dev
+   pnpm start:dev
    ```
 
 #### Option 2: Start all services with skaffold
@@ -86,7 +86,7 @@ There are 2 options to start developing locally:
    docker-compose up -d
 
    # Deploy Prisma database to apply all migrations in each service
-   yarn run prisma:dev
+   pnpm prisma:dev
 
    # Start skaffold from project root dir
    skaffold dev
