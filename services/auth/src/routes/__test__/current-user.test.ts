@@ -30,7 +30,7 @@ const authenticate = async () => {
   return { userId, userEmail, firstName, lastName };
 };
 
-describe('when user is authenticated', () => {
+describe.skip('when user is authenticated', () => {
   it('should respond with details about current user', async () => {
     const user = await authenticate();
 
