@@ -25,9 +25,10 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN corepack enable && corepack prepare --activate
 
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /app/src/prisma/ ./prisma/
+
 RUN pnpm exec prisma generate --schema=prisma/schema.prisma
 
 COPY --from=builder /app/build ./build
