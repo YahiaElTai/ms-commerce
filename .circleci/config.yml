@@ -20,20 +20,20 @@ commands:
     description: Install pnpm via corepack
     steps:
       - restore_cache:
-          name: Restore pnpm Package Cache
+          name: Restore pnpm cache
           keys:
             - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
       - run:
-          name: Install pnpm package manager
+          name: Install pnpm via corepack
           command: |
             corepack enable
             corepack prepare --activate
       - run:
-          name: Install Dependencies
+          name: Install dependencies
           command: |
             pnpm install
       - save_cache:
-          name: Save pnpm Package Cache
+          name: Save pnpm cache
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - node_modules
