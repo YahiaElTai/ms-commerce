@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import { prisma } from '../prisma';
 import { IdParamSchema } from '../validators';
+import { TOPICS, produceMessage } from '../kafka/producer';
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ router.delete('/api/products/:id', async (req: Request, res: Response) => {
   }
 
   await prisma.product.delete({ where: { id } });
+
+  await produceMessage(id, TOPICS.productDeleted);
 
   res.send([{ message: `Product with ID '${id}' was successfully deleted.` }]);
 });
