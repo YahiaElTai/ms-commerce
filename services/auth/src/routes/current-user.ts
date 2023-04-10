@@ -20,6 +20,10 @@ router.get('/api/users/currentuser', async (req: Request, res: Response) => {
     select: excludePasswordFromUser,
   });
 
+  if (!user) {
+    throw new NotAuthorized();
+  }
+
   res.status(200).send(user);
 });
 

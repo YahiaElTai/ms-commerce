@@ -1,11 +1,12 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { generateRandomEmail } from '../../test/test-utils';
 
 it('clears the cookie after signing out', async () => {
   const response = await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test4@test.com',
+      email: generateRandomEmail(),
       password: 'password',
       firstName: 'Test',
       lastName: 'User',

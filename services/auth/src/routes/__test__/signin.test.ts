@@ -1,21 +1,23 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { generateRandomEmail } from '../../test/test-utils';
 
 it('fails when an email does not exist', async () => {
   return request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test@test.com',
+      email: generateRandomEmail(),
       password: 'password',
     })
     .expect(400);
 });
 
 it('fails when an incorrect password is supplied', async () => {
+  const email = generateRandomEmail();
   await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test1@test.com',
+      email,
       password: 'password',
       firstName: 'Test',
       lastName: 'User',
@@ -25,17 +27,18 @@ it('fails when an incorrect password is supplied', async () => {
   return request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test1@test.com',
+      email,
       password: 'incorrectpassword',
     })
     .expect(400);
 });
 
 it('responds with a cookie when given valid credentials', async () => {
+  const email = generateRandomEmail();
   await request(app)
     .post('/api/users/signup')
     .send({
-      email: 'test2@test.com',
+      email,
       password: 'password',
       firstName: 'Test',
       lastName: 'User',
@@ -45,7 +48,7 @@ it('responds with a cookie when given valid credentials', async () => {
   const response = await request(app)
     .post('/api/users/signin')
     .send({
-      email: 'test2@test.com',
+      email,
       password: 'password',
     })
     .expect(200);

@@ -1,10 +1,11 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { UserSchema } from '../../validators';
+import { generateRandomEmail } from '../../test/test-utils';
 
 const authenticate = async () => {
   // sign in to get the cookie
-  const email = 'test3@test.com';
+  const email = generateRandomEmail();
   const password = 'password';
   const firstName = 'Test';
   const lastName = 'User';
@@ -30,7 +31,7 @@ const authenticate = async () => {
   return { userId, userEmail, firstName, lastName };
 };
 
-describe.skip('when user is authenticated', () => {
+describe('when user is authenticated', () => {
   it('should respond with details about current user', async () => {
     const user = await authenticate();
 
