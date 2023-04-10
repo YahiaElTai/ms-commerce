@@ -2,13 +2,15 @@ import request from 'supertest';
 import { app } from '../../app';
 import { UserSchema } from '../../validators';
 import type { FormattedErrors } from '../../validators/types';
+import { generateRandomEmail } from '../../test/test-utils';
 
 describe('when valid email and password are provided', () => {
   it('should respond with 201 and return the created user', async () => {
+    const email = generateRandomEmail();
     const response = await request(app)
       .post('/api/users/signup')
       .send({
-        email: 'test5@test.com',
+        email,
         password: 'password',
         firstName: 'Test',
         lastName: 'User',
@@ -19,7 +21,7 @@ describe('when valid email and password are provided', () => {
 
     expect(validatedUser).toEqual(
       expect.objectContaining({
-        email: 'test5@test.com',
+        email,
         id: validatedUser.id,
         firstName: 'Test',
         lastName: 'User',
@@ -31,7 +33,7 @@ describe('when valid email and password are provided', () => {
     const response = await request(app)
       .post('/api/users/signup')
       .send({
-        email: 'test7@test.com',
+        email: generateRandomEmail(),
         password: 'password',
         firstName: 'Test',
         lastName: 'User',
@@ -66,19 +68,18 @@ describe('when incorrect email or password is provided', () => {
 });
 
 describe('when email is already in use', () => {
+  const email = generateRandomEmail();
+
   it('should not allow creating a new user with the same email', async () => {
-    await request(app)
-      .post('/api/users/signup')
-      .send({
-        email: 'test6@test.com',
-        password: 'password',
-      })
-      .expect(201);
+    await request(app).post('/api/users/signup').send({
+      email,
+      password: 'password',
+    });
 
     const response: { body: { message: string }[] } = await request(app)
       .post('/api/users/signup')
       .send({
-        email: 'test6@test.com',
+        email,
         password: 'password',
       })
       .expect(400);

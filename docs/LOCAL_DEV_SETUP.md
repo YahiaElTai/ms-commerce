@@ -19,7 +19,7 @@ There are 2 options to start developing locally:
    pnpm prisma:dev
 
    # Run this command within the service you want to work on
-   pnpm start:dev
+   pnpm dev
    ```
 
 #### Option 2: Start all services with skaffold
