@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
+import type { FormattedErrors } from '../validators';
+
 import { CustomError } from '../errors';
 import { ZodError, ZodIssue } from 'zod';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import type { FormattedErrors } from '../validators';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong. If the issue persist, please contact our support team.';
