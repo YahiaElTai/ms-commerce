@@ -1,9 +1,25 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { ProductResponseSchema, FormattedErrors } from '../../validators';
+import * as producer from '../../kafka/producer';
+
+jest.mock('kafkajs', () => {
+  return {
+    Kafka: jest.fn(() => ({
+      producer: jest.fn(() => ({
+        connect: jest.fn(),
+        send: jest.fn(),
+        disconnect: jest.fn(),
+      })),
+    })),
+  };
+});
 
 describe('when incorrect update action is provided', () => {
   it('should respond with 400 and helpful error messages', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
@@ -47,6 +63,9 @@ describe('when incorrect update action is provided', () => {
 
 describe('when addVariant update action is provided', () => {
   it('should add the variant', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
@@ -133,6 +152,9 @@ describe('when addVariant update action is provided', () => {
 
 describe('when changeVariantPrice update action is provided', () => {
   it('should update the price', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU2 =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
@@ -205,6 +227,9 @@ describe('when changeVariantPrice update action is provided', () => {
 
 describe('when removeVariant update action is provided', () => {
   it('should remove the variant', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU2 =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);

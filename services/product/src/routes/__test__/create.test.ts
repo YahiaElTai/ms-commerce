@@ -5,6 +5,19 @@ import {
   ProductResponseSchema,
   VariantSchema,
 } from '../../validators';
+import * as producer from '../../kafka/producer';
+
+jest.mock('kafkajs', () => {
+  return {
+    Kafka: jest.fn(() => ({
+      producer: jest.fn(() => ({
+        connect: jest.fn(),
+        send: jest.fn(),
+        disconnect: jest.fn(),
+      })),
+    })),
+  };
+});
 
 describe('when product draft object is not provided', () => {
   it('should respond with 400', async () => {
@@ -57,6 +70,9 @@ describe('when providing an invalid sku', () => {
 
 describe('when correct draft object is provided', () => {
   it('should respond with 201 and return the created product', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);

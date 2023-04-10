@@ -2,8 +2,25 @@ import request from 'supertest';
 import { app } from '../../app';
 import { ProductListResponseSchema, FormattedErrors } from '../../validators';
 
+import * as producer from '../../kafka/producer';
+
+jest.mock('kafkajs', () => {
+  return {
+    Kafka: jest.fn(() => ({
+      producer: jest.fn(() => ({
+        connect: jest.fn(),
+        send: jest.fn(),
+        disconnect: jest.fn(),
+      })),
+    })),
+  };
+});
+
 describe('when no pagination or sorting is provided', () => {
   it('should responds with list of products with default pagination and sorting', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
@@ -38,6 +55,9 @@ describe('when no pagination or sorting is provided', () => {
 
 describe('when pagination and sorting is provided', () => {
   it('should responds with list of products with provided pagination and sorting', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);

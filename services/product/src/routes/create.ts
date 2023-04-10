@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { computeProductFields } from '../model';
 import { excludeIdsFromProduct, prisma } from '../prisma';
 import { ProductDraftSchema, ProductSchema } from '../validators';
+import { TOPICS, produceMessage } from '../kafka/producer';
 
 const router = express.Router();
 
@@ -41,6 +42,8 @@ router.post(
     const validatedProduct = ProductSchema.parse(product);
 
     const computedProduct = computeProductFields(validatedProduct);
+
+    await produceMessage(computedProduct, TOPICS.productCreated);
 
     res.status(201).send(computedProduct);
   }

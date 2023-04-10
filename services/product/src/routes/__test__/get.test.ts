@@ -6,6 +6,20 @@ import {
   VariantSchema,
 } from '../../validators';
 
+import * as producer from '../../kafka/producer';
+
+jest.mock('kafkajs', () => {
+  return {
+    Kafka: jest.fn(() => ({
+      producer: jest.fn(() => ({
+        connect: jest.fn(),
+        send: jest.fn(),
+        disconnect: jest.fn(),
+      })),
+    })),
+  };
+});
+
 describe('when product is not found', () => {
   it('should respond with 404 ', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
@@ -21,6 +35,9 @@ describe('when product is not found', () => {
 
 describe('when product is found', () => {
   it('should respond with the found product', async () => {
+    const produceMessageMock = jest.spyOn(producer, 'produceMessage');
+    produceMessageMock.mockImplementation(() => Promise.resolve());
+
     const randomSKU =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);

@@ -11,6 +11,7 @@ import {
   IdParamSchema,
   ProductSchema,
 } from '../validators';
+import { TOPICS, produceMessage } from '../kafka/producer';
 
 // Currently there's no information given to the user if one of the update actions fail.
 // If all succeeds then great, the new updated product will be send to the user
@@ -124,6 +125,8 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
   const validatedProduct = ProductSchema.parse(updatedProduct);
 
   const computedProduct = computeProductFields(validatedProduct);
+
+  await produceMessage(computedProduct, TOPICS.productUpdated);
 
   return res.send(computedProduct);
 });
