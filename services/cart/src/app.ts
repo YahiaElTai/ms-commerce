@@ -12,8 +12,7 @@ import { UpdateCartRouter } from './routes/update';
 import { DeleteCartsRouter } from './routes/delete-all';
 import { DeleteCartRouter } from './routes/delete';
 
-import { CreateProductRouter } from './routes/products/create';
-import { ProductsRouter } from './routes/products/list';
+import './kafka/consumer';
 
 const app = express();
 app.use(compression());
@@ -27,10 +26,6 @@ app.use(CreateCartRouter);
 app.use(UpdateCartRouter);
 app.use(DeleteCartsRouter);
 app.use(DeleteCartRouter);
-
-// products routes as a temp solution here until product service is built and can start publishing events
-app.use(CreateProductRouter);
-app.use(ProductsRouter);
 
 app.all('*', () => {
   throw new NotFoundError();

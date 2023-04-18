@@ -1,23 +1,31 @@
 import request from 'supertest';
 import { app } from '../app';
+import { prisma } from '../prisma';
 
-export const createProduct = (sku: string) =>
-  request(app)
-    .post('/api/cartsp')
-    .send({
+export const createProduct = async (sku: string) => {
+  const variant = await prisma.variantForProduct.create({
+    data: {
+      sku,
+      price: {
+        create: {
+          centAmount: 67000,
+          currencyCode: 'EUR',
+        },
+      },
+    },
+  });
+
+  await prisma.product.create({
+    data: {
       name: 'HM pants',
       productKey: 'hm-pants-key',
-      variants: [
-        {
-          sku,
-          price: {
-            centAmount: 67000,
-            currencyCode: 'EUR',
-          },
-        },
-      ],
-    })
-    .expect(201);
+      originalId: 1,
+      variants: {
+        connect: { id: variant.id },
+      },
+    },
+  });
+};
 
 export const createCart = (sku: string) =>
   request(app)

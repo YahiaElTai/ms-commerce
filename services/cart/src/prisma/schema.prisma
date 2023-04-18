@@ -38,6 +38,7 @@ model VariantForProduct {
 
 model Product {
   id          Int      @id @default(autoincrement())
+  originalId  Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   name        String
