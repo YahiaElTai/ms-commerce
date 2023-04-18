@@ -8,7 +8,7 @@ const config = {
 };
 
 const kafka = new Kafka({
-  clientId: 'products-kafkajs-client',
+  clientId: 'cart-kafkajs-client',
   brokers: [config.kafkaBootstrapServers],
   ssl: true,
   sasl: {
@@ -16,7 +16,6 @@ const kafka = new Kafka({
     username: config.kafkaUsername,
     password: config.kafkaPassword,
   },
-  connectionTimeout: 3000,
 });
 
 export default kafka;

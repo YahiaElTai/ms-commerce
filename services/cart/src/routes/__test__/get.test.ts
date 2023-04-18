@@ -7,6 +7,20 @@ import {
 } from '../../validators';
 import { createCart, createProduct } from '../../utils/test-utils';
 
+jest.mock('kafkajs', () => {
+  return {
+    Kafka: jest.fn(() => ({
+      consumer: jest.fn(() => ({
+        connect: jest.fn(),
+        send: jest.fn(),
+        subscribe: jest.fn(),
+        run: jest.fn(),
+        disconnect: jest.fn(),
+      })),
+    })),
+  };
+});
+
 const randomSKU =
   Math.random().toString(36).substring(2, 15) +
   Math.random().toString(36).substring(2, 15);

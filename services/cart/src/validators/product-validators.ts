@@ -34,8 +34,8 @@ export const ProductDraftSchema = z.object({
 export const ProductSchema = z.object({
   id: IdSchema,
   version: VersionSchema,
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.union([z.date(), z.string()]),
+  updatedAt: z.union([z.date(), z.string()]),
   name: ProductNameSchema,
   description: DescriptionSchema,
   productKey: ProductKeySchema,

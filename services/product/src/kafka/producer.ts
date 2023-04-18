@@ -13,7 +13,6 @@ type ID = z.infer<typeof IdSchema>;
 
 const producer = kafka.producer({
   maxInFlightRequests: 5, // Maximum number of in-flight requests per broker connection
-  idempotent: true, // Enable idempotent producer to handle network errors and message duplication
 });
 
 const produceMessage = async (message: ProductResponse | ID, topic: TOPICS) => {

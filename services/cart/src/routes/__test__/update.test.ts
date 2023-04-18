@@ -3,6 +3,20 @@ import { app } from '../../app';
 import { CartResponseSchema, FormattedErrors } from '../../validators';
 import { createCart, createProduct } from '../../utils/test-utils';
 
+jest.mock('kafkajs', () => {
+  return {
+    Kafka: jest.fn(() => ({
+      consumer: jest.fn(() => ({
+        connect: jest.fn(),
+        send: jest.fn(),
+        subscribe: jest.fn(),
+        run: jest.fn(),
+        disconnect: jest.fn(),
+      })),
+    })),
+  };
+});
+
 describe('when incorrect update action is provided', () => {
   const randomSKU =
     Math.random().toString(36).substring(2, 15) +
