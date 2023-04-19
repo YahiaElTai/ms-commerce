@@ -41,3 +41,50 @@ export const ProductSchema = z.object({
   productKey: ProductKeySchema,
   variants: z.array(VariantSchema),
 });
+
+// update actions schemas for processing `product_updated` topic from products service
+export const ProductActionsSchema = z.enum([
+  'addVariant',
+  'removeVariant',
+  'changeVariantPrice',
+]);
+
+export const ProductActionSchema = z.object({
+  type: ProductActionsSchema,
+  value: z.record(
+    z.union([
+      z.string(),
+      z.number(),
+      z.object({
+        centAmount: CentAmountSchema,
+        currencyCode: CurrencySchema,
+      }),
+    ])
+  ),
+});
+
+export const ProductUpdatedMessageSchema = z.object({
+  id: IdSchema,
+  action: ProductActionSchema,
+});
+
+// Validators for update actions used to update the product
+export const addVariantActionSchema = z.object({
+  type: z.literal(ProductActionsSchema.Enum.addVariant),
+  value: VariantDraftSchema,
+});
+
+export const removeVariantActionSchema = z.object({
+  type: z.literal(ProductActionsSchema.Enum.removeVariant),
+  value: z.object({
+    id: IdSchema,
+  }),
+});
+
+export const changeVariantPriceActionSchema = z.object({
+  type: z.literal(ProductActionsSchema.Enum.changeVariantPrice),
+  value: z.object({
+    id: IdSchema,
+    price: PriceDraftSchema,
+  }),
+});

@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { IdSchema, ProductResponseSchema } from '../validators';
+import {
+  IdSchema,
+  ProductResponseSchema,
+  ProductUpdatedMessageSchema,
+} from '../validators';
 import kafka from './client';
 import { CompressionTypes } from 'kafkajs';
 
@@ -8,14 +12,18 @@ export enum TOPICS {
   productUpdated = 'product_updated',
   productDeleted = 'product_deleted',
 }
-type ProductResponse = z.infer<typeof ProductResponseSchema>;
-type ID = z.infer<typeof IdSchema>;
+type TProductCreated = z.infer<typeof ProductResponseSchema>;
+type TProductUpdated = z.infer<typeof ProductUpdatedMessageSchema>;
+type TProductDeleted = z.infer<typeof IdSchema>;
 
 const producer = kafka.producer({
   maxInFlightRequests: 5, // Maximum number of in-flight requests per broker connection
 });
 
-const produceMessage = async (message: ProductResponse | ID, topic: TOPICS) => {
+const produceMessage = async (
+  message: TProductCreated | TProductDeleted | TProductUpdated,
+  topic: TOPICS
+) => {
   await producer.connect();
 
   await producer.send({

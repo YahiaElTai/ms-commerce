@@ -84,21 +84,26 @@ export const Actions = z.enum([
   'changeVariantPrice',
 ]);
 
-export const ActionsSchema = z.array(
-  z.object({
-    type: Actions,
-    value: z.record(
-      z.union([
-        z.string(),
-        z.number(),
-        z.object({
-          centAmount: CentAmountSchema,
-          currencyCode: CurrencySchema,
-        }),
-      ])
-    ),
-  })
-);
+export const ActionSchema = z.object({
+  type: Actions,
+  value: z.record(
+    z.union([
+      z.string(),
+      z.number(),
+      z.object({
+        centAmount: CentAmountSchema,
+        currencyCode: CurrencySchema,
+      }),
+    ])
+  ),
+});
+
+export const ActionsSchema = z.array(ActionSchema);
+
+export const ProductUpdatedMessageSchema = z.object({
+  id: IdSchema,
+  action: ActionSchema,
+});
 
 // Validator used when updating a product
 export const ProductDraftUpdateSchema = z.object({

@@ -64,6 +64,11 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
             },
           },
         });
+
+        await produceMessage(
+          { id, action: validatedAction },
+          TOPICS.productUpdated
+        );
         break;
       }
       case Actions.Enum.removeVariant: {
@@ -82,6 +87,11 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
             },
           },
         });
+
+        await produceMessage(
+          { id, action: validatedAction },
+          TOPICS.productUpdated
+        );
         break;
       }
       case Actions.Enum.changeVariantPrice: {
@@ -106,6 +116,11 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
           },
         });
 
+        await produceMessage(
+          { id, action: validatedAction },
+          TOPICS.productUpdated
+        );
+
         break;
       }
     }
@@ -125,8 +140,6 @@ router.put('/api/products/:id', async (req: Request, res: Response) => {
   const validatedProduct = ProductSchema.parse(updatedProduct);
 
   const computedProduct = computeProductFields(validatedProduct);
-
-  await produceMessage(computedProduct, TOPICS.productUpdated);
 
   return res.send(computedProduct);
 });

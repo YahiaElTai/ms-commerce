@@ -2,15 +2,19 @@ import { EachMessagePayload } from 'kafkajs';
 import kafka from './client';
 import createProduct from './operations/create-product';
 import deleteProduct from './operations/delete-product';
+import updateProduct from './operations/update-product';
 
 export enum TOPICS {
   productCreated = 'product_created',
-  // updating a product is currently not handled, will be added soon
   productUpdated = 'product_updated',
   productDeleted = 'product_deleted',
 }
 
-const consumer = kafka.consumer({ groupId: 'cart-consumer-group' });
+const consumer = kafka.consumer({
+  groupId: 'cart-consumer-group',
+  heartbeatInterval: 3000,
+  sessionTimeout: 10000,
+});
 
 const handleMessage = async ({
   topic,
@@ -29,6 +33,9 @@ const handleMessage = async ({
       break;
     case TOPICS.productDeleted:
       await deleteProduct(value);
+      break;
+    case TOPICS.productUpdated:
+      await updateProduct(value);
       break;
     default:
       console.warn('Unknown topic:', topic);

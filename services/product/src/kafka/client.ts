@@ -17,6 +17,7 @@ const kafka = new Kafka({
     password: config.kafkaPassword,
   },
   connectionTimeout: 3000,
+  authenticationTimeout: 3000,
 });
 
 export default kafka;
