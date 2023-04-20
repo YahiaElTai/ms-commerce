@@ -9,10 +9,10 @@ ingress:
       port: 3000
       pathType: Prefix
     - name: ms-cart
-      path: /api/carts/?(.*)
+      path: /api/([^/\s]+)/carts/?(.*)
       port: 3001
       pathType: Prefix
     - name: ms-product
-      path: /api/products/?(.*)
+      path: /api/([^/\s]+)/products/?(.*)
       port: 3002
       pathType: Prefix

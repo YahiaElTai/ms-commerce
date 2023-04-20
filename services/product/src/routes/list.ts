@@ -7,6 +7,7 @@ import {
   QueryParamsSchema,
   ProductResponseSchema,
   ProductSchema,
+  ProjectKeyParamSchema,
 } from '../validators';
 
 type ProductResponse = z.infer<typeof ProductResponseSchema>;
@@ -16,7 +17,8 @@ const router = express.Router();
 // As of Express@5 This syntax is supported however the types are not updated yet
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.get('/api/products', async (req: Request, res: Response) => {
+router.get('/api/:projectKey/products', async (req: Request, res: Response) => {
+  const { projectKey } = ProjectKeyParamSchema.parse(req.params);
   // to ensure proper validations on `limit` and `offset`
   // first these should be parsed to integer with `parseInt()` with `ParseQueryParamsSchema`
   // and then passed to `QueryParamsSchema` for proper validation
@@ -34,6 +36,7 @@ router.get('/api/products', async (req: Request, res: Response) => {
 
   const products = await prisma.product.findMany({
     select: excludeIdsFromProduct,
+    where: { projectKey },
     skip: offset,
     take: limit,
     orderBy,

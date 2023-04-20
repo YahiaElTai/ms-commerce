@@ -32,7 +32,10 @@ describe('when no pagination or sorting is provided', () => {
   it('should responds with list of carts with default pagination and sorting', async () => {
     await createCartWithoutLineItems();
 
-    const response = await request(app).get('/api/carts').send().expect(200);
+    const response = await request(app)
+      .get('/api/test-project/carts')
+      .send()
+      .expect(200);
 
     const validatedResponse = CartListResponseSchema.parse(response.body);
 
@@ -50,7 +53,7 @@ describe('when pagination and sorting is provided', () => {
 
     const response = await request(app)
       .get(
-        '/api/carts?limit=10&offset=0&sortBy=customerEmail&sortDirection=desc'
+        '/api/test-project/carts?limit=10&offset=0&sortBy=customerEmail&sortDirection=desc'
       )
       .send()
       .expect(200);
@@ -69,7 +72,7 @@ describe('when incorrect pagination or sorting is provided', () => {
   it('should responds 400 and helpful error messages', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
       .get(
-        '/api/carts?limit=200000&offset=200000&sortBy=lineItemsQuantity&sortDirection=desc'
+        '/api/test-project/carts?limit=200000&offset=200000&sortBy=lineItemsQuantity&sortDirection=desc'
       )
       .send()
       .expect(400);

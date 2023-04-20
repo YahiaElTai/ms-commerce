@@ -7,26 +7,29 @@ import { IdParamSchema } from '../validators/params-validators';
 
 const router = express.Router();
 
-// As of Express@5 This syntax is supported however the types are not updated yet
-// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.get('/api/carts/:id', async (req: Request, res: Response) => {
-  const { id } = IdParamSchema.parse(req.params);
+router.get(
+  '/api/:projectKey/carts/:id',
+  // As of Express@5 This syntax is supported however the types are not updated yet
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  async (req: Request, res: Response) => {
+    const { id } = IdParamSchema.parse(req.params);
 
-  const cart = await prisma.cart.findUnique({
-    where: { id },
-    select: excludeCartIdFromLineItem,
-  });
+    const cart = await prisma.cart.findUnique({
+      where: { id },
+      select: excludeCartIdFromLineItem,
+    });
 
-  if (!cart) {
-    throw new NotFoundError(`Cart with ID '${id}' could not be found`);
+    if (!cart) {
+      throw new NotFoundError(`Cart with ID '${id}' could not be found`);
+    }
+
+    const validatedCart = CartSchema.parse(cart);
+
+    const computedCart = computeCartFields(validatedCart);
+
+    res.send(computedCart);
   }
-
-  const validatedCart = CartSchema.parse(cart);
-
-  const computedCart = computeCartFields(validatedCart);
-
-  res.send(computedCart);
-});
+);
 
 export { router as GetCartRouter };

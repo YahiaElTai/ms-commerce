@@ -39,4 +39,5 @@ model Product {
   productKey  String?
   variants    Variant[]
   version     Int       @default(1)
+  projectKey  String
 }

@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
-import { PasswordHashing, generateToken } from '../utils';
-import { prisma } from '../prisma';
-import { BadRequestError } from '../errors';
-import { UserDraftSchema } from '../validators';
+import { PasswordHashing, generateToken } from '../../utils';
+import { prisma } from '../../prisma';
+import { BadRequestError } from '../../errors';
+import { UserDraftSchema } from '../../validators';
 
 const router = express.Router();
 

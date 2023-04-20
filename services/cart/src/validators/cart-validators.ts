@@ -23,6 +23,7 @@ export const CartSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   lineItems: z.array(LineItemSchema),
+  projectKey: z.string(),
 });
 
 // Validator for the cart response that gets sent to the user after adding the computed fields

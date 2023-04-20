@@ -3,6 +3,7 @@ import { computeCartFields } from '../model';
 import { excludeCartIdFromLineItem, prisma } from '../prisma';
 import {
   ParseQueryParamsSchema,
+  ProjectKeyParamSchema,
   QueryParamsSchema,
 } from '../validators/params-validators';
 import { CartResponseSchema, CartSchema } from '../validators';
@@ -15,7 +16,8 @@ const router = express.Router();
 // As of Express@5 This syntax is supported however the types are not updated yet
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.get('/api/carts', async (req: Request, res: Response) => {
+router.get('/api/:projectKey/carts', async (req: Request, res: Response) => {
+  const { projectKey } = ProjectKeyParamSchema.parse(req.params);
   // to ensure proper validations on `limit` and `offset`
   // first these should be parsed to integer with `parseInt()` with `ParseQueryParamsSchema`
   // and then passed to `QueryParamsSchema` for proper validation
@@ -32,6 +34,7 @@ router.get('/api/carts', async (req: Request, res: Response) => {
       : { [sortBy]: sortDirection };
 
   const carts = await prisma.cart.findMany({
+    where: { projectKey },
     select: excludeCartIdFromLineItem,
     skip: offset,
     take: limit,

@@ -32,7 +32,7 @@ describe('when incorrect update action is provided', () => {
     const validatedCart = CartResponseSchema.parse(response.body);
 
     const response2: { body: FormattedErrors[] } = await request(app)
-      .put(`/api/carts/${validatedCart.id}`)
+      .put(`/api/test-project/carts/${validatedCart.id}`)
       .send({
         version: 1,
         actions: [
@@ -68,7 +68,7 @@ describe('when addLineItem update action is provided', () => {
     const validatedCart = CartResponseSchema.parse(response.body);
 
     const updatedResponse = await request(app)
-      .put(`/api/carts/${validatedCart.id}`)
+      .put(`/api/test-project/carts/${validatedCart.id}`)
       .send({
         version: 1,
         actions: [
@@ -120,7 +120,7 @@ describe('when changeLineItemQuantity update action is provided', () => {
     const validatedCart = CartResponseSchema.parse(response.body);
 
     const updatedResponse = await request(app)
-      .put(`/api/carts/${validatedCart.id}`)
+      .put(`/api/test-project/carts/${validatedCart.id}`)
       .send({
         version: 1,
         actions: [
@@ -172,7 +172,7 @@ describe('when removeLineItem update action is provided', () => {
     const validatedCart = CartResponseSchema.parse(response.body);
 
     const updatedResponse = await request(app)
-      .put(`/api/carts/${validatedCart.id}`)
+      .put(`/api/test-project/carts/${validatedCart.id}`)
       .send({
         version: 1,
         actions: [

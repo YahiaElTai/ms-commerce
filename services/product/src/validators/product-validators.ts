@@ -53,6 +53,7 @@ export const ProductSchema = z.object({
   description: DescriptionSchema,
   productKey: ProductKeySchema,
   variants: z.array(VariantSchema),
+  projectKey: z.string(),
 });
 
 // validators used to validate data to send to the user -------------

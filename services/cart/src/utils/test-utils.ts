@@ -19,6 +19,7 @@ export const createProduct = async (sku: string) => {
     data: {
       name: 'HM pants',
       productKey: 'hm-pants-key',
+      projectKey: 'test-project',
       originalId: 1,
       variants: {
         connect: { id: variant.id },
@@ -29,7 +30,7 @@ export const createProduct = async (sku: string) => {
 
 export const createCart = (sku: string) =>
   request(app)
-    .post('/api/carts')
+    .post('/api/test-project/carts')
     .send({
       customerEmail: 'test@test.com',
       currency: 'EUR',
@@ -39,7 +40,7 @@ export const createCart = (sku: string) =>
 
 export const createCartWithoutLineItems = () =>
   request(app)
-    .post('/api/carts')
+    .post('/api/test-project/carts')
     .send({
       customerEmail: 'test@test.com',
       currency: 'EUR',

@@ -11,5 +11,5 @@ Basic Authentication with email and password is set up with [Nginx-Ingress](http
   ```yaml
   nginx.ingress.kubernetes.io/auth-url: http://ms-account.default.svc.cluster.local:3000/api/account/authenticate
   nginx.ingress.kubernetes.io/auth-method: POST
-  nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail,ProjectKey
+  nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail
   ```

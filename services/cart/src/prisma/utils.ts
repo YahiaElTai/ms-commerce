@@ -3,6 +3,7 @@
 // https://github.com/prisma/prisma/issues/5042
 export const excludeCartIdFromLineItem = {
   id: true,
+  projectKey: true,
   version: true,
   currency: true,
   customerEmail: true,

@@ -48,6 +48,7 @@ model Product {
 
   // a product can contain multiple variants
   variants VariantForProduct[]
+  projectKey  String
 }
 
 // Workflow 
@@ -114,4 +115,5 @@ model Cart {
   // computed fields for carts: totalLineItemQuantity, totalPrice
   // totalLineItemQuantity is the sum of all line item quantities
   // totalPrice is the sum of all totalPrice from line items
+  projectKey  String
 }

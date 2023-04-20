@@ -22,7 +22,7 @@ jest.mock('kafkajs', () => {
 describe('when product draft object is not provided', () => {
   it('should respond with 400', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({})
       .expect(400);
 
@@ -34,7 +34,7 @@ describe('when product draft object is not provided', () => {
 describe('when required product name is not provided', () => {
   it('should respond with 400', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         productKey: 'product-1',
         variants: [
@@ -54,7 +54,7 @@ describe('when required product name is not provided', () => {
 describe('when providing an invalid sku', () => {
   it('should respond with 400', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-1',
         variants: [
@@ -78,7 +78,7 @@ describe('when correct draft object is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     const response = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',

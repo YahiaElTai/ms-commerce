@@ -26,7 +26,7 @@ describe('when no pagination or sorting is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm-1',
         productKey: 'hm-pants-key',
@@ -42,7 +42,10 @@ describe('when no pagination or sorting is provided', () => {
       })
       .expect(201);
 
-    const response = await request(app).get('/api/products').send().expect(200);
+    const response = await request(app)
+      .get('/api/test-project/products')
+      .send()
+      .expect(200);
 
     const validatedResponse = ProductListResponseSchema.parse(response.body);
 
@@ -63,7 +66,7 @@ describe('when pagination and sorting is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm-1',
         productKey: 'hm-pants-key',
@@ -80,7 +83,9 @@ describe('when pagination and sorting is provided', () => {
       .expect(201);
 
     const response = await request(app)
-      .get('/api/products?limit=10&offset=0&sortBy=name&sortDirection=desc')
+      .get(
+        '/api/test-project/products?limit=10&offset=0&sortBy=name&sortDirection=desc'
+      )
       .send()
       .expect(200);
 
@@ -98,7 +103,7 @@ describe('when incorrect pagination or sorting is provided', () => {
   it('should responds 400 and helpful error messages', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
       .get(
-        '/api/products?limit=200000&offset=200000&sortBy=productDescription&sortDirection=desc'
+        '/api/test-project/products?limit=200000&offset=200000&sortBy=productDescription&sortDirection=desc'
       )
       .send()
       .expect(400);

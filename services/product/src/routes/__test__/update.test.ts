@@ -25,7 +25,7 @@ describe('when incorrect update action is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     const response = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',
@@ -44,7 +44,7 @@ describe('when incorrect update action is provided', () => {
     const validatedProduct = ProductResponseSchema.parse(response.body);
 
     const response2: { body: FormattedErrors[] } = await request(app)
-      .put(`/api/products/${validatedProduct.id}`)
+      .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
         version: 1,
         actions: [
@@ -71,7 +71,7 @@ describe('when addVariant update action is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     const response = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',
@@ -94,7 +94,7 @@ describe('when addVariant update action is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     const updatedResponse = await request(app)
-      .put(`/api/products/${validatedProduct.id}`)
+      .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
         version: 1,
         actions: [
@@ -160,7 +160,7 @@ describe('when changeVariantPrice update action is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     const response = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',
@@ -179,7 +179,7 @@ describe('when changeVariantPrice update action is provided', () => {
     const validatedProduct = ProductResponseSchema.parse(response.body);
 
     const updatedResponse = await request(app)
-      .put(`/api/products/${validatedProduct.id}`)
+      .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
         version: 1,
         actions: [
@@ -235,7 +235,7 @@ describe('when removeVariant update action is provided', () => {
       Math.random().toString(36).substring(2, 15);
 
     const response = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',
@@ -254,7 +254,7 @@ describe('when removeVariant update action is provided', () => {
     const validatedProduct = ProductResponseSchema.parse(response.body);
 
     const updatedResponse = await request(app)
-      .put(`/api/products/${validatedProduct.id}`)
+      .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
         version: 1,
         actions: [
