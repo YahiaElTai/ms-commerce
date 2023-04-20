@@ -4,16 +4,16 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 ### Tech Stack
 
-| Stack                       | Detail                                                                                                       |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Languages                   | **TypeScript**: Authentication, Cart, Product and account services <br> **Golang**: Customer, Order services |
-| Database                    | **PostgreSQL** on [GCP Cloud SQL](https://cloud.google.com/sql)                                              |
-| Database ORM                | [Prisma](https://www.prisma.io/) for TS <br> [Gorm](https://gorm.io/) for Golang                             |
-| Kubernetes Package Manager  | [Helm](https://helm.sh/)                                                                                     |
-| API Gateway                 | [Ingress Nginx](https://kubernetes.github.io/ingress-nginx/)                                                 |
-| Inter-service Communication | Kafka running on [Confluent Cloud](https://www.confluent.io/confluent-cloud/)                                |
-| Docker Image Registry       | [Artifact Registry](https://cloud.google.com/artifact-registry) on GCP                                       |
-| CI/CD                       | [CircleCI](https://circleci.com/)                                                                            |
+| Stack                       | Detail                                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| Languages                   | **TypeScript**: Account, Cart and Product services <br> **Golang**: Customer and Order services |
+| Database                    | **PostgreSQL** on [GCP Cloud SQL](https://cloud.google.com/sql)                                 |
+| Database ORM                | [Prisma](https://www.prisma.io/) for TS <br> [Gorm](https://gorm.io/) for Golang                |
+| Kubernetes Package Manager  | [Helm](https://helm.sh/)                                                                        |
+| API Gateway                 | [Ingress Nginx](https://kubernetes.github.io/ingress-nginx/)                                    |
+| Inter-service Communication | Kafka running on [Confluent Cloud](https://www.confluent.io/confluent-cloud/)                   |
+| Docker Image Registry       | [Artifact Registry](https://cloud.google.com/artifact-registry) on GCP                          |
+| CI/CD                       | [CircleCI](https://circleci.com/)                                                               |
 
 ### Services
 
