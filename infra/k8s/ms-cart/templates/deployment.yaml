@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ms-commerce-product.fullname" . }}
+  name: {{ include "ms-cart.fullname" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "ms-commerce-product.selectorLabels" . | nindent 6 }}
+      {{- include "ms-cart.selectorLabels" . | nindent 6 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "ms-commerce-product.selectorLabels" . | nindent 8 }}
+        {{- include "ms-cart.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{  .Values.serviceAccount.name }}
       containers:
@@ -68,7 +68,7 @@ spec:
           image: {{ .Values.postgresql.image | quote }}
           command:
             - "/cloud_sql_proxy"
-            - {{ include "ms-commerce-product.postgresql-instances" . }}
+            - {{ include "ms-cart.postgresql-instances" . }}
           securityContext:
             runAsNonRoot: true
           resources:

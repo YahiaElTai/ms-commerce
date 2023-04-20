@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "ms-commerce-cart.fullname" . }}
+  name: {{ include "ms-account.fullname" . }}
   labels:
-    {{- include "ms-commerce-cart.labels" . | nindent 4 }}
+    {{- include "ms-account.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "ms-commerce-cart.fullname" . }}
+    name: {{ include "ms-account.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

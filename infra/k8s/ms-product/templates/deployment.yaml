@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ms-commerce-account.fullname" . }}
+  name: {{ include "ms-product.fullname" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "ms-commerce-account.selectorLabels" . | nindent 6 }}
+      {{- include "ms-product.selectorLabels" . | nindent 6 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,13 +17,12 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "ms-commerce-account.selectorLabels" . | nindent 8 }}
+        {{- include "ms-product.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{  .Values.serviceAccount.name }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env: 
             {{- $chartName := .Chart.Name -}}
             {{- range $key, $val := .Values.secrets }}
@@ -35,6 +34,7 @@ spec:
               {{- end}}
             - name: ROARR_LOG
               value: 'true'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             {{- range $key, $val := .Values.service.ports }}
               - name: {{ $val.name }}
@@ -46,10 +46,6 @@ spec:
             httpGet:
               path: /ready
               port: 9000
-            # failureThreshold * periodSeconds + initialDelaySeconds (5 * 10 + 15 = 65 seconds) before the first probe  
-            # Once the startup probe has succeeded once, the liveness probe takes over to provide 
-            # a fast response to container deadlocks. If the startup probe never succeeds,
-            # the container is killed after 65s and subject to the pod's restartPolicy.
             failureThreshold: 5
             initialDelaySeconds: 15
             periodSeconds: 10
@@ -65,16 +61,14 @@ spec:
             httpGet:
               path: /live
               port: 9000
-            # kubelet should wait 5 seconds before performing the first probe
             initialDelaySeconds: 5
-            # kubelet should perform a liveness probe every 10 seconds
             periodSeconds: 10
             timeoutSeconds: 5
         - name: {{ .Values.postgresql.name | quote }}
           image: {{ .Values.postgresql.image | quote }}
           command:
             - "/cloud_sql_proxy"
-            - {{ include "ms-commerce-account.postgresql-instances" . }}
+            - {{ include "ms-product.postgresql-instances" . }}
           securityContext:
             runAsNonRoot: true
           resources:

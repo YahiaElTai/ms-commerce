@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: {{ .Values.ingress.name }}
   annotations:
-    {{- include "ms-commerce-ingress.ingress.annotations" . | nindent 4}}
+    {{- include "ms-ingress.ingress.annotations" . | nindent 4}}
 spec:
   rules:
     - host: {{ .Values.ingress.host }}

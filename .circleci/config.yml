@@ -147,7 +147,7 @@ workflows:
             - build_and_publish_cart_image
       - deploy_service:
           name: deploy_cart_service
-          chart_name: ms-commerce-cart
+          chart_name: ms-cart
           helm_release_name: ms-cart
           requires:
             - can_deploy_cart_service
@@ -173,7 +173,7 @@ workflows:
             - build_and_publish_account_image
       - deploy_service:
           name: deploy_account_service
-          chart_name: ms-commerce-account
+          chart_name: ms-account
           helm_release_name: ms-account
           requires:
             - can_deploy_account_service
@@ -199,7 +199,7 @@ workflows:
             - build_and_publish_product_image
       - deploy_service:
           name: deploy_product_service
-          chart_name: ms-commerce-product
+          chart_name: ms-product
           helm_release_name: ms-product
           requires:
             - can_deploy_product_service
@@ -211,7 +211,7 @@ workflows:
             - shell_check
       - deploy_service:
           name: deploy_ingress
-          chart_name: ms-commerce-ingress
+          chart_name: ms-ingress
           helm_release_name: ms-ingress
           requires:
             - can_deploy_ingress

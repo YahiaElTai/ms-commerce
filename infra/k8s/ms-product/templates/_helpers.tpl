@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "ms-commerce-cart.name" -}}
+{{- define "ms-product.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "ms-commerce-cart.fullname" -}}
+{{- define "ms-product.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -22,22 +22,22 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Common labels
 */}}
-{{- define "ms-commerce-cart.labels" -}}
-{{ include "ms-commerce-cart.selectorLabels" . }}
+{{- define "ms-product.labels" -}}
+{{ include "ms-product.selectorLabels" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "ms-commerce-cart.selectorLabels" -}}
-app: {{ include "ms-commerce-cart.name" . }}
+{{- define "ms-product.selectorLabels" -}}
+app: {{ include "ms-product.name" . }}
 instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Cloud SQL proxy instance to connect to Cloud SQL database instance
 */}}
-{{- define "ms-commerce-cart.postgresql-instances" -}}
+{{- define "ms-product.postgresql-instances" -}}
 {{ printf "-instances=%s" .Values.postgresql.instance | quote -}}
 {{- end }}
