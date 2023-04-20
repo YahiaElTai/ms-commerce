@@ -1,12 +1,12 @@
 ### Authentication strategy
 
-Authentication is extracted out to its own microservice on the cluster called `ms-account`.
+Authentication is extracted out to its own microservice called `account`
 
 Basic Authentication with email and password is set up with [Nginx-Ingress](https://kubernetes.github.io/ingress-nginx/examples/auth/external-auth/) using annotations.
 
-- The first annotation tells the `nginx-ingress` controller to forward the incoming request first to the `ms-account` microservice, and then if the `ms-account` responds with an `200 Ok` then on to the downstream route.
+- The first annotation instructs the `nginx-ingress` controller to initially direct incoming requests to the `account` microservice. If the `account` microservice responds with a `200 Ok` status, the request is then forwarded to the downstream route.
 
-- The second annotation is used to pass custom headers to the downstream route such as `UserId` and `UserEmail`.
+- The second annotation enables the passing of custom headers to the downstream route, including headers like `UserId` and `UserEmail`.
 
   ```yaml
   nginx.ingress.kubernetes.io/auth-url: http://ms-account.default.svc.cluster.local:3000/api/account/authenticate
