@@ -11,7 +11,7 @@ echo -e "\033[32mGenerating .env for $SERVICE_NAME service"
 # This switch statements decide the port number based on the service name
 case $SERVICE_NAME in
 
-auth)
+account)
     DATABASE_URL=postgresql://prisma:prisma@localhost:5432/prisma
     ;;
 
@@ -28,7 +28,7 @@ product)
     ;;
 esac
 
-if [ "$SERVICE_NAME" == "auth" ]; then
+if [ "$SERVICE_NAME" == "account" ]; then
 
     cat <<EOF >/home/circleci/ms-commerce/services/"$SERVICE_NAME"/.env
     NODE_ENV=test

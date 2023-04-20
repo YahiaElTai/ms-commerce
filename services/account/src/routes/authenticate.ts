@@ -4,11 +4,11 @@ import { JWTUndefinedError, NotAuthorized } from '../errors';
 import { CookiesSchema, UserSchema } from '../validators';
 
 // These URIs should not be authenticated
-const UNAUTHENTICATED_URLS = ['/api/users/signup', '/api/users/signin'];
+const UNAUTHENTICATED_URLS = ['/api/account/signup', '/api/account/signin'];
 
 const router = express.Router();
 
-router.post('/api/users/authenticate', (req: Request, res: Response) => {
+router.post('/api/account/authenticate', (req: Request, res: Response) => {
   const originalURI = req.header('x-original-uri');
 
   if (originalURI && UNAUTHENTICATED_URLS.includes(originalURI)) {

@@ -4,7 +4,7 @@ import { CookiesSchema } from '../validators';
 
 const router = express.Router();
 
-router.post('/api/users/signout', (req: Request, res: Response) => {
+router.post('/api/account/signout', (req: Request, res: Response) => {
   const validatedCookies = CookiesSchema.safeParse(req.cookies);
 
   if (!validatedCookies.success) {

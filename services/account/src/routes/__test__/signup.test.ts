@@ -8,7 +8,7 @@ describe('when valid email and password are provided', () => {
   it('should respond with 201 and return the created user', async () => {
     const email = generateRandomEmail();
     const response = await request(app)
-      .post('/api/users/signup')
+      .post('/api/account/signup')
       .send({
         email,
         password: 'password',
@@ -31,7 +31,7 @@ describe('when valid email and password are provided', () => {
 
   it('sets a cookie after successful signup', async () => {
     const response = await request(app)
-      .post('/api/users/signup')
+      .post('/api/account/signup')
       .send({
         email: generateRandomEmail(),
         password: 'password',
@@ -47,7 +47,7 @@ describe('when valid email and password are provided', () => {
 describe('when incorrect email or password is provided', () => {
   it('should respond with 400 and provide helpful error messages', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .post('/api/users/signup')
+      .post('/api/account/signup')
       .send({
         email: 'test.com',
         password: 'p',
@@ -63,7 +63,7 @@ describe('when incorrect email or password is provided', () => {
   });
 
   it('should respond with 400 when both email and password are missing', async () => {
-    await request(app).post('/api/users/signup').send({}).expect(400);
+    await request(app).post('/api/account/signup').send({}).expect(400);
   });
 });
 
@@ -71,13 +71,13 @@ describe('when email is already in use', () => {
   const email = generateRandomEmail();
 
   it('should not allow creating a new user with the same email', async () => {
-    await request(app).post('/api/users/signup').send({
+    await request(app).post('/api/account/signup').send({
       email,
       password: 'password',
     });
 
     const response: { body: { message: string }[] } = await request(app)
-      .post('/api/users/signup')
+      .post('/api/account/signup')
       .send({
         email,
         password: 'password',

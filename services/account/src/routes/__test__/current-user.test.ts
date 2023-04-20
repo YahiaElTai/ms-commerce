@@ -11,7 +11,7 @@ const authenticate = async () => {
   const lastName = 'User';
 
   const signupResponse = await request(app)
-    .post('/api/users/signup')
+    .post('/api/account/signup')
     .send({ email, password, firstName, lastName })
     .expect(201);
 
@@ -19,9 +19,9 @@ const authenticate = async () => {
 
   // authenticate with the cookie
   const authenticateResponse = await request(app)
-    .post('/api/users/authenticate')
+    .post('/api/account/authenticate')
     .set('Cookie', cookie)
-    .set('x-original-uri', '/api/users/currentuser')
+    .set('x-original-uri', '/api/account/currentuser')
     .send()
     .expect(200);
 
@@ -36,7 +36,7 @@ describe('when user is authenticated', () => {
     const user = await authenticate();
 
     const response = await request(app)
-      .get('/api/users/currentuser')
+      .get('/api/account/currentuser')
       .set({ UserId: user.userId, UserEmail: user.userEmail })
       .send()
       .expect(200);
@@ -55,5 +55,5 @@ describe('when user is authenticated', () => {
 });
 
 it('responds with 401 if not authenticated', async () => {
-  await request(app).get('/api/users/currentuser').send().expect(401);
+  await request(app).get('/api/account/currentuser').send().expect(401);
 });

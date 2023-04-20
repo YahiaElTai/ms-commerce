@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depl
+  name: account-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: account
   template:
     metadata:
       labels:
-        app: auth
+        app: account
     spec:
       containers:
-        - name: auth
-          image: yahiaeltai/auth
+        - name: account
+          image: yahiaeltai/account
           resources:
             requests:
               cpu: 100m
@@ -26,11 +26,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-srv
+  name: account-srv
 spec:
   selector:
-    app: auth
+    app: account
   ports:
-    - name: auth
+    - name: account
       port: 3000
       targetPort: 3000

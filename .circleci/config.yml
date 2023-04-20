@@ -109,8 +109,8 @@ workflows:
           requires:
             - shell_check
       - typecheck_and_test:
-          name: typecheck_and_test_auth
-          app-dir: auth
+          name: typecheck_and_test_account
+          app-dir: account
           requires:
             - shell_check
       - typecheck_and_test:
@@ -151,32 +151,32 @@ workflows:
           helm_release_name: ms-cart
           requires:
             - can_deploy_cart_service
-          # Auth service jobs
+          # account service jobs
       - typecheck_and_test:
-          name: typecheck_and_test_auth
-          app-dir: auth
+          name: typecheck_and_test_account
+          app-dir: account
           requires:
             - shell_check
       - gcp-gcr/build-and-push-image:
-          name: build_and_publish_auth_image
-          docker-context: ./services/auth
-          image: $REPO_NAME/auth
-          path: ./services/auth
+          name: build_and_publish_account_image
+          docker-context: ./services/account
+          image: $REPO_NAME/account
+          path: ./services/account
           registry-url: $REGISTRY_URL
           tag: << pipeline.git.revision >>
           requires:
-            - typecheck_and_test_auth
+            - typecheck_and_test_account
       - can_deploy_service:
-          name: can_deploy_auth_service
+          name: can_deploy_account_service
           type: approval
           requires:
-            - build_and_publish_auth_image
+            - build_and_publish_account_image
       - deploy_service:
-          name: deploy_auth_service
-          chart_name: ms-commerce-auth
-          helm_release_name: ms-auth
+          name: deploy_account_service
+          chart_name: ms-commerce-account
+          helm_release_name: ms-account
           requires:
-            - can_deploy_auth_service
+            - can_deploy_account_service
               # Product service jobs
       - typecheck_and_test:
           name: typecheck_and_test_product

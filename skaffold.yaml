@@ -4,8 +4,8 @@ metadata:
   name: ms-commerce
 build:
   artifacts:
-    - image: yahiaeltai/auth
-      context: services/auth
+    - image: yahiaeltai/account
+      context: services/account
       docker:
         dockerfile: Dockerfile.dev
     - image: yahiaeltai/cart
