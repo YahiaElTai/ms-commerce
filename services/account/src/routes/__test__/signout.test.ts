@@ -4,7 +4,7 @@ import { generateRandomEmail } from '../../test/test-utils';
 
 it('clears the cookie after signing out', async () => {
   const response = await request(app)
-    .post('/api/users/signup')
+    .post('/api/account/signup')
     .send({
       email: generateRandomEmail(),
       password: 'password',
@@ -16,7 +16,7 @@ it('clears the cookie after signing out', async () => {
   const cookie = response.get('Set-Cookie');
 
   const responseSignOut: { body: { message: string }[] } = await request(app)
-    .post('/api/users/signout')
+    .post('/api/account/signout')
     .set('Cookie', cookie)
     .send()
     .expect(200);

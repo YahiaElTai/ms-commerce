@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ms-commerce-auth.fullname" . }}
+  name: {{ include "ms-commerce-account.fullname" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "ms-commerce-auth.selectorLabels" . | nindent 6 }}
+      {{- include "ms-commerce-account.selectorLabels" . | nindent 6 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "ms-commerce-auth.selectorLabels" . | nindent 8 }}
+        {{- include "ms-commerce-account.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{  .Values.serviceAccount.name }}
       containers:
@@ -74,7 +74,7 @@ spec:
           image: {{ .Values.postgresql.image | quote }}
           command:
             - "/cloud_sql_proxy"
-            - {{ include "ms-commerce-auth.postgresql-instances" . }}
+            - {{ include "ms-commerce-account.postgresql-instances" . }}
           securityContext:
             runAsNonRoot: true
           resources:

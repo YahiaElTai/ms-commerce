@@ -1,14 +1,14 @@
 replicaCount: 1
 
 image:
-  repository: europe-west1-docker.pkg.dev/ms-commerce-auto-1/ms-commerce/auth
+  repository: europe-west1-docker.pkg.dev/ms-commerce-auto-1/ms-commerce/account
   pullPolicy: IfNotPresent
   tag: 'latest'
 
-nameOverride: 'auth'
+nameOverride: 'account'
 
 serviceAccount:
-  name: 'ksa-cloud-sql-auth'
+  name: 'ksa-cloud-sql-account'
   annotations:
     iam.gke.io/gcp-service-account: gke-cloud-sql-service-account@ms-commerce-auto-1.iam.gserviceaccount.com
 

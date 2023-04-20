@@ -4,8 +4,8 @@ ingress:
   # Auth service must stay as the first service
   # You can add more services below
   services:
-    - name: ms-commerce-auth
-      path: /api/users/?(.*)
+    - name: ms-commerce-account
+      path: /api/account/?(.*)
       port: 3000
       pathType: Prefix
     - name: ms-commerce-cart

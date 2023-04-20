@@ -4,7 +4,7 @@ import { generateRandomEmail } from '../../test/test-utils';
 
 it('fails when an email does not exist', async () => {
   return request(app)
-    .post('/api/users/signin')
+    .post('/api/account/signin')
     .send({
       email: generateRandomEmail(),
       password: 'password',
@@ -15,7 +15,7 @@ it('fails when an email does not exist', async () => {
 it('fails when an incorrect password is supplied', async () => {
   const email = generateRandomEmail();
   await request(app)
-    .post('/api/users/signup')
+    .post('/api/account/signup')
     .send({
       email,
       password: 'password',
@@ -25,7 +25,7 @@ it('fails when an incorrect password is supplied', async () => {
     .expect(201);
 
   return request(app)
-    .post('/api/users/signin')
+    .post('/api/account/signin')
     .send({
       email,
       password: 'incorrectpassword',
@@ -36,7 +36,7 @@ it('fails when an incorrect password is supplied', async () => {
 it('responds with a cookie when given valid credentials', async () => {
   const email = generateRandomEmail();
   await request(app)
-    .post('/api/users/signup')
+    .post('/api/account/signup')
     .send({
       email,
       password: 'password',
@@ -46,7 +46,7 @@ it('responds with a cookie when given valid credentials', async () => {
     .expect(201);
 
   const response = await request(app)
-    .post('/api/users/signin')
+    .post('/api/account/signin')
     .send({
       email,
       password: 'password',

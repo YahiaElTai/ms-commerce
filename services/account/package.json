@@ -1,5 +1,5 @@
 {
-  "name": "auth",
+  "name": "account",
   "version": "1.0.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",

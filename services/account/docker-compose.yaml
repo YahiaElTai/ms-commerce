@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  auth_db:
+  account_db:
     image: postgres:15.2
     restart: always
     ports:

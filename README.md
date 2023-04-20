@@ -4,16 +4,16 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 ### Tech Stack
 
-| Stack                       | Detail                                                                                                          |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Languages                   | **TypeScript**: Authentication, Cart and Product services <br> **Golang**: Customer, Order and Account services |
-| Database                    | **PostgreSQL** on [GCP Cloud SQL](https://cloud.google.com/sql)                                                 |
-| Database ORM                | [Prisma](https://www.prisma.io/) for TS <br> [Gorm](https://gorm.io/) for Golang                                |
-| Kubernetes Package Manager  | [Helm](https://helm.sh/)                                                                                        |
-| API Gateway                 | [Ingress Nginx](https://kubernetes.github.io/ingress-nginx/)                                                    |
-| Inter-service Communication | Kafka running on [Confluent Cloud](https://www.confluent.io/confluent-cloud/)                                   |
-| Docker Image Registry       | [Artifact Registry](https://cloud.google.com/artifact-registry) on GCP                                          |
-| CI/CD                       | [CircleCI](https://circleci.com/)                                                                               |
+| Stack                       | Detail                                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Languages                   | **TypeScript**: Authentication, Cart, Product and account services <br> **Golang**: Customer, Order services |
+| Database                    | **PostgreSQL** on [GCP Cloud SQL](https://cloud.google.com/sql)                                              |
+| Database ORM                | [Prisma](https://www.prisma.io/) for TS <br> [Gorm](https://gorm.io/) for Golang                             |
+| Kubernetes Package Manager  | [Helm](https://helm.sh/)                                                                                     |
+| API Gateway                 | [Ingress Nginx](https://kubernetes.github.io/ingress-nginx/)                                                 |
+| Inter-service Communication | Kafka running on [Confluent Cloud](https://www.confluent.io/confluent-cloud/)                                |
+| Docker Image Registry       | [Artifact Registry](https://cloud.google.com/artifact-registry) on GCP                                       |
+| CI/CD                       | [CircleCI](https://circleci.com/)                                                                            |
 
 ### Services
 
@@ -22,15 +22,12 @@ The project is a simplified version of commercetools HTTP API written as microse
 1. **Authentication** ✅
 2. **[Cart](/services/cart/README.md)** ✅
 3. **[Product](/services/product/README.md)** ✅
-4. **Customer** ⏳
-5. **Order** ⏳
-6. **Account** ⏳
+4. **Account** ⏳
 
-   Inlcudes: Profile, Projects, Organizations
+   Inlcudes: Profile, Projects
 
-7. **Settings** ⏳
-
-   Inlcudes: Taxes, Shipping methods, Currencies, Countries
+5. **Customer** ⏳
+6. **Order** ⏳
 
 ### High level overview of services by language
 
