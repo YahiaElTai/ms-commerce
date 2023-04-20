@@ -1,4 +1,4 @@
-{{- define "ms-commerce-ingress.ingress.annotations" -}}
+{{- define "ms-ingress.ingress.annotations" -}}
 kubernetes.io/ingress.class: nginx
 nginx.ingress.kubernetes.io/use-regex: 'true'
 {{- $servicename := (index .Values.ingress.services 0).name -}}
