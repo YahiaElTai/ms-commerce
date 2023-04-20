@@ -3,6 +3,7 @@
 // https://github.com/prisma/prisma/issues/5042
 export const excludeIdsFromProduct = {
   id: true,
+  projectKey: true,
   name: true,
   description: true,
   createdAt: true,

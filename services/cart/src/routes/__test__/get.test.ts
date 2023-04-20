@@ -32,7 +32,7 @@ beforeAll(async () => {
 describe('when cart is not found', () => {
   it('should respond with 404 ', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .get('/api/carts/283794734')
+      .get('/api/test-project/carts/283794734')
       .send()
       .expect(404);
 

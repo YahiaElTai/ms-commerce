@@ -1,6 +1,6 @@
 import express, { Response, Request } from 'express';
-import { NotAuthorized } from '../errors';
-import { CookiesSchema } from '../validators';
+import { NotAuthorized } from '../../errors';
+import { CookiesSchema } from '../../validators';
 
 const router = express.Router();
 

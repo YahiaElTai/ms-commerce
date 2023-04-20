@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
-import { BadRequestError } from '../errors';
-import { excludePasswordFromUser, prisma } from '../prisma';
-import { generateToken } from '../utils';
-import { UserDraftSchema } from '../validators';
+import { BadRequestError } from '../../errors';
+import { excludePasswordFromUser, prisma } from '../../prisma';
+import { generateToken } from '../../utils';
+import { UserDraftSchema } from '../../validators';
 
 const router = express.Router();
 

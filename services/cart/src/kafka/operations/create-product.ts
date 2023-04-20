@@ -9,7 +9,7 @@ const createProduct = async (value: string) => {
 
   try {
     // validate received product
-    const { id, name, productKey, description, variants } =
+    const { id, name, productKey, description, variants, projectKey } =
       ProductSchema.parse(recievedProduct);
 
     // create all variants
@@ -28,6 +28,7 @@ const createProduct = async (value: string) => {
     await prisma.product.create({
       data: {
         name,
+        projectKey,
         originalId: id,
         productKey,
         description,

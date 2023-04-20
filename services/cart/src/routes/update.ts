@@ -27,147 +27,150 @@ import { IdParamSchema } from '../validators/params-validators';
 
 const router = express.Router();
 
-// As of Express@5 This syntax is supported however the types are not updated yet
-// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.put('/api/carts/:id', async (req: Request, res: Response) => {
-  // Validate ID and parse it into a number as required by PostgreSQL
-  const { id } = IdParamSchema.parse(req.params);
+router.put(
+  '/api/test-project/carts/:id',
+  // As of Express@5 This syntax is supported however the types are not updated yet
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  async (req: Request, res: Response) => {
+    // Validate ID and parse it into a number as required by PostgreSQL
+    const { id } = IdParamSchema.parse(req.params);
 
-  const { actions, version } = CartDraftUpdateSchema.parse(req.body);
+    const { actions, version } = CartDraftUpdateSchema.parse(req.body);
 
-  const existingCart = await prisma.cart.findUnique({
-    where: { id },
-    select: excludeCartIdFromLineItem,
-  });
+    const existingCart = await prisma.cart.findUnique({
+      where: { id },
+      select: excludeCartIdFromLineItem,
+    });
 
-  if (!existingCart) {
-    throw new BadRequestError(`Cart with ID '${id}' could not be found`);
-  }
+    if (!existingCart) {
+      throw new BadRequestError(`Cart with ID '${id}' could not be found`);
+    }
 
-  if (existingCart.version !== version) {
-    throw new VersionMistachError();
-  }
+    if (existingCart.version !== version) {
+      throw new VersionMistachError();
+    }
 
-  const validatedExistingCart = CartSchema.parse(existingCart);
+    const validatedExistingCart = CartSchema.parse(existingCart);
 
-  for (const action of actions) {
-    switch (action.type) {
-      case Actions.Enum.addLineItem: {
-        const validatedAction = AddLineItemActionSchema.parse(action);
+    for (const action of actions) {
+      switch (action.type) {
+        case Actions.Enum.addLineItem: {
+          const validatedAction = AddLineItemActionSchema.parse(action);
 
-        // validate line item doesn't exist already with the provided SKU
-        // if it exists throw an error
-        variantSKUExistsInCart(
-          validatedExistingCart,
-          validatedAction.value.sku
-        );
+          // validate line item doesn't exist already with the provided SKU
+          // if it exists throw an error
+          variantSKUExistsInCart(
+            validatedExistingCart,
+            validatedAction.value.sku
+          );
 
-        // validate that a variant exist with the provided sku
-        const products = await validateVariantsExists([
-          validatedAction.value.sku,
-        ]);
+          // validate that a variant exist with the provided sku
+          const products = await validateVariantsExists([
+            validatedAction.value.sku,
+          ]);
 
-        const validatedProduct = ProductSchema.parse(products[0]);
-        const validatedVariant = VariantDraftSchema.parse(
-          validatedProduct.variants.find(
-            (variant) => variant.sku === validatedAction.value.sku
-          )
-        );
+          const validatedProduct = ProductSchema.parse(products[0]);
+          const validatedVariant = VariantDraftSchema.parse(
+            validatedProduct.variants.find(
+              (variant) => variant.sku === validatedAction.value.sku
+            )
+          );
 
-        await prisma.cart.update({
-          where: { id },
-          data: {
-            lineItems: {
-              create: {
-                productName: validatedProduct.name,
-                productKey: validatedProduct.productKey,
-                quantity: validatedAction.value.quantity,
-                variant: {
-                  create: {
-                    sku: validatedVariant.sku,
-                    price: {
-                      create: validatedVariant.price,
+          await prisma.cart.update({
+            where: { id },
+            data: {
+              lineItems: {
+                create: {
+                  productName: validatedProduct.name,
+                  productKey: validatedProduct.productKey,
+                  quantity: validatedAction.value.quantity,
+                  variant: {
+                    create: {
+                      sku: validatedVariant.sku,
+                      price: {
+                        create: validatedVariant.price,
+                      },
                     },
                   },
-                },
-                price: {
-                  create: validatedVariant.price,
-                },
-              },
-            },
-            version: {
-              increment: 1,
-            },
-          },
-        });
-        break;
-      }
-      case Actions.Enum.removeLineItem: {
-        const validatedAction = RemoveLineItemActionSchema.parse(action);
-
-        // validate line item does exist already with the provided ID
-        // throw an error if item doesn't exist already
-        lineItemExistsInCart(validatedExistingCart, validatedAction.value.id);
-
-        await prisma.cart.update({
-          where: { id },
-          data: {
-            lineItems: {
-              delete: {
-                id: validatedAction.value.id,
-              },
-            },
-            version: {
-              increment: 1,
-            },
-          },
-        });
-        break;
-      }
-      case Actions.Enum.changeLineItemQuantity: {
-        const validatedAction =
-          ChangeLineItemQuantityActionSchema.parse(action);
-
-        lineItemExistsInCart(validatedExistingCart, validatedAction.value.id);
-
-        await prisma.cart.update({
-          where: { id },
-          data: {
-            lineItems: {
-              update: {
-                where: { id: validatedAction.value.id },
-                data: {
-                  quantity: validatedAction.value.quantity,
+                  price: {
+                    create: validatedVariant.price,
+                  },
                 },
               },
+              version: {
+                increment: 1,
+              },
             },
-            version: {
-              increment: 1,
+          });
+          break;
+        }
+        case Actions.Enum.removeLineItem: {
+          const validatedAction = RemoveLineItemActionSchema.parse(action);
+
+          // validate line item does exist already with the provided ID
+          // throw an error if item doesn't exist already
+          lineItemExistsInCart(validatedExistingCart, validatedAction.value.id);
+
+          await prisma.cart.update({
+            where: { id },
+            data: {
+              lineItems: {
+                delete: {
+                  id: validatedAction.value.id,
+                },
+              },
+              version: {
+                increment: 1,
+              },
             },
-          },
-        });
-        break;
+          });
+          break;
+        }
+        case Actions.Enum.changeLineItemQuantity: {
+          const validatedAction =
+            ChangeLineItemQuantityActionSchema.parse(action);
+
+          lineItemExistsInCart(validatedExistingCart, validatedAction.value.id);
+
+          await prisma.cart.update({
+            where: { id },
+            data: {
+              lineItems: {
+                update: {
+                  where: { id: validatedAction.value.id },
+                  data: {
+                    quantity: validatedAction.value.quantity,
+                  },
+                },
+              },
+              version: {
+                increment: 1,
+              },
+            },
+          });
+          break;
+        }
       }
     }
+
+    const updatedCart = await prisma.cart.findUnique({
+      where: { id },
+      select: excludeCartIdFromLineItem,
+    });
+
+    if (!updatedCart) {
+      throw new BadRequestError(
+        `Cart with ID '${id}' could not be found. This is likely a server error. If this issue persist, please contact our support team.`
+      );
+    }
+
+    const validatedCart = CartSchema.parse(updatedCart);
+
+    const computedCart = computeCartFields(validatedCart);
+
+    return res.send(computedCart);
   }
-
-  const updatedCart = await prisma.cart.findUnique({
-    where: { id },
-    select: excludeCartIdFromLineItem,
-  });
-
-  if (!updatedCart) {
-    throw new BadRequestError(
-      `Cart with ID '${id}' could not be found. This is likely a server error. If this issue persist, please contact our support team.`
-    );
-  }
-
-  const validatedCart = CartSchema.parse(updatedCart);
-
-  const computedCart = computeCartFields(validatedCart);
-
-  return res.send(computedCart);
-});
+);
 
 export { router as UpdateCartRouter };

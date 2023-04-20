@@ -39,6 +39,7 @@ export const ProductSchema = z.object({
   name: ProductNameSchema,
   description: DescriptionSchema,
   productKey: ProductKeySchema,
+  projectKey: z.string(),
   variants: z.array(VariantSchema),
 });
 

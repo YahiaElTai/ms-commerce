@@ -26,7 +26,7 @@ describe('when product is found', () => {
       Math.random().toString(36).substring(2, 15);
 
     const createdProductResponse = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',
@@ -47,7 +47,7 @@ describe('when product is found', () => {
     );
 
     const response: { body: [{ message: string }] } = await request(app)
-      .delete(`/api/products/${validatedProduct.id}`)
+      .delete(`/api/test-project/products/${validatedProduct.id}`)
       .send()
       .expect(200);
 
@@ -56,7 +56,7 @@ describe('when product is found', () => {
     );
 
     await request(app)
-      .get(`/api/products/${validatedProduct.id}`)
+      .get(`/api/test-project/products/${validatedProduct.id}`)
       .send()
       .expect(404);
   });

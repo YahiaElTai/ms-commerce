@@ -5,9 +5,9 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
-    nginx.ingress.kubernetes.io/auth-url: http://auth-srv.default.svc.cluster.local:3000/api/account/authenticate
+    nginx.ingress.kubernetes.io/auth-url: http://account-srv.default.svc.cluster.local:3000/api/account/authenticate
     nginx.ingress.kubernetes.io/auth-method: POST
-    nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail,ProjectKey
+    nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail
 spec:
   rules:
     - host: ms-commerce.dev
@@ -20,14 +20,14 @@ spec:
                 name: account-srv
                 port:
                   number: 3000
-          - path: /api/carts/?(.*)
+          - path: /api/([^/\s]+)/carts/?(.*)
             pathType: Prefix
             backend:
               service:
                 name: cart-srv
                 port:
                   number: 3001
-          - path: /api/products/?(.*)
+          - path: /api/([^/\s]+)/products/?(.*)
             pathType: Prefix
             backend:
               service:

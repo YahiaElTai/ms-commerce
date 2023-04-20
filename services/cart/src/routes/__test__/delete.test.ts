@@ -35,7 +35,7 @@ describe('when cart is found', () => {
     const validatedCart = CartResponseSchema.parse(cartResponse.body);
 
     const response: { body: FormattedErrors[] } = await request(app)
-      .delete(`/api/carts/${validatedCart.id}`)
+      .delete(`/api/test-project/carts/${validatedCart.id}`)
       .send()
       .expect(200);
 
@@ -43,6 +43,9 @@ describe('when cart is found', () => {
       `Cart with ID '${validatedCart.id}' was successfully deleted.`
     );
 
-    await request(app).get(`/api/carts/${validatedCart.id}`).send().expect(404);
+    await request(app)
+      .get(`/api/test-project/carts/${validatedCart.id}`)
+      .send()
+      .expect(404);
   });
 });

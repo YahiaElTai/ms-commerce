@@ -8,6 +8,7 @@ import {
   ProductSchema,
   VariantSchema,
 } from '../validators';
+import { ProjectKeyParamSchema } from '../validators/params-validators';
 
 const router = express.Router();
 
@@ -16,11 +17,13 @@ const router = express.Router();
 // 2. the currency of the cart needs to match with the currency of the price on all variants found by the above validation
 
 router.post(
-  '/api/carts',
+  '/api/:projectKey/carts',
   // As of Express@5 This syntax is supported however the types are not updated yet
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
+    const { projectKey } = ProjectKeyParamSchema.parse(req.params);
+
     const { customerEmail, currency, lineItems } = CartDraftCreateSchema.parse(
       req.body
     );
@@ -87,6 +90,7 @@ router.post(
     // create a cart and connect all created line items above
     const cart = await prisma.cart.create({
       data: {
+        projectKey,
         customerEmail,
         currency,
         lineItems: {

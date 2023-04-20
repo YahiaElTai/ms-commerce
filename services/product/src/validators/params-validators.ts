@@ -4,6 +4,10 @@ export const IdParamSchema = z.object({
   id: z.string().transform((id) => parseInt(id)),
 });
 
+export const ProjectKeyParamSchema = z.object({
+  projectKey: z.string().nonempty(),
+});
+
 export const ParseQueryParamsSchema = z.object({
   limit: z
     .string()

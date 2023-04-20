@@ -8,9 +8,16 @@ datasource db {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  email     String @unique
-  firstName String @default("")
-  lastName  String @default("")
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  firstName String   @default("")
+  lastName  String   @default("")
   password  String
+  projects  String[] @default([])
+  version   Int      @default(1)
+}
+
+model Project {
+  id  Int    @id @default(autoincrement())
+  key String @unique
 }

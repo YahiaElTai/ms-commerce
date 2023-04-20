@@ -23,7 +23,7 @@ jest.mock('kafkajs', () => {
 describe('when product is not found', () => {
   it('should respond with 404 ', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .delete('/api/products/283794734')
+      .delete('/api/test-project/products/283794734')
       .send()
       .expect(404);
 
@@ -42,7 +42,7 @@ describe('when product is found', () => {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
     const response = await request(app)
-      .post('/api/products')
+      .post('/api/test-project/products')
       .send({
         name: 'product-name-hm',
         productKey: 'hm-pants-key',
