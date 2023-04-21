@@ -46,10 +46,22 @@ describe('when product is found', () => {
       createdProductResponse.body
     );
 
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      1,
+      validatedProduct,
+      producer.TOPICS.productCreated
+    );
+
     const response: { body: [{ message: string }] } = await request(app)
       .delete(`/api/test-project/products/${validatedProduct.id}`)
       .send()
       .expect(200);
+
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      2,
+      validatedProduct.id,
+      producer.TOPICS.productDeleted
+    );
 
     expect(response.body[0].message).toBe(
       `Product with ID '${validatedProduct.id}' was successfully deleted.`

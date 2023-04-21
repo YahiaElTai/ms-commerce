@@ -15,6 +15,10 @@ jest.mock('kafkajs', () => {
   };
 });
 
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe('when incorrect update action is provided', () => {
   it('should respond with 400 and helpful error messages', async () => {
     const produceMessageMock = jest.spyOn(producer, 'produceMessage');
@@ -42,6 +46,12 @@ describe('when incorrect update action is provided', () => {
       .expect(201);
 
     const validatedProduct = ProductResponseSchema.parse(response.body);
+
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      1,
+      validatedProduct,
+      producer.TOPICS.productCreated
+    );
 
     const response2: { body: FormattedErrors[] } = await request(app)
       .put(`/api/test-project/products/${validatedProduct.id}`)
@@ -89,6 +99,12 @@ describe('when addVariant update action is provided', () => {
 
     const validatedProduct = ProductResponseSchema.parse(response.body);
 
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      1,
+      validatedProduct,
+      producer.TOPICS.productCreated
+    );
+
     const randomSKU2 =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
@@ -113,6 +129,25 @@ describe('when addVariant update action is provided', () => {
       .expect(200);
 
     const validatedProduct2 = ProductResponseSchema.parse(updatedResponse.body);
+
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      2,
+      {
+        id: validatedProduct.id,
+        action: {
+          type: 'addVariant',
+          value: {
+            sku: randomSKU2,
+            price: {
+              centAmount: 12000,
+              currencyCode: 'EUR',
+              fractionDigits: 2,
+            },
+          },
+        },
+      },
+      producer.TOPICS.productUpdated
+    );
 
     expect(validatedProduct2).toEqual(
       expect.objectContaining({
@@ -178,6 +213,12 @@ describe('when changeVariantPrice update action is provided', () => {
 
     const validatedProduct = ProductResponseSchema.parse(response.body);
 
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      1,
+      validatedProduct,
+      producer.TOPICS.productCreated
+    );
+
     const updatedResponse = await request(app)
       .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
@@ -196,6 +237,25 @@ describe('when changeVariantPrice update action is provided', () => {
         ],
       })
       .expect(200);
+
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      2,
+      {
+        id: validatedProduct.id,
+        action: {
+          type: 'changeVariantPrice',
+          value: {
+            id: validatedProduct.variants[0]?.id,
+            price: {
+              centAmount: 12000,
+              currencyCode: 'EUR',
+              fractionDigits: 2,
+            },
+          },
+        },
+      },
+      producer.TOPICS.productUpdated
+    );
 
     const validatedProduct2 = ProductResponseSchema.parse(updatedResponse.body);
 
@@ -253,6 +313,12 @@ describe('when removeVariant update action is provided', () => {
 
     const validatedProduct = ProductResponseSchema.parse(response.body);
 
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      1,
+      validatedProduct,
+      producer.TOPICS.productCreated
+    );
+
     const updatedResponse = await request(app)
       .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
@@ -267,6 +333,20 @@ describe('when removeVariant update action is provided', () => {
         ],
       })
       .expect(200);
+
+    expect(producer.produceMessage).toHaveBeenNthCalledWith(
+      2,
+      {
+        id: validatedProduct.id,
+        action: {
+          type: 'removeVariant',
+          value: {
+            id: validatedProduct.variants[0]?.id,
+          },
+        },
+      },
+      producer.TOPICS.productUpdated
+    );
 
     const validatedProduct2 = ProductResponseSchema.parse(updatedResponse.body);
 
