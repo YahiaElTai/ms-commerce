@@ -13,3 +13,11 @@ Basic Authentication with email and password is set up with [Nginx-Ingress](http
   nginx.ingress.kubernetes.io/auth-method: POST
   nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail
   ```
+
+### cert-manager
+
+At the moment, the project lacks HTTPS support and solely relies on the less secure HTTP protocol.
+
+This project utilizes the complimentary credits available on Google Cloud Platform (GCP) with an Autopilot Kubernetes (k8s) cluster on Google Kubernetes Engine (GKE). Due to the inherent constraints on resources in this setup, it is not feasible to install cert-manager.
+
+In order to manage TLS certificates, I am considering transitioning to a standard k8s cluster and installing cert-manager to handle these certificates.
