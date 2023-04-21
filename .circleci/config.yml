@@ -85,7 +85,7 @@ jobs:
       - checkout
       - helm/install-helm-client
       - gcp-cli/setup:
-          components: gke-gcloud-auth-plugin
+          components: 'gke-gcloud-auth-plugin --quiet'
       - run:
           name: Deploying << parameters.chart_name >>
           command: ./.circleci/deploy_service.sh
