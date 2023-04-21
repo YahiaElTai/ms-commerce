@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { include "ms-account.fullname" . } }
-  labels: { { - include "ms-account.labels" . | nindent 4 } }
+  name: {{include "ms-account.fullname" .}}
+  labels: {{- include "ms-account.labels" . | nindent 4}}
 spec:
-  type: { { .Values.service.type } }
-  ports: { { - toYaml .Values.service.ports | nindent 4 } }
-  selector: { { - include "ms-account.selectorLabels" . | nindent 4 } }
+  type: {{.Values.service.type}}
+  ports: {{- toYaml .Values.service.ports | nindent 4}}
+  selector: {{- include "ms-account.selectorLabels" . | nindent 4}}
