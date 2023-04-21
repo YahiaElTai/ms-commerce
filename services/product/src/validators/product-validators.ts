@@ -66,6 +66,7 @@ export const ProductResponseSchema = z.object({
   description: DescriptionSchema,
   productKey: ProductKeySchema,
   variants: z.array(VariantSchema),
+  projectKey: z.string(),
 });
 
 // Validator for the list of carts that gets sent to the user
