@@ -69,7 +69,7 @@ router.post(
         );
       }
 
-      if (existingUser.projects.includes(URLSegment)) {
+      if (!existingUser.projects.includes(URLSegment)) {
         throw new BadRequestError(
           `You do not have access to project with key: ${URLSegment}`
         );
