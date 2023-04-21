@@ -12,8 +12,10 @@ The project is a simplified version of commercetools HTTP API written as microse
 | Kubernetes Package Manager  | [Helm](https://helm.sh/)                                                                        |
 | API Gateway                 | [Ingress Nginx](https://kubernetes.github.io/ingress-nginx/)                                    |
 | Inter-service Communication | Kafka running on [Confluent Cloud](https://www.confluent.io/confluent-cloud/)                   |
-| Docker Image Registry       | [Artifact Registry](https://cloud.google.com/artifact-registry) on GCP                          |
+| Docker Image Registry       | [GCP Artifact Registry](https://cloud.google.com/artifact-registry)                             |
+| Secrets management          | [GCP KMS](https://cloud.google.com/security-key-management)                                     |
 | CI/CD                       | [CircleCI](https://circleci.com/)                                                               |
+| Infrastructure as code      | [Terraform](https://developer.hashicorp.com/terraform/downloads)                                |
 
 ### Services
 

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: europe-west1-docker.pkg.dev/ms-commerce-auto-1/ms-commerce/cart
+  repository: europe-west1-docker.pkg.dev/ms-commerce-round-2-key/ms-commerce/cart
   pullPolicy: IfNotPresent
   tag: 'latest'
 
@@ -10,7 +10,7 @@ nameOverride: 'cart'
 serviceAccount:
   name: 'ksa-cloud-sql-cart'
   annotations:
-    iam.gke.io/gcp-service-account: gke-cloud-sql-service-account@ms-commerce-auto-1.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: gke-cloud-sql-service-account@ms-commerce-round-2-key.iam.gserviceaccount.com
 
 service:
   type: ClusterIP
@@ -43,7 +43,7 @@ resources:
 postgresql:
   name: cloud-sql-proxy
   image: gcr.io/cloudsql-docker/gce-proxy:latest
-  instance: ms-commerce-auto-1:europe-west1:ms-commerce=tcp:5432
+  instance: ms-commerce-round-2-key:europe-west1:ms-commerce=tcp:5432
 
 # Secrets are encryped with Cloud KMS
 secrets: {}

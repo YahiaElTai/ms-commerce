@@ -16,24 +16,7 @@
 
     1.  Create service account and add the required roles to it.
 
-             ```bash
-
-             # Create service account
-             gcloud iam service-accounts create [SA_NAME] --display-name=[DISPLAY_NAME]
-
-             # Add required roles to sevice account
-            gcloud projects add-iam-policy-binding [PROJECT_ID] \
-             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-             --role=roles/artifactregistry.repoAdmin
-
-             gcloud projects add-iam-policy-binding [PROJECT_ID] \
-             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-             --role=roles/container.developer
-
-             gcloud projects add-iam-policy-binding [PROJECT_ID] \
-             --member="serviceAccount:[SA_NAME]@[PROJECT_ID].iam.gserviceaccount.com" \
-             --role=roles/cloudkms.cryptoKeyDecrypter
-             ```
+        Handled with Terraform
 
     2.  Create key file in JSON format and download it.
 

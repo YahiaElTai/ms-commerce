@@ -7,3 +7,7 @@ junit.xml
 .env.test
 .yarn/
 .yarnrc.yml
+.terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
