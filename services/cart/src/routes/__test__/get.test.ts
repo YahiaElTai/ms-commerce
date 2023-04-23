@@ -32,12 +32,12 @@ beforeAll(async () => {
 describe('when cart is not found', () => {
   it('should respond with 404 ', async () => {
     const response: { body: FormattedErrors[] } = await request(app)
-      .get('/api/test-project/carts/283794734')
+      .get('/api/test-project/carts/2837')
       .send()
       .expect(404);
 
     expect(response.body[0]?.message).toBe(
-      "Cart with ID '283794734' could not be found"
+      "Cart with ID '2837' could not be found"
     );
   });
 });

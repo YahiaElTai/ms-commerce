@@ -11,6 +11,7 @@ import { CreateCartRouter } from './routes/create';
 import { UpdateCartRouter } from './routes/update';
 import { DeleteCartsRouter } from './routes/delete-all';
 import { DeleteCartRouter } from './routes/delete';
+import { ListProductsRouter } from './routes/list-products';
 
 import './kafka/consumer';
 
@@ -21,6 +22,7 @@ app.set('trust proxy', true);
 app.use(express.json());
 
 app.use(ListCartsRouter);
+app.use(ListProductsRouter);
 app.use(GetCartRouter);
 app.use(CreateCartRouter);
 app.use(UpdateCartRouter);
