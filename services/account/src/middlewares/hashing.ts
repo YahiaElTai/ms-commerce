@@ -1,9 +1,9 @@
 import type { Prisma } from '@prisma/client';
 import type { z } from 'zod';
 import { PasswordHashing } from '../utils';
-import type { UserDraftSchema } from '../validators';
+import { UserDraftSchema } from '../validators';
 
-export type User = z.infer<typeof UserDraftSchema>;
+export type TUser = z.infer<typeof UserDraftSchema>;
 
 interface IMiddlewareParams extends Prisma.MiddlewareParams {
   args: {
@@ -13,7 +13,7 @@ interface IMiddlewareParams extends Prisma.MiddlewareParams {
   };
 }
 
-export const hashingMiddlware: Prisma.Middleware<User> = async (
+export const hashingMiddlware: Prisma.Middleware<TUser> = async (
   params: IMiddlewareParams,
   next
 ) => {

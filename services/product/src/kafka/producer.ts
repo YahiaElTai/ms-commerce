@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   IdSchema,
   ProductResponseSchema,
-  ProductUpdatedMessageSchema,
+  ProductUpdatedResponseSchema,
   ProjectKeySchema,
 } from '../validators';
 import kafka from './client';
@@ -15,7 +15,7 @@ export enum TOPICS {
   productAllDeleted = 'product_all_deleted',
 }
 type TProductCreated = z.infer<typeof ProductResponseSchema>;
-type TProductUpdated = z.infer<typeof ProductUpdatedMessageSchema>;
+type TProductUpdated = z.infer<typeof ProductUpdatedResponseSchema>;
 type TProductDeleted = z.infer<typeof IdSchema>;
 type TProductDeletedAll = z.infer<typeof ProjectKeySchema>;
 

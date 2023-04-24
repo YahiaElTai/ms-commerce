@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { computeCartFields } from '../model';
 import { validateCurrencyWithVariants, validateVariantsExists } from '../utils';
-import { excludeCartIdFromLineItem, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import {
   CartDraftCreateSchema,
   CartSchema,
@@ -97,7 +97,18 @@ router.post(
           connect: createdLineItems.map((lineItem) => ({ id: lineItem.id })),
         },
       },
-      select: excludeCartIdFromLineItem,
+      include: {
+        lineItems: {
+          include: {
+            price: true,
+            variant: {
+              include: {
+                price: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     const validatedCart = CartSchema.parse(cart);

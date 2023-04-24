@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { CartListResponseSchema, FormattedErrors } from '../../validators';
+import { CartListResponseSchema, TFormattedErrors } from '../../validators';
 import {
   createCartWithoutLineItems,
   createProduct,
@@ -70,7 +70,7 @@ describe('when pagination and sorting is provided', () => {
 
 describe('when incorrect pagination or sorting is provided', () => {
   it('should responds 400 and helpful error messages', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .get(
         '/api/test-project/carts?limit=200000&offset=200000&sortBy=lineItemsQuantity&sortDirection=desc'
       )

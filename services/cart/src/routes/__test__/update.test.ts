@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { CartResponseSchema, FormattedErrors } from '../../validators';
+import { CartResponseSchema, TFormattedErrors } from '../../validators';
 import { createCart, createProduct } from '../../utils/test-utils';
 
 jest.mock('kafkajs', () => {
@@ -31,7 +31,7 @@ describe('when incorrect update action is provided', () => {
 
     const validatedCart = CartResponseSchema.parse(response.body);
 
-    const response2: { body: FormattedErrors[] } = await request(app)
+    const response2: { body: TFormattedErrors[] } = await request(app)
       .put(`/api/test-project/carts/${validatedCart.id}`)
       .send({
         version: 1,

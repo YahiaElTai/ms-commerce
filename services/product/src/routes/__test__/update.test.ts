@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { ProductResponseSchema, FormattedErrors } from '../../validators';
+import { ProductResponseSchema, TFormattedErrors } from '../../validators';
 import * as producer from '../../kafka/producer';
 
 jest.mock('kafkajs', () => {
@@ -53,7 +53,7 @@ describe('when incorrect update action is provided', () => {
       validatedProduct
     );
 
-    const response2: { body: FormattedErrors[] } = await request(app)
+    const response2: { body: TFormattedErrors[] } = await request(app)
       .put(`/api/test-project/products/${validatedProduct.id}`)
       .send({
         version: 1,

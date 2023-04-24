@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import {
   ProductActionsSchema,
-  ProductUpdatedMessageSchema,
+  ProductUpdatedResponseSchema,
   addVariantActionSchema,
   changeVariantPriceActionSchema,
   removeVariantActionSchema,
@@ -9,7 +9,7 @@ import {
 import { prisma } from '../../prisma';
 import { BadRequestError } from '../../errors';
 
-type TProductUpdated = z.infer<typeof ProductUpdatedMessageSchema>;
+type TProductUpdated = z.infer<typeof ProductUpdatedResponseSchema>;
 
 const updateProduct = async (value: string) => {
   const receivedMessage = JSON.parse(value) as TProductUpdated;

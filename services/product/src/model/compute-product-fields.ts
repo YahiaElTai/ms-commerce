@@ -1,11 +1,10 @@
 import type { z } from 'zod';
-import type { ProductSchema, ProductResponseSchema } from '../validators';
+import { ProductSchema, ProductResponseSchema } from '../validators';
 
-type Product = z.infer<typeof ProductSchema>;
+type TProduct = z.infer<typeof ProductSchema>;
+type TProductResponse = z.infer<typeof ProductResponseSchema>;
 
-type ProductResponse = z.infer<typeof ProductResponseSchema>;
-
-export const computeProductFields = (product: Product): ProductResponse => ({
+export const computeProductFields = (product: TProduct): TProductResponse => ({
   ...product,
   createdAt: product.createdAt.toISOString(),
   updatedAt: product.updatedAt.toISOString(),

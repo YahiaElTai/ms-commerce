@@ -6,7 +6,7 @@ import {
   validateVariantsExists,
   variantSKUExistsInCart,
 } from '../utils';
-import { excludeCartIdFromLineItem, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import {
   Actions,
   AddLineItemActionSchema,
@@ -40,7 +40,18 @@ router.put(
 
     const existingCart = await prisma.cart.findUnique({
       where: { id },
-      select: excludeCartIdFromLineItem,
+      include: {
+        lineItems: {
+          include: {
+            price: true,
+            variant: {
+              include: {
+                price: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!existingCart) {
@@ -156,7 +167,18 @@ router.put(
 
     const updatedCart = await prisma.cart.findUnique({
       where: { id },
-      select: excludeCartIdFromLineItem,
+      include: {
+        lineItems: {
+          include: {
+            price: true,
+            variant: {
+              include: {
+                price: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!updatedCart) {
