@@ -1,9 +1,9 @@
 import type { z } from 'zod';
 import { CartSchema, CartResponseSchema, PriceSchema } from '../validators';
 
-type Cart = z.infer<typeof CartSchema>;
+type TCart = z.infer<typeof CartSchema>;
 
-type CartResponse = z.infer<typeof CartResponseSchema>;
+type TCartResponse = z.infer<typeof CartResponseSchema>;
 
 // to create a line item, a variant sku is provided. This sku is stored on the line item.
 // with that sku we can fetch the variant and its associated product
@@ -15,7 +15,7 @@ type CartResponse = z.infer<typeof CartResponseSchema>;
 // actually have a variant exists
 // and then using the found variant and its parent product, computed fields are added to each line item
 
-export const computeCartFields = (cart: Cart): CartResponse => {
+export const computeCartFields = (cart: TCart): TCartResponse => {
   if (!cart.lineItems.length) {
     return {
       ...cart,

@@ -102,7 +102,7 @@ export const ActionSchema = z.object({
 
 export const ActionsSchema = z.array(ActionSchema);
 
-export const ProductUpdatedMessageSchema = z.object({
+export const ProductUpdatedResponseSchema = z.object({
   id: IdSchema,
   action: ActionSchema,
 });

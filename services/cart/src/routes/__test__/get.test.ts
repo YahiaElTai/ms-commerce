@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import {
   CartResponseSchema,
-  FormattedErrors,
+  TFormattedErrors,
   LineItemResponseSchema,
 } from '../../validators';
 import { createCart, createProduct } from '../../utils/test-utils';
@@ -31,7 +31,7 @@ beforeAll(async () => {
 
 describe('when cart is not found', () => {
   it('should respond with 404 ', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .get('/api/test-project/carts/2837')
       .send()
       .expect(404);

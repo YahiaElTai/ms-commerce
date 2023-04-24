@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import {
   CartResponseSchema,
-  FormattedErrors,
+  TFormattedErrors,
   LineItemResponseSchema,
 } from '../../validators';
 import { createProduct, createCart } from '../../utils/test-utils';
@@ -31,7 +31,7 @@ beforeAll(async () => {
 
 describe('when cart draft object is not provided', () => {
   it('should respond with 400', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/test-project/carts')
       .send({})
       .expect(400);
@@ -43,7 +43,7 @@ describe('when cart draft object is not provided', () => {
 
 describe('when only customer email is provided', () => {
   it('should respond with 400', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/test-project/carts')
       .send({ customerEmail: 'test@test.com' })
       .expect(400);
@@ -55,7 +55,7 @@ describe('when only customer email is provided', () => {
 
 describe('when providing an invalid sku and no quantity', () => {
   it('should respond with 400', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/test-project/carts')
       .send({
         customerEmail: 'test@test.com',

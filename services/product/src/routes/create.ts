@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { computeProductFields } from '../model';
-import { excludeIdsFromProduct, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import {
   ProductDraftSchema,
   ProductSchema,
@@ -43,7 +43,13 @@ router.post(
           connect: variants.map((variant) => ({ sku: variant.sku })),
         },
       },
-      select: excludeIdsFromProduct,
+      include: {
+        variants: {
+          include: {
+            price: true,
+          },
+        },
+      },
     });
 
     const validatedProduct = ProductSchema.parse(product);

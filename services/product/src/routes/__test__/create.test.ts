@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import {
-  FormattedErrors,
+  TFormattedErrors,
   ProductResponseSchema,
   VariantSchema,
 } from '../../validators';
@@ -21,7 +21,7 @@ jest.mock('kafkajs', () => {
 
 describe('when product draft object is not provided', () => {
   it('should respond with 400', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/test-project/products')
       .send({})
       .expect(400);
@@ -33,7 +33,7 @@ describe('when product draft object is not provided', () => {
 
 describe('when required product name is not provided', () => {
   it('should respond with 400', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/test-project/products')
       .send({
         productKey: 'product-1',
@@ -53,7 +53,7 @@ describe('when required product name is not provided', () => {
 
 describe('when providing an invalid sku', () => {
   it('should respond with 400', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/test-project/products')
       .send({
         name: 'product-1',

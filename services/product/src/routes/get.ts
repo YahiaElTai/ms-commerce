@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import { computeProductFields } from '../model';
-import { excludeIdsFromProduct, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import { IdParamSchema, ProductSchema } from '../validators';
 
 const router = express.Router();
@@ -16,7 +16,13 @@ router.get(
 
     const product = await prisma.product.findUnique({
       where: { id },
-      select: excludeIdsFromProduct,
+      include: {
+        variants: {
+          include: {
+            price: true,
+          },
+        },
+      },
     });
 
     if (!product) {

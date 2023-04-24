@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { UserSchema } from '../../validators';
-import type { FormattedErrors } from '../../validators/types';
+import type { TFormattedErrors } from '../../validators/types';
 import { generateRandomEmail } from '../../test/test-utils';
 
 describe('when valid email and password are provided', () => {
@@ -46,7 +46,7 @@ describe('when valid email and password are provided', () => {
 
 describe('when incorrect email or password is provided', () => {
   it('should respond with 400 and provide helpful error messages', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .post('/api/account/signup')
       .send({
         email: 'test.com',

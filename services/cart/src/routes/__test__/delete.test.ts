@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
-import { CartResponseSchema, FormattedErrors } from '../../validators';
+import { CartResponseSchema, TFormattedErrors } from '../../validators';
 import {
   createCartWithoutLineItems,
   createProduct,
@@ -34,7 +34,7 @@ describe('when cart is found', () => {
 
     const validatedCart = CartResponseSchema.parse(cartResponse.body);
 
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .delete(`/api/test-project/carts/${validatedCart.id}`)
       .send()
       .expect(200);

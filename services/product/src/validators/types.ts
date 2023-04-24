@@ -1,6 +1,6 @@
 import type { ZodIssueCode } from 'zod';
 
-export type FormattedErrors = {
+export type TFormattedErrors = {
   message: string;
   errorCode: ZodIssueCode;
   path: (string | number)[];

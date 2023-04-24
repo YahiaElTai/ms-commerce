@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { BadRequestError, VersionMistachError } from '../errors';
 import { computeProductFields } from '../model';
-import { excludeIdsFromProduct, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import {
   Actions,
   ProductDraftUpdateSchema,
@@ -34,7 +34,13 @@ router.put(
 
     const existingProduct = await prisma.product.findUnique({
       where: { id },
-      select: excludeIdsFromProduct,
+      include: {
+        variants: {
+          include: {
+            price: true,
+          },
+        },
+      },
     });
 
     if (!existingProduct) {
@@ -150,7 +156,13 @@ router.put(
 
     const updatedProduct = await prisma.product.findUnique({
       where: { id },
-      select: excludeIdsFromProduct,
+      include: {
+        variants: {
+          include: {
+            price: true,
+          },
+        },
+      },
     });
 
     if (!updatedProduct) {

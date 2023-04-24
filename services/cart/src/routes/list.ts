@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { computeCartFields } from '../model';
-import { excludeCartIdFromLineItem, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import {
   ParseQueryParamsSchema,
   ProjectKeyParamSchema,
@@ -9,7 +9,7 @@ import {
 import { CartResponseSchema, CartSchema } from '../validators';
 import type { z } from 'zod';
 
-type CartResponse = z.infer<typeof CartResponseSchema>;
+type TCartResponse = z.infer<typeof CartResponseSchema>;
 
 const router = express.Router();
 
@@ -35,13 +35,24 @@ router.get('/api/:projectKey/carts', async (req: Request, res: Response) => {
 
   const carts = await prisma.cart.findMany({
     where: { projectKey },
-    select: excludeCartIdFromLineItem,
+    include: {
+      lineItems: {
+        include: {
+          price: true,
+          variant: {
+            include: {
+              price: true,
+            },
+          },
+        },
+      },
+    },
     skip: offset,
     take: limit,
     orderBy,
   });
 
-  const computedCarts: CartResponse[] = [];
+  const computedCarts: TCartResponse[] = [];
 
   for (const cart of carts) {
     const validatedCart = CartSchema.parse(cart);

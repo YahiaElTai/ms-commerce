@@ -2,15 +2,15 @@ import { z } from 'zod';
 import { prisma } from '../../prisma';
 import { ProductSchema } from '../../validators';
 
-type ProductResponse = z.infer<typeof ProductSchema>;
+type TProduct = z.infer<typeof ProductSchema>;
 
 const createProduct = async (value: string) => {
-  const recievedProduct = JSON.parse(value) as ProductResponse;
+  const product = JSON.parse(value) as TProduct;
 
   try {
     // validate received product
     const { id, name, productKey, description, variants, projectKey } =
-      ProductSchema.parse(recievedProduct);
+      ProductSchema.parse(product);
 
     // create all variants
     for (const variant of variants) {

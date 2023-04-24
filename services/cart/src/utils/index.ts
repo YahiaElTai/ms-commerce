@@ -10,14 +10,14 @@ import {
 } from '../validators';
 
 // TYPES
-type Cart = z.infer<typeof CartSchema>;
-type SKU = z.infer<typeof SKUSchema>;
-type Products = z.infer<typeof ProductSchema>[];
-type Currency = z.infer<typeof CurrencySchema>;
-type ID = z.infer<typeof IdSchema>;
+type TCart = z.infer<typeof CartSchema>;
+type TSKU = z.infer<typeof SKUSchema>;
+type TProducts = z.infer<typeof ProductSchema>[];
+type TCurrency = z.infer<typeof CurrencySchema>;
+type TId = z.infer<typeof IdSchema>;
 
 // -----------------
-export const variantSKUExistsInCart = (cart: Cart, sku: SKU) => {
+export const variantSKUExistsInCart = (cart: TCart, sku: TSKU) => {
   const index = cart.lineItems.findIndex(
     (lineItem) => lineItem.variant.sku === sku
   );
@@ -28,7 +28,7 @@ export const variantSKUExistsInCart = (cart: Cart, sku: SKU) => {
 };
 
 // -----------------
-export const lineItemExistsInCart = (cart: Cart, id: ID) => {
+export const lineItemExistsInCart = (cart: TCart, id: TId) => {
   const index = cart.lineItems.findIndex((lineItem) => lineItem.id === id);
 
   if (index === -1) {
@@ -40,8 +40,8 @@ export const lineItemExistsInCart = (cart: Cart, id: ID) => {
 
 // -----------------
 export const validateCurrencyWithVariants = (
-  cartCurrency: Currency,
-  products: Products
+  cartCurrency: TCurrency,
+  products: TProducts
 ) => {
   products.forEach((product) => {
     const isCurrencyMatchingAllVariants = product.variants.every(
@@ -58,10 +58,10 @@ export const validateCurrencyWithVariants = (
 
 // -----------------
 export const validateVariantsExists = async (
-  skus: SKU[]
-): Promise<Products> => {
+  skus: TSKU[]
+): Promise<TProducts> => {
   // validate that a variant actually exist with the provided SKU
-  const products: Products = [];
+  const products: TProducts = [];
 
   for (const sku of skus) {
     const product = await prisma.product.findFirst({

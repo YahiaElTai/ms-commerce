@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import {
   ProductResponseSchema,
-  FormattedErrors,
+  TFormattedErrors,
   VariantSchema,
 } from '../../validators';
 
@@ -22,7 +22,7 @@ jest.mock('kafkajs', () => {
 
 describe('when product is not found', () => {
   it('should respond with 404 ', async () => {
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .delete('/api/test-project/products/283794734')
       .send()
       .expect(404);

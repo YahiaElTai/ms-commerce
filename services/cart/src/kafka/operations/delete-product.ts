@@ -2,13 +2,13 @@ import { z } from 'zod';
 import { IdSchema } from '../../validators';
 import { prisma } from '../../prisma';
 
-type TReceivedId = z.infer<typeof IdSchema>;
+type TId = z.infer<typeof IdSchema>;
 
 const deleteProduct = async (value: string) => {
-  const receivedId = JSON.parse(value) as TReceivedId;
+  const id = JSON.parse(value) as TId;
 
   try {
-    const validatedID = IdSchema.parse(receivedId);
+    const validatedID = IdSchema.parse(id);
 
     const product = await prisma.product.findFirst({
       where: { originalId: validatedID },

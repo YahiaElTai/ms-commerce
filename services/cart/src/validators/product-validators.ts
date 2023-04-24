@@ -13,7 +13,7 @@ import {
 } from './common-validators';
 
 // Draft validators are used to validate when resources are created
-export const PriceDraftSchema = z.object({
+const PriceDraftSchema = z.object({
   centAmount: CentAmountSchema,
   currencyCode: CurrencySchema,
   fractionDigits: FractionDigitsSchema,
@@ -22,13 +22,6 @@ export const PriceDraftSchema = z.object({
 export const VariantDraftSchema = z.object({
   sku: SKUSchema,
   price: PriceDraftSchema,
-});
-
-export const ProductDraftSchema = z.object({
-  name: ProductNameSchema,
-  description: DescriptionSchema,
-  productKey: ProductKeySchema,
-  variants: z.array(VariantDraftSchema),
 });
 
 export const ProductSchema = z.object({
@@ -50,7 +43,7 @@ export const ProductActionsSchema = z.enum([
   'changeVariantPrice',
 ]);
 
-export const ProductActionSchema = z.object({
+const ProductActionSchema = z.object({
   type: ProductActionsSchema,
   value: z.record(
     z.union([
@@ -64,7 +57,7 @@ export const ProductActionSchema = z.object({
   ),
 });
 
-export const ProductUpdatedMessageSchema = z.object({
+export const ProductUpdatedResponseSchema = z.object({
   id: IdSchema,
   action: ProductActionSchema,
 });

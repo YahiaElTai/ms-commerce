@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import { Actions, UserSchema } from '../../validators';
 import { generateRandomEmail } from '../../test/test-utils';
-import { FormattedErrors } from '../../validators/types';
+import { TFormattedErrors } from '../../validators/types';
 
 const generateRandomProjectKey = () =>
   [1, 2, 3, 4, 5, 6]
@@ -84,7 +84,7 @@ describe('when project is not found', () => {
 
     const projectKey = generateRandomProjectKey();
 
-    const response: { body: FormattedErrors[] } = await request(app)
+    const response: { body: TFormattedErrors[] } = await request(app)
       .put(`/api/account/users/${user.userId}`)
       .send({
         version: 1,

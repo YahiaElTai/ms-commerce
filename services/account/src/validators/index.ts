@@ -8,11 +8,9 @@ export const UserDraftSchema = z.object({
   lastName: z.string().default(''),
 });
 
-export const VersionSchema = z.number().int();
-
 export const UserSchema = z.object({
   id: z.number(),
-  version: VersionSchema,
+  version: z.number().int(),
   email: z.string().email(),
   firstName: z.string().default(''),
   lastName: z.string().default(''),
@@ -38,7 +36,7 @@ export const ActionSchema = z.object({
 });
 
 export const UserDraftUpdateSchema = z.object({
-  version: VersionSchema,
+  version: z.number().int(),
   action: ActionSchema,
 });
 

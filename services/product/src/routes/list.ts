@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import type { z } from 'zod';
 import { computeProductFields } from '../model';
-import { excludeIdsFromProduct, prisma } from '../prisma';
+import { prisma } from '../prisma';
 import {
   ParseQueryParamsSchema,
   QueryParamsSchema,
@@ -9,8 +9,6 @@ import {
   ProductSchema,
   ProjectKeyParamSchema,
 } from '../validators';
-
-type ProductResponse = z.infer<typeof ProductResponseSchema>;
 
 const router = express.Router();
 
@@ -35,14 +33,21 @@ router.get('/api/:projectKey/products', async (req: Request, res: Response) => {
       : { [sortBy]: sortDirection };
 
   const products = await prisma.product.findMany({
-    select: excludeIdsFromProduct,
+    include: {
+      variants: {
+        include: {
+          price: true,
+        },
+      },
+    },
     where: { projectKey },
     skip: offset,
     take: limit,
     orderBy,
   });
 
-  const computedProducts: ProductResponse[] = [];
+  type TProductResponse = z.infer<typeof ProductResponseSchema>;
+  const computedProducts: TProductResponse[] = [];
 
   for (const product of products) {
     const validatedProduct = ProductSchema.parse(product);
