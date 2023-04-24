@@ -4,6 +4,8 @@ export const CurrencySchema = z.enum(['EUR', 'USD', 'GBP']);
 
 export const IdSchema = z.number().int();
 
+export const ProjectKeySchema = z.string().nonempty();
+
 export const SKUSchema = z.string();
 
 export const VersionSchema = z.number().int();

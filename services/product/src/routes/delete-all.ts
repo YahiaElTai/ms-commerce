@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { prisma } from '../prisma';
 import { ProjectKeyParamSchema } from '../validators';
+import { TOPICS, produceMessage } from '../kafka/producer';
 
 const router = express.Router();
 
@@ -17,6 +18,8 @@ router.delete(
         projectKey,
       },
     });
+
+    await produceMessage(TOPICS.productAllDeleted, projectKey);
 
     res.send([
       {

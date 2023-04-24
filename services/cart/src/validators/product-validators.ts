@@ -78,14 +78,14 @@ export const addVariantActionSchema = z.object({
 export const removeVariantActionSchema = z.object({
   type: z.literal(ProductActionsSchema.Enum.removeVariant),
   value: z.object({
-    id: IdSchema,
+    sku: SKUSchema,
   }),
 });
 
 export const changeVariantPriceActionSchema = z.object({
   type: z.literal(ProductActionsSchema.Enum.changeVariantPrice),
   value: z.object({
-    id: IdSchema,
+    sku: SKUSchema,
     price: PriceDraftSchema,
   }),
 });

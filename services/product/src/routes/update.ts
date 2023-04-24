@@ -67,21 +67,31 @@ router.put(
             },
           });
 
-          await produceMessage(
-            { id, action: validatedAction },
-            TOPICS.productUpdated
-          );
+          await produceMessage(TOPICS.productUpdated, {
+            id,
+            action: validatedAction,
+          });
           break;
         }
         case Actions.Enum.removeVariant: {
           const validatedAction = removeVariantActionSchema.parse(action);
+
+          const variant = existingProduct.variants.find(
+            (variant) => variant.sku === validatedAction.value.sku
+          );
+
+          if (!variant) {
+            throw new BadRequestError(
+              `Variant with SKU '${validatedAction.value.sku}' could not be found`
+            );
+          }
 
           await prisma.product.update({
             where: { id },
             data: {
               variants: {
                 delete: {
-                  id: validatedAction.value.id,
+                  sku: variant.sku,
                 },
               },
               version: {
@@ -90,21 +100,31 @@ router.put(
             },
           });
 
-          await produceMessage(
-            { id, action: validatedAction },
-            TOPICS.productUpdated
-          );
+          await produceMessage(TOPICS.productUpdated, {
+            id,
+            action: validatedAction,
+          });
           break;
         }
         case Actions.Enum.changeVariantPrice: {
           const validatedAction = changeVariantPriceActionSchema.parse(action);
+
+          const variant = existingProduct.variants.find(
+            (variant) => variant.sku === validatedAction.value.sku
+          );
+
+          if (!variant) {
+            throw new BadRequestError(
+              `Variant with SKU '${validatedAction.value.sku}' could not be found`
+            );
+          }
 
           await prisma.product.update({
             where: { id },
             data: {
               variants: {
                 update: {
-                  where: { id: validatedAction.value.id },
+                  where: { sku: variant.sku },
                   data: {
                     price: {
                       update: validatedAction.value.price,
@@ -118,10 +138,10 @@ router.put(
             },
           });
 
-          await produceMessage(
-            { id, action: validatedAction },
-            TOPICS.productUpdated
-          );
+          await produceMessage(TOPICS.productUpdated, {
+            id,
+            action: validatedAction,
+          });
 
           break;
         }

@@ -7,6 +7,7 @@ import {
   removeVariantActionSchema,
 } from '../../validators';
 import { prisma } from '../../prisma';
+import { BadRequestError } from '../../errors';
 
 type TProductUpdated = z.infer<typeof ProductUpdatedMessageSchema>;
 
@@ -15,6 +16,13 @@ const updateProduct = async (value: string) => {
 
   const product = await prisma.product.findFirst({
     where: { originalId: receivedMessage.id },
+    include: {
+      variants: {
+        include: {
+          price: true,
+        },
+      },
+    },
   });
 
   if (!product) {
@@ -55,12 +63,22 @@ const updateProduct = async (value: string) => {
         receivedMessage.action
       );
 
+      const variant = product.variants.find(
+        (variant) => variant.sku === validatedAction.value.sku
+      );
+
+      if (!variant) {
+        throw new BadRequestError(
+          `Variant with SKU '${validatedAction.value.sku}' could not be found`
+        );
+      }
+
       await prisma.product.update({
         where: { id: product.id },
         data: {
           variants: {
             delete: {
-              id: validatedAction.value.id,
+              sku: validatedAction.value.sku,
             },
           },
           version: {
@@ -76,12 +94,22 @@ const updateProduct = async (value: string) => {
         receivedMessage.action
       );
 
+      const variant = product.variants.find(
+        (variant) => variant.sku === validatedAction.value.sku
+      );
+
+      if (!variant) {
+        throw new BadRequestError(
+          `Variant with SKU '${validatedAction.value.sku}' could not be found`
+        );
+      }
+
       await prisma.product.update({
         where: { id: product.id },
         data: {
           variants: {
             update: {
-              where: { id: validatedAction.value.id },
+              where: { sku: validatedAction.value.sku },
               data: {
                 price: {
                   update: validatedAction.value.price,

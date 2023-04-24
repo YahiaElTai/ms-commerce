@@ -49,8 +49,8 @@ describe('when incorrect update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       1,
-      validatedProduct,
-      producer.TOPICS.productCreated
+      producer.TOPICS.productCreated,
+      validatedProduct
     );
 
     const response2: { body: FormattedErrors[] } = await request(app)
@@ -101,8 +101,8 @@ describe('when addVariant update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       1,
-      validatedProduct,
-      producer.TOPICS.productCreated
+      producer.TOPICS.productCreated,
+      validatedProduct
     );
 
     const randomSKU2 =
@@ -132,6 +132,7 @@ describe('when addVariant update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       2,
+      producer.TOPICS.productUpdated,
       {
         id: validatedProduct.id,
         action: {
@@ -145,8 +146,7 @@ describe('when addVariant update action is provided', () => {
             },
           },
         },
-      },
-      producer.TOPICS.productUpdated
+      }
     );
 
     expect(validatedProduct2).toEqual(
@@ -215,8 +215,8 @@ describe('when changeVariantPrice update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       1,
-      validatedProduct,
-      producer.TOPICS.productCreated
+      producer.TOPICS.productCreated,
+      validatedProduct
     );
 
     const updatedResponse = await request(app)
@@ -227,7 +227,7 @@ describe('when changeVariantPrice update action is provided', () => {
           {
             type: 'changeVariantPrice',
             value: {
-              id: validatedProduct.variants[0]?.id,
+              sku: validatedProduct.variants[0]?.sku,
               price: {
                 centAmount: 12000,
                 currencyCode: 'EUR',
@@ -240,12 +240,13 @@ describe('when changeVariantPrice update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       2,
+      producer.TOPICS.productUpdated,
       {
         id: validatedProduct.id,
         action: {
           type: 'changeVariantPrice',
           value: {
-            id: validatedProduct.variants[0]?.id,
+            sku: validatedProduct.variants[0]?.sku,
             price: {
               centAmount: 12000,
               currencyCode: 'EUR',
@@ -253,8 +254,7 @@ describe('when changeVariantPrice update action is provided', () => {
             },
           },
         },
-      },
-      producer.TOPICS.productUpdated
+      }
     );
 
     const validatedProduct2 = ProductResponseSchema.parse(updatedResponse.body);
@@ -315,8 +315,8 @@ describe('when removeVariant update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       1,
-      validatedProduct,
-      producer.TOPICS.productCreated
+      producer.TOPICS.productCreated,
+      validatedProduct
     );
 
     const updatedResponse = await request(app)
@@ -327,7 +327,7 @@ describe('when removeVariant update action is provided', () => {
           {
             type: 'removeVariant',
             value: {
-              id: validatedProduct.variants[0]?.id,
+              sku: validatedProduct.variants[0]?.sku,
             },
           },
         ],
@@ -336,16 +336,16 @@ describe('when removeVariant update action is provided', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       2,
+      producer.TOPICS.productUpdated,
       {
         id: validatedProduct.id,
         action: {
           type: 'removeVariant',
           value: {
-            id: validatedProduct.variants[0]?.id,
+            sku: validatedProduct.variants[0]?.sku,
           },
         },
-      },
-      producer.TOPICS.productUpdated
+      }
     );
 
     const validatedProduct2 = ProductResponseSchema.parse(updatedResponse.body);

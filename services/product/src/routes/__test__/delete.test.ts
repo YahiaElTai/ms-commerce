@@ -48,8 +48,8 @@ describe('when product is found', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       1,
-      validatedProduct,
-      producer.TOPICS.productCreated
+      producer.TOPICS.productCreated,
+      validatedProduct
     );
 
     const response: { body: [{ message: string }] } = await request(app)
@@ -59,8 +59,8 @@ describe('when product is found', () => {
 
     expect(producer.produceMessage).toHaveBeenNthCalledWith(
       2,
-      validatedProduct.id,
-      producer.TOPICS.productDeleted
+      producer.TOPICS.productDeleted,
+      validatedProduct.id
     );
 
     expect(response.body[0].message).toBe(

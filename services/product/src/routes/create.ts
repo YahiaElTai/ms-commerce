@@ -50,7 +50,7 @@ router.post(
 
     const computedProduct = computeProductFields(validatedProduct);
 
-    await produceMessage(computedProduct, TOPICS.productCreated);
+    await produceMessage(TOPICS.productCreated, computedProduct);
 
     res.status(201).send(computedProduct);
   }

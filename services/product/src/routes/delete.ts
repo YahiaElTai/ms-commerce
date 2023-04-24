@@ -24,7 +24,7 @@ router.delete(
 
     await prisma.product.delete({ where: { id } });
 
-    await produceMessage(id, TOPICS.productDeleted);
+    await produceMessage(TOPICS.productDeleted, id);
 
     res.send([
       { message: `Product with ID '${id}' was successfully deleted.` },

@@ -95,8 +95,8 @@ describe('when correct draft object is provided', () => {
       .expect(201);
 
     expect(producer.produceMessage).toHaveBeenCalledWith(
-      response.body,
-      producer.TOPICS.productCreated
+      producer.TOPICS.productCreated,
+      response.body
     );
 
     const validatedProduct = ProductResponseSchema.parse(response.body);

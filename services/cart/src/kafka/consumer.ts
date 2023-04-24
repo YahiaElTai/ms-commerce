@@ -3,11 +3,13 @@ import kafka from './client';
 import createProduct from './operations/create-product';
 import deleteProduct from './operations/delete-product';
 import updateProduct from './operations/update-product';
+import deleteAllProducts from './operations/delete_all_products';
 
 export enum TOPICS {
   productCreated = 'product_created',
   productUpdated = 'product_updated',
   productDeleted = 'product_deleted',
+  productAllDeleted = 'product_all_deleted',
 }
 
 const consumer = kafka.consumer({
@@ -34,6 +36,9 @@ const handleMessage = async ({
     case TOPICS.productDeleted:
       await deleteProduct(value);
       break;
+    case TOPICS.productAllDeleted:
+      await deleteAllProducts(value);
+      break;
     case TOPICS.productUpdated:
       await updateProduct(value);
       break;
@@ -52,6 +57,7 @@ const run = async (): Promise<void> => {
       TOPICS.productCreated,
       TOPICS.productUpdated,
       TOPICS.productDeleted,
+      TOPICS.productAllDeleted,
     ],
     fromBeginning: true,
   });

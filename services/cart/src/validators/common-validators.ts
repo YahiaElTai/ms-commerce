@@ -10,6 +10,8 @@ export const IdSchema = z.number().int();
 
 export const SKUSchema = z.string();
 
+export const projectKeySchema = z.string().nonempty();
+
 export const VersionSchema = z.number().int();
 
 export const EmailSchema = z.string().email().nullable();
