@@ -14,6 +14,9 @@ executors:
   ubuntu-executor:
     machine:
       image: ubuntu-2204:2022.10.2
+  node-executor:
+    docker:
+      - image: cimg/node:20.0.0
 
 commands:
   install-pnpm:
@@ -75,7 +78,7 @@ jobs:
           name: Run tests ./services/<< parameters.app-dir >>
   typecheck_and_test_mongo:
     working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
-    executor: ubuntu-executor
+    executor: node-executor
     resource_class: large
     parameters:
       app-dir:
