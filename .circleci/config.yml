@@ -29,8 +29,8 @@ commands:
       - run:
           name: Install pnpm via corepack
           command: |
-            corepack enable
-            corepack prepare --activate
+            sudo corepack enable
+            sudo corepack prepare --activate
       - run:
           name: Install dependencies
           command: |
