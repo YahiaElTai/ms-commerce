@@ -73,6 +73,29 @@ jobs:
       - run:
           command: pnpm test:ci
           name: Run tests ./services/<< parameters.app-dir >>
+  typecheck_and_test_mongo:
+    working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
+    executor: ubuntu-executor
+    resource_class: large
+    parameters:
+      app-dir:
+        type: string
+    steps:
+      - checkout:
+          path: ~/ms-commerce
+      - install-pnpm
+      - run:
+          command: pnpm exec prisma generate --schema=src/prisma/schema.prisma
+          name: Generate Prisma client
+      - run:
+          name: Lint << parameters.app-dir >> service
+          command: pnpm lint
+      - run:
+          command: pnpm typecheck
+          name: Typecheck services/<< parameters.app-dir >>
+      - run:
+          command: pnpm test:ci
+          name: Run tests ./services/<< parameters.app-dir >>
   deploy_service:
     executor: gcp-executor
     resource_class: large
@@ -109,7 +132,7 @@ workflows:
           app-dir: cart
           requires:
             - shell_check
-      - typecheck_and_test:
+      - typecheck_and_test_mongo:
           name: typecheck_and_test_account
           app-dir: account
           requires:
@@ -153,7 +176,7 @@ workflows:
           requires:
             - can_deploy_cart_service
           # account service jobs
-      - typecheck_and_test:
+      - typecheck_and_test_mongo:
           name: typecheck_and_test_account
           app-dir: account
           requires:

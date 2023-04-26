@@ -11,6 +11,7 @@
     - `CLUSTER_NAME`
     - `REGISTRY_URL`
     - `REPO_NAME`
+    - `JWT_KEY`
 
 3.  Add `GCLOUD_SERVICE_KEY` env variable to authenticate CI with Artifact Registry & Kubernetes Engine
 

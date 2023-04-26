@@ -19,7 +19,6 @@ spec:
       labels:
         {{- include "ms-account.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{  .Values.serviceAccount.name }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -70,12 +69,3 @@ spec:
             # kubelet should perform a liveness probe every 10 seconds
             periodSeconds: 10
             timeoutSeconds: 5
-        - name: {{ .Values.postgresql.name | quote }}
-          image: {{ .Values.postgresql.image | quote }}
-          command:
-            - "/cloud_sql_proxy"
-            - {{ include "ms-account.postgresql-instances" . }}
-          securityContext:
-            runAsNonRoot: true
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
