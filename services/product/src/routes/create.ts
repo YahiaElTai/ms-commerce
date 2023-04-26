@@ -21,18 +21,7 @@ router.post(
     const { description, name, productKey, variants } =
       ProductDraftSchema.parse(req.body);
 
-    // create all variants
-    for (const variant of variants) {
-      await prisma.variant.create({
-        data: {
-          sku: variant.sku,
-          price: {
-            create: variant.price,
-          },
-        },
-      });
-    }
-
+    // create intial product
     const product = await prisma.product.create({
       data: {
         name,
@@ -40,7 +29,9 @@ router.post(
         productKey,
         description,
         variants: {
-          connect: variants.map((variant) => ({ sku: variant.sku })),
+          createMany: {
+            data: variants.map((variant) => ({ sku: variant.sku })),
+          },
         },
       },
       include: {
@@ -52,7 +43,31 @@ router.post(
       },
     });
 
-    const validatedProduct = ProductSchema.parse(product);
+    // update variants with their own prices
+    // due to Prisma limitations, these steps have to be done separately
+    for (const variant of variants) {
+      await prisma.variant.update({
+        where: { sku: variant.sku },
+        data: {
+          price: {
+            create: variant.price,
+          },
+        },
+      });
+    }
+
+    const updatedProduct = await prisma.product.findUnique({
+      where: { id: product.id },
+      include: {
+        variants: {
+          include: {
+            price: true,
+          },
+        },
+      },
+    });
+
+    const validatedProduct = ProductSchema.parse(updatedProduct);
 
     const computedProduct = computeProductFields(validatedProduct);
 

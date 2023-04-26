@@ -25,10 +25,10 @@ locals {
 
   # GKE cluster 
   k8s_cluster_name = "ms-commerce"
-  k8s_namespace = "default"
+  k8s_namespace    = "default"
 
   # Artifact Registry
-  repository_name  = "ms-commerce"
+  repository_name = "ms-commerce"
 
   # Cloud SQL Postgres values
   database_name                         = "ms-commerce"
@@ -40,7 +40,6 @@ locals {
 
   # Application level microservices to create databases
   ms_commerce_microservices = [
-    "account",
     "product",
     "cart"
   ]
@@ -196,7 +195,6 @@ resource "google_service_account_iam_binding" "workload_identity_user_bindings" 
   service_account_id = google_service_account.gke_cloud_sql_service_account.name
   role               = "roles/iam.workloadIdentityUser"
   members = [
-    "serviceAccount:${local.project_id}.svc.id.goog[${local.k8s_namespace}/ksa-cloud-sql-account]",
     "serviceAccount:${local.project_id}.svc.id.goog[${local.k8s_namespace}/ksa-cloud-sql-cart]",
     "serviceAccount:${local.project_id}.svc.id.goog[${local.k8s_namespace}/ksa-cloud-sql-product]"
   ]

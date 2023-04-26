@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
@@ -14,24 +14,24 @@ enum Currency {
 }
 
 model Price {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   centAmount     Int
   currencyCode   Currency @default(EUR)
   fractionDigits Int      @default(2)
   variant        Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId      Int?     @unique
+  variantId      String   @unique @db.ObjectId
 }
 
 model Variant {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   sku       String   @unique
   price     Price?
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId Int?
+  productId String   @unique @db.ObjectId
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   name        String

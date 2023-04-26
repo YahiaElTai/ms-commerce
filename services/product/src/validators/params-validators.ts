@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const IdParamSchema = z.object({
-  id: z.string().transform((id) => parseInt(id)),
+  id: z.string(),
 });
 
 export const ProjectKeyParamSchema = z.object({

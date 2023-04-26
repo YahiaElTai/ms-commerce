@@ -2,4 +2,4 @@ apiVersion: v2
 name: ms-product
 description: A Helm chart for Product service for ms-commmerce microservices HTTP API
 type: application
-version: 1.0.1
+version: 1.0.2

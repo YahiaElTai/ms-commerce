@@ -11,7 +11,7 @@ set -e
 
 apply_prisma_migrations() {
     case "$HELM_RELEASE_NAME" in
-    "ms-cart" | "ms-product")
+    "ms-cart")
         echo -e "\033[32mApplying pending Prisma migrations from inside K8s pod"
         pod_name=$(kubectl get pods --field-selector=status.phase=Running --sort-by=.metadata.creationTimestamp -l instance="${HELM_RELEASE_NAME}" -o=name | tail -1)
         echo -e "\033[32mUsing pod $pod_name"
