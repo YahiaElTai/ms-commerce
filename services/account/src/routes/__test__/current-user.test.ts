@@ -45,7 +45,7 @@ describe('when user is authenticated', () => {
 
     expect(validatedUser).toEqual(
       expect.objectContaining({
-        id: parseInt(user.userId),
+        id: user.userId,
         email: user.userEmail,
         firstName: user.firstName,
         lastName: user.lastName,

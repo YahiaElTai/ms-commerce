@@ -9,7 +9,7 @@ export const UserDraftSchema = z.object({
 });
 
 export const UserSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   version: z.number().int(),
   email: z.string().email(),
   firstName: z.string().default(''),
@@ -18,7 +18,7 @@ export const UserSchema = z.object({
 });
 
 export const PayloadSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   email: z.string().email(),
 });
 
@@ -42,7 +42,7 @@ export const UserDraftUpdateSchema = z.object({
 
 // project validators
 export const IdParamSchema = z.object({
-  id: z.string().transform((id) => parseInt(id)),
+  id: z.string(),
 });
 
 export const ProjectDraftSchema = z.object({
@@ -50,7 +50,7 @@ export const ProjectDraftSchema = z.object({
 });
 
 export const ProjectSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   key: z.string().nonempty(),
 });
 
