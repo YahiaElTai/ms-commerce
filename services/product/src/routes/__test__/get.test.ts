@@ -23,12 +23,12 @@ jest.mock('kafkajs', () => {
 describe('when product is not found', () => {
   it('should respond with 404 ', async () => {
     const response: { body: TFormattedErrors[] } = await request(app)
-      .delete('/api/test-project/products/283794734')
+      .delete('/api/test-project/products/6449a42b087131a41584dcfb')
       .send()
       .expect(404);
 
     expect(response.body[0]?.message).toBe(
-      "Product with ID '283794734' could not be found"
+      "Product with ID '6449a42b087131a41584dcfb' could not be found"
     );
   });
 });

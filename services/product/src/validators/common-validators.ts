@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const CurrencySchema = z.enum(['EUR', 'USD', 'GBP']);
 
-export const IdSchema = z.number().int();
+export const IdSchema = z.string();
 
 export const ProjectKeySchema = z.string().nonempty();
 

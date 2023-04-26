@@ -166,7 +166,7 @@ workflows:
           app-dir: account
           requires:
             - shell_check
-      - typecheck_and_test:
+      - typecheck_and_test_mongo:
           name: typecheck_and_test_product
           app-dir: product
           requires:
@@ -231,7 +231,7 @@ workflows:
           requires:
             - can_deploy_account_service
               # Product service jobs
-      - typecheck_and_test:
+      - typecheck_and_test_mongo:
           name: typecheck_and_test_product
           app-dir: product
           requires:
