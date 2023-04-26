@@ -86,6 +86,11 @@ jobs:
     steps:
       - checkout:
           path: ~/ms-commerce
+      - run:
+          name: Install missing dependencies for mongodb-memory-server
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libssl1.1
       - install-pnpm
       - run:
           command: pnpm exec prisma generate --schema=src/prisma/schema.prisma
