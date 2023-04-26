@@ -8,7 +8,7 @@ export = async function globalSetup() {
         port: 27019,
       },
     ],
-    replSet: { count: 4, storageEngine: 'wiredTiger' },
+    replSet: { count: 3, storageEngine: 'wiredTiger' },
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any

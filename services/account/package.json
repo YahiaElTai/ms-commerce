@@ -5,7 +5,7 @@
     "preinstall": "npx only-allow pnpm",
     "dev": "nodemon src/index.ts",
     "start": "node build/index.js",
-    "test": "jest --no-cache --verbose --detectOpenHandles ./src",
+    "test": "jest --watchAll --no-cache --verbose --detectOpenHandles ./src",
     "test:ci": "jest --verbose --detectOpenHandles ./src",
     "build": "rimraf build && tsc",
     "typecheck": "tsc --noEmit",
