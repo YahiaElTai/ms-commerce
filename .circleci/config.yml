@@ -63,7 +63,7 @@ commands:
             - node_modules
 
 jobs:
-  typecheck_and_test:
+  typecheck_test:
     working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
     executor: ubuntu-executor
     resource_class: large
@@ -97,7 +97,7 @@ jobs:
       - run:
           command: pnpm test:ci
           name: Run tests ./services/<< parameters.app-dir >>
-  typecheck_and_test_mongo:
+  typecheck_test_mongo:
     working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
     executor: node-executor
     resource_class: large
@@ -156,18 +156,18 @@ workflows:
       - shellcheck/check:
           name: shell_check
           dir: ./.circleci
-      - typecheck_and_test:
-          name: typecheck_and_test_cart
+      - typecheck_test:
+          name: typecheck_test_cart
           app-dir: cart
           requires:
             - shell_check
-      - typecheck_and_test_mongo:
-          name: typecheck_and_test_account
+      - typecheck_test_mongo:
+          name: typecheck_test_account
           app-dir: account
           requires:
             - shell_check
-      - typecheck_and_test_mongo:
-          name: typecheck_and_test_product
+      - typecheck_test_mongo:
+          name: typecheck_test_product
           app-dir: product
           requires:
             - shell_check
@@ -179,25 +179,25 @@ workflows:
           name: shell_check
           dir: ./.circleci
           # Cart service jobs
-      - typecheck_and_test:
-          name: typecheck_and_test_cart
+      - typecheck_test:
+          name: typecheck_test_cart
           app-dir: cart
           requires:
             - shell_check
       - gcp-gcr/build-and-push-image:
-          name: build_and_publish_cart_image
+          name: b_p_cart_image
           docker-context: ./services/cart
           image: $REPO_NAME/cart
           path: ./services/cart
           registry-url: $REGISTRY_URL
           tag: << pipeline.git.revision >>
           requires:
-            - typecheck_and_test_cart
+            - typecheck_test_cart
       - can_deploy_service:
           name: can_deploy_cart_service
           type: approval
           requires:
-            - build_and_publish_cart_image
+            - b_p_cart_image
       - deploy_service:
           name: deploy_cart_service
           chart_name: ms-cart
@@ -205,25 +205,25 @@ workflows:
           requires:
             - can_deploy_cart_service
           # account service jobs
-      - typecheck_and_test_mongo:
-          name: typecheck_and_test_account
+      - typecheck_test_mongo:
+          name: typecheck_test_account
           app-dir: account
           requires:
             - shell_check
       - gcp-gcr/build-and-push-image:
-          name: build_and_publish_account_image
+          name: b_p_account_image
           docker-context: ./services/account
           image: $REPO_NAME/account
           path: ./services/account
           registry-url: $REGISTRY_URL
           tag: << pipeline.git.revision >>
           requires:
-            - typecheck_and_test_account
+            - typecheck_test_account
       - can_deploy_service:
           name: can_deploy_account_service
           type: approval
           requires:
-            - build_and_publish_account_image
+            - b_p_account_image
       - deploy_service:
           name: deploy_account_service
           chart_name: ms-account
@@ -231,25 +231,25 @@ workflows:
           requires:
             - can_deploy_account_service
               # Product service jobs
-      - typecheck_and_test_mongo:
-          name: typecheck_and_test_product
+      - typecheck_test_mongo:
+          name: typecheck_test_product
           app-dir: product
           requires:
             - shell_check
       - gcp-gcr/build-and-push-image:
-          name: build_and_publish_product_image
+          name: b_p_product_image
           docker-context: ./services/product
           image: $REPO_NAME/product
           path: ./services/product
           registry-url: $REGISTRY_URL
           tag: << pipeline.git.revision >>
           requires:
-            - typecheck_and_test_product
+            - typecheck_test_product
       - can_deploy_service:
           name: can_deploy_product_service
           type: approval
           requires:
-            - build_and_publish_product_image
+            - b_p_product_image
       - deploy_service:
           name: deploy_product_service
           chart_name: ms-product

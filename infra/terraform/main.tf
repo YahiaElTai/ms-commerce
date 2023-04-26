@@ -40,7 +40,6 @@ locals {
 
   # Application level microservices to create databases
   ms_commerce_microservices = [
-    "product",
     "cart"
   ]
 
@@ -196,7 +195,6 @@ resource "google_service_account_iam_binding" "workload_identity_user_bindings" 
   role               = "roles/iam.workloadIdentityUser"
   members = [
     "serviceAccount:${local.project_id}.svc.id.goog[${local.k8s_namespace}/ksa-cloud-sql-cart]",
-    "serviceAccount:${local.project_id}.svc.id.goog[${local.k8s_namespace}/ksa-cloud-sql-product]"
   ]
 }
 
