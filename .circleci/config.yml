@@ -29,6 +29,27 @@ commands:
       - run:
           name: Install pnpm via corepack
           command: |
+            corepack enable
+            corepack prepare --activate
+      - run:
+          name: Install dependencies
+          command: |
+            pnpm install
+      - save_cache:
+          name: Save pnpm cache
+          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - node_modules
+  install-pnpm-account:
+    description: Install pnpm via corepack
+    steps:
+      - restore_cache:
+          name: Restore pnpm cache
+          keys:
+            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+      - run:
+          name: Install pnpm via corepack
+          command: |
             sudo corepack enable
             sudo corepack prepare --activate
       - run:
@@ -91,7 +112,7 @@ jobs:
           command: |
             wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
             sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-      - install-pnpm
+      - install-pnpm-account
       - run:
           command: pnpm exec prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client
