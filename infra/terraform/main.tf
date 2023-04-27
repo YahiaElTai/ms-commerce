@@ -30,19 +30,6 @@ locals {
   # Artifact Registry
   repository_name = "ms-commerce"
 
-  # Cloud SQL Postgres values
-  database_name                         = "ms-commerce"
-  database_version                      = "POSTGRES_14"
-  database_service_account_name         = "gke-cloud-sql-service-account"
-  database_service_account_display_name = "GKE Cloud SQL Service Account"
-  database_tier                         = "db-custom-4-15360"
-  database_disk_size                    = 100
-
-  # Application level microservices to create databases
-  ms_commerce_microservices = [
-    "cart"
-  ]
-
   # CircleCI service account to authenticate for the roles mentioned below
   ci_service_account_account_id   = "circleci-sa"
   ci_service_account_display_name = "Circleci SA"
@@ -122,48 +109,6 @@ resource "helm_release" "ingress_nginx" {
   namespace        = "ingress-nginx"
 }
 
-
-# Create needed Postgres databases (3 currently for account, products and carts)
-resource "google_sql_database_instance" "ms-commerce-instance" {
-  name                = local.database_name
-  region              = local.region
-  database_version    = local.database_version
-  deletion_protection = false
-
-  settings {
-    tier      = local.database_tier
-    disk_size = local.database_disk_size
-  }
-}
-
-resource "google_sql_database" "ms_commerce_databases" {
-  for_each = toset(local.ms_commerce_microservices)
-
-  name     = each.value
-  instance = google_sql_database_instance.ms-commerce-instance.name
-}
-
-# These variables are coming from file `infra/terraform/terraform.tfvars`
-# This file is ignored in Git as it contains sensitive data
-variable "db_username" {
-  type        = string
-  description = "The database username"
-  sensitive   = true
-}
-
-variable "db_password" {
-  type        = string
-  description = "The database password"
-  sensitive   = true
-}
-
-
-resource "google_sql_user" "user" {
-  name     = var.db_username
-  password = var.db_password
-  instance = google_sql_database_instance.ms-commerce-instance.name
-}
-
 # Create key ring and key for KMS encryption for helm secrets
 resource "google_kms_key_ring" "ms-commerce-key-ring" {
   name     = local.keyring_name
@@ -173,29 +118,6 @@ resource "google_kms_key_ring" "ms-commerce-key-ring" {
 resource "google_kms_crypto_key" "ms-commerce-key" {
   name     = local.key_name
   key_ring = "projects/${local.project_id}/locations/${local.region}/keyRings/${local.keyring_name}"
-}
-
-# Connect to Cloud SQL for PostgreSQL from Google Kubernetes Engine
-resource "google_service_account" "gke_cloud_sql_service_account" {
-  account_id   = local.database_service_account_name
-  display_name = local.database_service_account_display_name
-}
-
-resource "google_project_iam_binding" "cloudsql_client_binding" {
-  project = local.project_id
-  role    = "roles/cloudsql.client"
-  members = [
-    "serviceAccount:${local.database_service_account_name}@${local.project_id}.iam.gserviceaccount.com"
-  ]
-}
-
-# Bind GCP service account to K8s service account using workloadIdentity
-resource "google_service_account_iam_binding" "workload_identity_user_bindings" {
-  service_account_id = google_service_account.gke_cloud_sql_service_account.name
-  role               = "roles/iam.workloadIdentityUser"
-  members = [
-    "serviceAccount:${local.project_id}.svc.id.goog[${local.k8s_namespace}/ksa-cloud-sql-cart]",
-  ]
 }
 
 

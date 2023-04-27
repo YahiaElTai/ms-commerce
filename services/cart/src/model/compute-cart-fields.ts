@@ -24,7 +24,7 @@ export const computeCartFields = (cart: TCart): TCartResponse => {
       totalLineItemQuantity: 0,
       lineItems: [],
       totalPrice: {
-        id: 1,
+        id: '',
         currencyCode: cart.currency,
         fractionDigits: 2,
         centAmount: 0,
@@ -34,7 +34,7 @@ export const computeCartFields = (cart: TCart): TCartResponse => {
 
   const lineItems = cart.lineItems.map((lineItem) => {
     const totalPrice = {
-      id: 1,
+      id: '',
       currencyCode: lineItem.price.currencyCode,
       fractionDigits: lineItem.price.fractionDigits,
       centAmount: lineItem.price.centAmount * lineItem.quantity,
@@ -51,7 +51,7 @@ export const computeCartFields = (cart: TCart): TCartResponse => {
   const validatedLineItemPrice = PriceSchema.parse(lineItems[0]?.price);
 
   const cartTotalPrice = {
-    id: 1,
+    id: '',
     currencyCode: validatedLineItemPrice.currencyCode,
     fractionDigits: validatedLineItemPrice.fractionDigits,
     centAmount: lineItems.reduce(

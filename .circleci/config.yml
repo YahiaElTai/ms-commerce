@@ -11,36 +11,12 @@ executors:
   gcp-executor:
     docker:
       - image: cimg/gcp:2023.04
-  ubuntu-executor:
-    machine:
-      image: ubuntu-2204:2022.10.2
   node-executor:
     docker:
       - image: cimg/node:20.0.0
 
 commands:
   install-pnpm:
-    description: Install pnpm via corepack
-    steps:
-      - restore_cache:
-          name: Restore pnpm cache
-          keys:
-            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-      - run:
-          name: Install pnpm via corepack
-          command: |
-            corepack enable
-            corepack prepare --activate
-      - run:
-          name: Install dependencies
-          command: |
-            pnpm install
-      - save_cache:
-          name: Save pnpm cache
-          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths:
-            - node_modules
-  install-pnpm-account:
     description: Install pnpm via corepack
     steps:
       - restore_cache:
@@ -65,40 +41,6 @@ commands:
 jobs:
   typecheck_test:
     working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
-    executor: ubuntu-executor
-    resource_class: large
-    parameters:
-      app-dir:
-        type: string
-    steps:
-      - checkout:
-          path: ~/ms-commerce
-      - install-pnpm
-      - run:
-          name: generate test env for << parameters.app-dir >> service
-          command: ../../.circleci/generate_test_env.sh
-          environment:
-            SERVICE_NAME: << parameters.app-dir >>
-      - run:
-          command: pnpm exec prisma generate --schema=src/prisma/schema.prisma
-          name: Generate Prisma client
-      - run:
-          name: Lint << parameters.app-dir >> service
-          command: pnpm lint
-      - run:
-          command: pnpm typecheck
-          name: Typecheck services/<< parameters.app-dir >>
-      - run:
-          name: Starting Postgres database
-          command: docker-compose up -d
-      - run:
-          name: Deploying Prisma schema
-          command: pnpm exec prisma migrate deploy --schema=src/prisma/schema.prisma
-      - run:
-          command: pnpm test:ci
-          name: Run tests ./services/<< parameters.app-dir >>
-  typecheck_test_mongo:
-    working_directory: ~/ms-commerce/services/<< parameters.app-dir >>
     executor: node-executor
     resource_class: large
     parameters:
@@ -112,7 +54,7 @@ jobs:
           command: |
             wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
             sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-      - install-pnpm-account
+      - install-pnpm
       - run:
           command: pnpm exec prisma generate --schema=src/prisma/schema.prisma
           name: Generate Prisma client
@@ -161,12 +103,12 @@ workflows:
           app-dir: cart
           requires:
             - shell_check
-      - typecheck_test_mongo:
+      - typecheck_test:
           name: typecheck_test_account
           app-dir: account
           requires:
             - shell_check
-      - typecheck_test_mongo:
+      - typecheck_test:
           name: typecheck_test_product
           app-dir: product
           requires:
@@ -205,7 +147,7 @@ workflows:
           requires:
             - can_deploy_cart_service
           # account service jobs
-      - typecheck_test_mongo:
+      - typecheck_test:
           name: typecheck_test_account
           app-dir: account
           requires:
@@ -231,7 +173,7 @@ workflows:
           requires:
             - can_deploy_account_service
               # Product service jobs
-      - typecheck_test_mongo:
+      - typecheck_test:
           name: typecheck_test_product
           app-dir: product
           requires:

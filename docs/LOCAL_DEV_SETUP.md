@@ -7,20 +7,15 @@ There are 2 options to start developing locally:
 
 #### Option 1: Start a single service
 
-1. Install [Docker for Desktop](https://www.docker.com/products/docker-desktop/).
+1. Add environment variables
+
+   Replace `.env.template` with `.env` and add the required variables.
+
+   Ensure that `.env` file within the service contains a `DATABASE_URL` with Mongodb Atlas database or a local database with replica set deployment as Prisma requires it for nested writes
 
 2. Start a service
 
-   ```bash
-   # Run this command within the service you want to work on
-   docker-compose up -d
-
-   # Deploy Prisma database to apply all migrations within the service you want to work on
-   pnpm prisma:dev
-
-   # Run this command within the service you want to work on
-   pnpm dev
-   ```
+   Run `pnpm dev`
 
 #### Option 2: Start all services with skaffold
 
@@ -63,10 +58,7 @@ There are 2 options to start developing locally:
 3. Add environment variables
    Replace `.env.template` with `.env` and add the required variables.
 
-   ```bash
-   # host.docker.internal is required instead of localhost so skaffold can connect to docker-compose
-   DATABASE_URL=postgresql://[DB_USER]:[DB_PASSWORD]@host.docker.internal:[DB_PORT]/[DB]
-   ```
+   Ensure that `.env` file within all services contains a `DATABASE_URL` with Mongodb Atlas database or a local database with replica set deployment as Prisma requires it for nested writes
 
 4. Install and configure `skaffold`
 
@@ -82,12 +74,6 @@ There are 2 options to start developing locally:
 5. Start skaffold
 
    ```bash
-   # Start `docker-compose` in each service
-   docker-compose up -d
-
-   # Deploy Prisma database to apply all migrations in each service
-   pnpm prisma:dev
-
    # Start skaffold from project root dir
    skaffold dev
    ```

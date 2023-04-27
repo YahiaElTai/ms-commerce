@@ -9,20 +9,6 @@ set -e
 : "${HELM_RELEASE_NAME?Required env variable HELM_RELEASE_NAME}"
 : "${GIT_REVISION?Required env variable GIT_REVISION}"
 
-apply_prisma_migrations() {
-    case "$HELM_RELEASE_NAME" in
-    "ms-cart")
-        echo -e "\033[32mApplying pending Prisma migrations from inside K8s pod"
-        pod_name=$(kubectl get pods --field-selector=status.phase=Running --sort-by=.metadata.creationTimestamp -l instance="${HELM_RELEASE_NAME}" -o=name | tail -1)
-        echo -e "\033[32mUsing pod $pod_name"
-        kubectl exec -it "$pod_name" -- npx prisma migrate deploy --schema=./prisma/schema.prisma
-        ;;
-    *)
-        echo -e "\033[32m${HELM_RELEASE_NAME} does not use Prisma"
-        ;;
-    esac
-}
-
 echo -e "\033[32mLinting helm chart"
 helm lint "infra/k8s/$CHART_NAME"
 
@@ -55,6 +41,4 @@ else
         -f "infra/k8s/$CHART_NAME/secrets.yaml" \
         --set image.tag="$GIT_REVISION" \
         "$HELM_RELEASE_NAME" "infra/k8s/$CHART_NAME"
-
-    apply_prisma_migrations
 fi

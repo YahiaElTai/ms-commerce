@@ -32,12 +32,12 @@ beforeAll(async () => {
 describe('when cart is not found', () => {
   it('should respond with 404 ', async () => {
     const response: { body: TFormattedErrors[] } = await request(app)
-      .get('/api/test-project/carts/2837')
+      .get('/api/test-project/carts/644a5818a37fd1ee4926c85b')
       .send()
       .expect(404);
 
     expect(response.body[0]?.message).toBe(
-      "Cart with ID '2837' could not be found"
+      "Cart with ID '644a5818a37fd1ee4926c85b' could not be found"
     );
   });
 });
@@ -62,7 +62,7 @@ describe('when cart is found', () => {
         createdAt: validatedCart.createdAt,
         updatedAt: validatedCart.updatedAt,
         totalPrice: {
-          id: 1,
+          id: '',
           centAmount: 804000,
           currencyCode: 'EUR',
           fractionDigits: 2,
