@@ -3,7 +3,7 @@ import type { z } from 'zod';
 import { PasswordHashing } from '../utils';
 import { UserDraftSchema } from '../validators';
 
-export type TUser = z.infer<typeof UserDraftSchema>;
+type TUser = z.infer<typeof UserDraftSchema>;
 
 interface IMiddlewareParams extends Prisma.MiddlewareParams {
   args: {

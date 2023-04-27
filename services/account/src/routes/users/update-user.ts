@@ -39,6 +39,13 @@ router.put(
         {
           const validatedAction = ActionSchema.parse(action);
 
+          // validate that project doesn't already exist on user
+          if (existingUser.projects.includes(validatedAction.value.key)) {
+            throw new NotFoundError(
+              `User with email ${existingUser.email} already has access to project with key'${validatedAction.value.key}'`
+            );
+          }
+
           // validate that the project already exists first and then add it to the list
           const existingProject = await prisma.project.findUnique({
             where: { key: validatedAction.value.key },

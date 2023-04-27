@@ -23,15 +23,7 @@ There are 2 options to start developing locally:
 
    1. Install [Docker for Desktop](https://www.docker.com/products/docker-desktop/) and enable kubernetes.
 
-   2. Install [gcloud CLI](https://cloud.google.com/sdk/docs/install)
-
-      ```bash
-      gcloud init # initialize gcloud
-      gcloud auth application-default login
-      gcloud config set container/use_application_default_credentials true
-      ```
-
-   3. Install [kubectl](https://kubernetes.io/docs/tasks/tools/)
+   2. Install [kubectl](https://kubernetes.io/docs/tasks/tools/)
 
       If you have kubernetes enabled in Docker for Desktop then `docker-desktop` context should be the active context
 
@@ -45,7 +37,7 @@ There are 2 options to start developing locally:
       $ kubectl config view
       ```
 
-   4. Install [helm](https://helm.sh/)
+   3. Install [helm](https://helm.sh/)
 
 2. Install [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start) chart
 

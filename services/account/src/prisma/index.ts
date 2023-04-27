@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { hashingMiddlware } from '../middlewares/hashing';
+import { hashingMiddlware } from '../middlewares';
 
 export * from './utils';
 
