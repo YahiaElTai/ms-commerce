@@ -7,7 +7,6 @@ This service provides basic CRUD operations for products
 Data modeling is done with prisma. You can check it out [here](/services/product/src/prisma/schema.prisma)
 
 ```prisma
-
 enum Currency {
   EUR
   USD
@@ -15,24 +14,24 @@ enum Currency {
 }
 
 model Price {
-  id             Int      @id @default(autoincrement())
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   centAmount     Int
   currencyCode   Currency @default(EUR)
   fractionDigits Int      @default(2)
   variant        Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId      Int?     @unique
+  variantId      String   @unique @db.ObjectId
 }
 
 model Variant {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   sku       String   @unique
   price     Price?
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId Int?
+  productId String   @unique @db.ObjectId
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   name        String
@@ -40,8 +39,8 @@ model Product {
   productKey  String?
   variants    Variant[]
   version     Int       @default(1)
+  projectKey  String
 }
-
 ```
 
 ### Updating a product
@@ -64,4 +63,4 @@ The product service publishes its own events
 
 **Published events**:
 
-- `product_created`, `product_updated`, `product_deleted`
+- `product_created`, `product_updated`, `product_deleted`, `product_all_deleted`

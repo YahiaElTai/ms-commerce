@@ -7,9 +7,8 @@ This service provides authentication and projects management for users
 Data modeling is done with prisma. You can check it out [here](/services/account/src/prisma/schema.prisma)
 
 ```prisma
-
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   firstName String   @default("")
   lastName  String   @default("")
@@ -19,11 +18,9 @@ model User {
 }
 
 model Project {
-  id  Int    @id @default(autoincrement())
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
   key String @unique
 }
-
-
 ```
 
 ### Authentication

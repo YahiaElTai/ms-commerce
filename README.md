@@ -41,6 +41,6 @@ The project is a simplified version of commercetools HTTP API written as microse
 
 - [API Documentation](https://documenter.getpostman.com/view/8722825/2s8YsryZiW).
 
-- [Infrastructure Provisioning](/docs/INFRASTRUCTURE_PROVISIONING_ON_GCP.md)
+- [GCP Infrastructure Provisioning](/docs/GCP_INFRASTRUCTURE_PROVISIONING.md)
 
 - [Local Development Setup](/docs/LOCAL_DEV_SETUP.md)

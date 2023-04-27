@@ -1,8 +1,38 @@
 ## Local development setup
 
+1. Initial Kafka Setup
+
+   1. Sign up for an account at [Confluent Cloud](https://www.confluent.io) and install [Confluent Cloud CLI](https://docs.confluent.io/confluent-cli/current/overview.html)
+
+   2. Login with CLI
+
+   `confluent login`
+
+   4. Create Kafka cluster
+
+   `confluent kafka cluster create [CLUSTER_NAME] --cloud gcp --region europe-west1`
+
+   5. Create required topics
+
+   `confluent kafka topic create [TOPIC_NAME] --partitions 1 --if-not-exists --cluster [CLUSTER_ID]`
+
+   6. Add Kafka broker, API key and secret to `.env` files where needed
+
+2. Atlas MongoDB setup
+
+   1. Sign up for [Atlas](https://www.mongodb.com/atlas/database)
+
+   2. Create a database and a new user
+
+   3. Allow access to database through network settings
+
+   4. Copy connection URL as DATABASE_URL in `.env` files
+
+3. Start local development
+
 There are 2 options to start developing locally:
 
-1. Start a single service (easy approach as it requires only docker-compose)
+1. Start a single service
 2. Start all services with skaffold (requires a local kubernetes cluster)
 
 #### Option 1: Start a single service
@@ -11,11 +41,17 @@ There are 2 options to start developing locally:
 
    Replace `.env.template` with `.env` and add the required variables.
 
-   Ensure that `.env` file within the service contains a `DATABASE_URL` with Mongodb Atlas database or a local database with replica set deployment as Prisma requires it for nested writes
+   Ensure all env variables are filled in.
 
 2. Start a service
 
-   Run `pnpm dev`
+   ```bash
+   cd services/{service}
+
+   pnpm install
+
+   pnpm dev
+   ```
 
 #### Option 2: Start all services with skaffold
 
@@ -50,7 +86,7 @@ There are 2 options to start developing locally:
 3. Add environment variables
    Replace `.env.template` with `.env` and add the required variables.
 
-   Ensure that `.env` file within all services contains a `DATABASE_URL` with Mongodb Atlas database or a local database with replica set deployment as Prisma requires it for nested writes
+   Ensure all env variables are filled in.
 
 4. Install and configure `skaffold`
 
@@ -65,10 +101,7 @@ There are 2 options to start developing locally:
 
 5. Start skaffold
 
-   ```bash
-   # Start skaffold from project root dir
-   skaffold dev
-   ```
+   `skaffold dev`
 
 #### Git Hooks
 

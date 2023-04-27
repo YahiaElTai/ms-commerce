@@ -16,41 +16,27 @@ The model has 2 parts
 The following is the prisma model which contains also comments regarding the computed fields.
 
 ```prisma
-
-enum Currency {
-  EUR
-  USD
-  GBP
-}
-
-model Cart {
-  id            Int        @id @default(autoincrement())
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  currency      Currency
-  customerEmail String?
-  lineItems     LineItem[]
-  version       Int        @default(1)
-
-  // computed fields for carts: totalLineItemQuantity, totalPrice
-  // - `totalLineItemQuantity` is the sum of all line item quantities
-  // - `totalPrice` is the sum of all totalPrice from line items
-}
-
 model LineItem {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   quantity    Int     @default(1)
   productName String
   productKey  String?
   price Price?
   variant Variant?
-  cart   Cart? @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  cartId Int?
-
-  // computed fields include: totalPrice
-  // - totalPrice is the price * the quantity
+  cart   Cart?   @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cartId String? @db.ObjectId
 }
 
+model Cart {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  currency      Currency
+  customerEmail String?
+  lineItems  LineItem[]
+  version    Int        @default(1)
+  projectKey String
+}
 ```
 
 #### What is a Line Item?
@@ -90,11 +76,6 @@ Pagination and sorting are added when fetching carts. the default limit is `20` 
 
 The cart service publishes its own events and also listens to events from other services.
 
-**Published events**:
-
-- `cart_created`, `cart_updated`, `cart_deleted`
-
 **Events Listened to**:
 
-- `product_created`, `product_updated`, `product_deleted`
-- `customer_created`, `customer_updated`, `customer_deleted`
+- `product_created`, `product_updated`, `product_deleted`, `product_all_deleted`
