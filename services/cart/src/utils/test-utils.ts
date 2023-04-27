@@ -20,7 +20,7 @@ export const createProduct = async (sku: string) => {
       name: 'HM pants',
       productKey: 'hm-pants-key',
       projectKey: 'test-project',
-      originalId: 1,
+      originalId: '644a5818b37fd1ee5926c85e',
       variants: {
         connect: { id: variant.id },
       },

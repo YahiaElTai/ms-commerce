@@ -1,6 +1,8 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "node",
+  "globalSetup": "./src/test/globalSetup.ts",
+  "globalTeardown": "./src/test/globalTeardown.ts",
   "setupFilesAfterEnv": ["./src/test/setup.ts"],
   "reporters": ["default"]
 }

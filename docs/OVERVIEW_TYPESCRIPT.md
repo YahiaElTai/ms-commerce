@@ -49,7 +49,7 @@ Integration Tests are written using [Supertest](https://github.com/ladjs/superte
 
 ### ORM
 
-ORM for PostgreSQL is [Prisma](https://www.prisma.io/)
+ORM for MongoDB is [Prisma](https://www.prisma.io/)
 
 Prisma unlocks a new level of developer experience when working with databases thanks to its intuitive data model, automated migrations, type-safety & auto-completion.
 

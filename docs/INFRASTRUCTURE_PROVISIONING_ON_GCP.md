@@ -17,5 +17,4 @@ All other steps required are handled via Terraform in [this file](../infra/terra
 - [helm](https://helm.sh/)
 - [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
 - [Encrypting secrets with KMS](https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets)
-- [Connect PostgreSQL with k8s](https://cloud.google.com/sql/docs/postgres/connect-instance-kubernetes)
 - [Building and pushing images](https://cloud.google.com/artifact-registry/docs/docker/pushing-and-pulling)

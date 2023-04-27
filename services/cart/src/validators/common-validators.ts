@@ -6,7 +6,7 @@ export const QuantityDraftSchema = z.number().int().gt(0).default(1);
 
 export const QuantitySchema = z.number().int().default(1);
 
-export const IdSchema = z.number().int();
+export const IdSchema = z.string();
 
 export const SKUSchema = z.string();
 

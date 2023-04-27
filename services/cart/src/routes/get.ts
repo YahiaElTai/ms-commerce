@@ -8,7 +8,7 @@ import { IdParamSchema } from '../validators/params-validators';
 const router = express.Router();
 
 router.get(
-  '/api/:projectKey/carts/:id(\\d+)',
+  '/api/:projectKey/carts/:id([0-9a-fA-F]{24})',
   // As of Express@5 This syntax is supported however the types are not updated yet
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
