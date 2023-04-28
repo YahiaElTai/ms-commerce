@@ -25,6 +25,9 @@ model LineItem {
   variant Variant?
   cart   Cart?   @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   cartId String? @db.ObjectId
+
+  // computed fields include: totalPrice
+  // - totalPrice is the price * the quantity
 }
 
 model Cart {
@@ -36,6 +39,10 @@ model Cart {
   lineItems  LineItem[]
   version    Int        @default(1)
   projectKey String
+
+  // computed fields for carts: totalLineItemQuantity, totalPrice
+  // - `totalLineItemQuantity` is the sum of all line item quantities
+  // - `totalPrice` is the sum of all totalPrice from line items
 }
 ```
 

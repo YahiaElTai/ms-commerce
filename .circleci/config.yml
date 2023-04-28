@@ -6,6 +6,7 @@ orbs:
   gcp-gcr: circleci/gcp-gcr@0.15.0
   shellcheck: circleci/shellcheck@3.1.2
   helm: circleci/helm@2.0.1
+  dotenv: anilanar/dotenv@1.0.0
 
 executors:
   gcp-executor:
@@ -71,6 +72,8 @@ jobs:
     executor: gcp-executor
     resource_class: large
     parameters:
+      environment_name:
+        type: string
       chart_name:
         type: string
       helm_release_name:
@@ -78,6 +81,11 @@ jobs:
     steps:
       - checkout
       - helm/install-helm-client
+      - run:
+          name: 'Setup environment variables for environment << parameters.environment_name >>'
+          command: .circleci/setup_environment_variables.sh
+          environment:
+            ENVIRONMENT_NAME: << parameters.environment_name >>
       - gcp-cli/setup:
           components: 'gke-gcloud-auth-plugin --quiet'
       - run:
@@ -135,17 +143,25 @@ workflows:
           tag: << pipeline.git.revision >>
           requires:
             - typecheck_test_cart
-      - can_deploy_service:
-          name: can_deploy_cart_service
-          type: approval
-          requires:
-            - b_p_cart_image
       - deploy_service:
-          name: deploy_cart_service
+          name: deploy_s_cart_service
+          environment_name: gcp-staging-eu
           chart_name: ms-cart
           helm_release_name: ms-cart
           requires:
-            - can_deploy_cart_service
+            - b_p_cart_image
+      - can_deploy_service:
+          name: can_deploy_prod_cart_service
+          type: approval
+          requires:
+            - deploy_s_cart_service
+      - deploy_service:
+          name: deploy_prod_cart_service
+          environment_name: gcp-production-eu
+          chart_name: ms-cart
+          helm_release_name: ms-cart
+          requires:
+            - can_deploy_prod_cart_service
           # account service jobs
       - typecheck_test:
           name: typecheck_test_account
@@ -161,17 +177,25 @@ workflows:
           tag: << pipeline.git.revision >>
           requires:
             - typecheck_test_account
-      - can_deploy_service:
-          name: can_deploy_account_service
-          type: approval
-          requires:
-            - b_p_account_image
       - deploy_service:
-          name: deploy_account_service
+          name: deploy_s_account_service
+          environment_name: gcp-staging-eu
           chart_name: ms-account
           helm_release_name: ms-account
           requires:
-            - can_deploy_account_service
+            - b_p_account_image
+      - can_deploy_service:
+          name: can_deploy_prod_account_service
+          type: approval
+          requires:
+            - deploy_s_account_service
+      - deploy_service:
+          name: deploy_prod_account_service
+          environment_name: gcp-production-eu
+          chart_name: ms-account
+          helm_release_name: ms-account
+          requires:
+            - can_deploy_prod_account_service
               # Product service jobs
       - typecheck_test:
           name: typecheck_test_product
@@ -187,26 +211,47 @@ workflows:
           tag: << pipeline.git.revision >>
           requires:
             - typecheck_test_product
-      - can_deploy_service:
-          name: can_deploy_product_service
-          type: approval
-          requires:
-            - b_p_product_image
       - deploy_service:
-          name: deploy_product_service
+          name: deploy_s_product_service
+          environment_name: gcp-staging-eu
           chart_name: ms-product
           helm_release_name: ms-product
           requires:
-            - can_deploy_product_service
+            - b_p_product_image
+      - can_deploy_service:
+          name: can_deploy_prod_product_service
+          type: approval
+          requires:
+            - deploy_s_product_service
+      - deploy_service:
+          name: deploy_prod_product_service
+          environment_name: gcp-production-eu
+          chart_name: ms-product
+          helm_release_name: ms-product
+          requires:
+            - can_deploy_prod_product_service
           # Ingress (optional) deployment job
       - can_deploy_service:
-          name: can_deploy_ingress
+          name: can_deploy_s_ingress
           type: approval
           requires:
             - shell_check
       - deploy_service:
           name: deploy_ingress
+          environment_name: gcp-staging-eu
           chart_name: ms-ingress
           helm_release_name: ms-ingress
           requires:
-            - can_deploy_ingress
+            - can_deploy_s_ingress
+      - can_deploy_service:
+          name: can_deploy_prod_ingress
+          type: approval
+          requires:
+            - shell_check
+      - deploy_service:
+          name: deploy_ingress
+          environment_name: gcp-production-eu
+          chart_name: ms-ingress
+          helm_release_name: ms-ingress
+          requires:
+            - can_deploy_prod_ingress

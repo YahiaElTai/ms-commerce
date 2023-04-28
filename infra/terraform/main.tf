@@ -20,25 +20,12 @@ terraform {
 
 #  Local variables
 locals {
-  # General GCP values
-  project_id = "ms-commerce-round-2-key"
-  region     = "europe-west1"
-  zone       = "europe-west1-b"
-
   # required GCP services to be enabled
   enabled_gcp_services = [
     "artifactregistry.googleapis.com",
     "container.googleapis.com",
-    "sqladmin.googleapis.com",
     "cloudkms.googleapis.com"
   ]
-
-  # GKE cluster 
-  k8s_cluster_name = "ms-commerce"
-  k8s_namespace    = "default"
-
-  # Artifact Registry
-  repository_name = "ms-commerce"
 
   # CircleCI service account to authenticate for the roles mentioned below
   ci_service_account_account_id   = "circleci-sa"
@@ -48,17 +35,13 @@ locals {
     "roles/container.developer",
     "roles/cloudkms.cryptoKeyDecrypter",
   ]
-
-  # KMS key ring and key values
-  keyring_name = "ms-commerce-key-ring"
-  key_name     = "ms-commerce-key"
 }
 
 # List of providers required
 provider "google" {
-  project = local.project_id
-  region  = local.region
-  zone    = local.zone
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 }
 
 provider "kubernetes" {
@@ -81,8 +64,8 @@ resource "google_project_service" "enabled_services" {
 
 # Create Artifact Registry repository
 resource "google_artifact_registry_repository" "ms_commerce_repository" {
-  repository_id = local.repository_name
-  location      = local.region
+  repository_id = var.repository_name
+  location      = var.region
   format        = "DOCKER"
 }
 
@@ -96,16 +79,16 @@ resource "google_service_account" "ci_service_account" {
 resource "google_project_iam_member" "ci_sa_roles" {
   for_each = toset(local.ci_service_account_roles)
 
-  project = local.project_id
+  project = var.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.ci_service_account.email}"
 }
 
 # Create Autopilot GKE cluster
 resource "google_container_cluster" "ms-commerce-cluster" {
-  name     = local.k8s_cluster_name
-  project  = local.project_id
-  location = local.region
+  name     = var.k8s_cluster_name
+  project  = var.project_id
+  location = var.region
   ip_allocation_policy {}
   enable_autopilot = true
 }
@@ -121,13 +104,13 @@ resource "helm_release" "ingress_nginx" {
 
 # Create key ring and key for KMS encryption for helm secrets
 resource "google_kms_key_ring" "ms-commerce-key-ring" {
-  name     = local.keyring_name
-  location = local.region
+  name     = var.keyring_name
+  location = var.region
 }
 
 resource "google_kms_crypto_key" "ms-commerce-key" {
-  name     = local.key_name
-  key_ring = "projects/${local.project_id}/locations/${local.region}/keyRings/${local.keyring_name}"
+  name     = var.key_name
+  key_ring = "projects/${var.project_id}/locations/${var.region}/keyRings/${var.keyring_name}"
 }
 
 
