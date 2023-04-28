@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: europe-west1-docker.pkg.dev/ms-commerce-staging/ms-commerce/product
+  repository: europe-west1-docker.pkg.dev/ms-commerce-staging/ms-commerce-staging/product
   pullPolicy: IfNotPresent
   tag: 'latest'
 
