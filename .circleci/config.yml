@@ -68,6 +68,33 @@ jobs:
       - run:
           command: pnpm test:ci
           name: Run tests ./services/<< parameters.app-dir >>
+  build-and-push-image:
+    executor: gcp-executor
+    resource_class: large
+    parameters:
+      environment_name:
+        type: string
+      service:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: 'Setup environment variables for environment << parameters.environment_name >>'
+          command: .circleci/setup_environment_variables.sh
+          environment:
+            ENVIRONMENT_NAME: << parameters.environment_name >>
+      - gcp-gcr/gcr-auth
+      - gcp-gcr/build-image:
+          registry-url: $REGISTRY_URL
+          image: $REPO_NAME/<< parameters.service >>
+          tag: << pipeline.git.revision >>
+          docker-context: ./services/<< parameters.service >>
+          path: ./services/<< parameters.service >>
+      - gcp-gcr/push-image:
+          registry-url: $REGISTRY_URL
+          image: $REPO_NAME/<< parameters.service >>
+          tag: << pipeline.git.revision >>
+
   deploy_service:
     executor: gcp-executor
     resource_class: large
@@ -128,19 +155,16 @@ workflows:
       - shellcheck/check:
           name: shell_check
           dir: ./.circleci
-          # Cart service jobs
+      # Cart service jobs (staging)
       - typecheck_test:
           name: typecheck_test_cart
           app-dir: cart
           requires:
             - shell_check
-      - gcp-gcr/build-and-push-image:
-          name: b_p_cart_image
-          docker-context: ./services/cart
-          image: $REPO_NAME/cart
-          path: ./services/cart
-          registry-url: $REGISTRY_URL
-          tag: << pipeline.git.revision >>
+      - build-and-push-image:
+          name: b_p_s_cart_image
+          environment_name: gcp-staging-eu
+          service: cart
           requires:
             - typecheck_test_cart
       - deploy_service:
@@ -149,32 +173,36 @@ workflows:
           chart_name: ms-cart
           helm_release_name: ms-cart
           requires:
-            - b_p_cart_image
+            - b_p_s_cart_image
+      # Cart service jobs (production)
       - can_deploy_service:
-          name: can_deploy_prod_cart_service
+          name: can_deploy_p_cart_service
           type: approval
           requires:
-            - deploy_s_cart_service
+            - typecheck_test_cart
+      - build-and-push-image:
+          name: b_p_prod_cart_image
+          environment_name: gcp-production-eu
+          service: cart
+          requires:
+            - can_deploy_p_cart_service
       - deploy_service:
           name: deploy_prod_cart_service
           environment_name: gcp-production-eu
           chart_name: ms-cart
           helm_release_name: ms-cart
           requires:
-            - can_deploy_prod_cart_service
-          # account service jobs
+            - b_p_prod_cart_image
+      # Account service jobs (staging)
       - typecheck_test:
           name: typecheck_test_account
           app-dir: account
           requires:
             - shell_check
-      - gcp-gcr/build-and-push-image:
-          name: b_p_account_image
-          docker-context: ./services/account
-          image: $REPO_NAME/account
-          path: ./services/account
-          registry-url: $REGISTRY_URL
-          tag: << pipeline.git.revision >>
+      - build-and-push-image:
+          name: b_p_s_account_image
+          environment_name: gcp-staging-eu
+          service: account
           requires:
             - typecheck_test_account
       - deploy_service:
@@ -183,32 +211,36 @@ workflows:
           chart_name: ms-account
           helm_release_name: ms-account
           requires:
-            - b_p_account_image
+            - b_p_s_account_image
+      # Account service jobs (production)
       - can_deploy_service:
-          name: can_deploy_prod_account_service
+          name: can_deploy_p_account_service
           type: approval
           requires:
-            - deploy_s_account_service
+            - typecheck_test_account
+      - build-and-push-image:
+          name: b_p_prod_account_image
+          environment_name: gcp-production-eu
+          service: account
+          requires:
+            - can_deploy_p_account_service
       - deploy_service:
           name: deploy_prod_account_service
           environment_name: gcp-production-eu
           chart_name: ms-account
           helm_release_name: ms-account
           requires:
-            - can_deploy_prod_account_service
-              # Product service jobs
+            - b_p_prod_account_image
+      # Product service jobs (staging)
       - typecheck_test:
           name: typecheck_test_product
           app-dir: product
           requires:
             - shell_check
-      - gcp-gcr/build-and-push-image:
-          name: b_p_product_image
-          docker-context: ./services/product
-          image: $REPO_NAME/product
-          path: ./services/product
-          registry-url: $REGISTRY_URL
-          tag: << pipeline.git.revision >>
+      - build-and-push-image:
+          name: b_p_s_product_image
+          environment_name: gcp-staging-eu
+          service: product
           requires:
             - typecheck_test_product
       - deploy_service:
@@ -217,41 +249,49 @@ workflows:
           chart_name: ms-product
           helm_release_name: ms-product
           requires:
-            - b_p_product_image
+            - b_p_s_product_image
+      # Product service jobs (production)
       - can_deploy_service:
-          name: can_deploy_prod_product_service
+          name: can_deploy_p_product_service
           type: approval
           requires:
-            - deploy_s_product_service
+            - typecheck_test_product
+      - build-and-push-image:
+          name: b_p_prod_product_image
+          environment_name: gcp-production-eu
+          service: product
+          requires:
+            - can_deploy_p_product_service
       - deploy_service:
           name: deploy_prod_product_service
           environment_name: gcp-production-eu
           chart_name: ms-product
           helm_release_name: ms-product
           requires:
-            - can_deploy_prod_product_service
-          # Ingress (optional) deployment job
+            - b_p_prod_product_image
+      # Ingress (optional) jobs (staging)
       - can_deploy_service:
           name: can_deploy_s_ingress
           type: approval
           requires:
             - shell_check
       - deploy_service:
-          name: deploy_ingress
+          name: deploy_s_ingress
           environment_name: gcp-staging-eu
           chart_name: ms-ingress
           helm_release_name: ms-ingress
           requires:
             - can_deploy_s_ingress
+      # Ingress (optional) jobs (staging)
       - can_deploy_service:
-          name: can_deploy_prod_ingress
+          name: can_deploy_p_ingress
           type: approval
           requires:
             - shell_check
       - deploy_service:
-          name: deploy_ingress
+          name: deploy_prod_ingress
           environment_name: gcp-production-eu
           chart_name: ms-ingress
           helm_release_name: ms-ingress
           requires:
-            - can_deploy_prod_ingress
+            - can_deploy_p_ingress
