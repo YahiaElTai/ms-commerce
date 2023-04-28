@@ -232,13 +232,26 @@ workflows:
             - can_deploy_prod_product_service
           # Ingress (optional) deployment job
       - can_deploy_service:
-          name: can_deploy_ingress
+          name: can_deploy_s_ingress
           type: approval
           requires:
             - shell_check
       - deploy_service:
           name: deploy_ingress
+          environment_name: gcp-staging-eu
           chart_name: ms-ingress
           helm_release_name: ms-ingress
           requires:
-            - can_deploy_ingress
+            - can_deploy_s_ingress
+      - can_deploy_service:
+          name: can_deploy_prod_ingress
+          type: approval
+          requires:
+            - shell_check
+      - deploy_service:
+          name: deploy_ingress
+          environment_name: gcp-production-eu
+          chart_name: ms-ingress
+          helm_release_name: ms-ingress
+          requires:
+            - can_deploy_prod_ingress
