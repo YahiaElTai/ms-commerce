@@ -79,10 +79,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: 'Setup environment variables for environment << parameters.environment_name >>'
-          command: .circleci/setup_environment_variables.sh
+          name: 'Export gcloud service key for environment << parameters.environment_name >>'
+          command: .circleci/export_gcloud_service_key.sh
           environment:
             ENVIRONMENT_NAME: << parameters.environment_name >>
+      - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
       - gcp-gcr/gcr-auth
       - gcp-gcr/build-image:
           registry-url: $REGISTRY_URL
@@ -94,7 +96,6 @@ jobs:
           registry-url: $REGISTRY_URL
           image: $REPO_NAME/<< parameters.service >>
           tag: << pipeline.git.revision >>
-
   deploy_service:
     executor: gcp-executor
     resource_class: large
@@ -109,10 +110,12 @@ jobs:
       - checkout
       - helm/install-helm-client
       - run:
-          name: 'Setup environment variables for environment << parameters.environment_name >>'
-          command: .circleci/setup_environment_variables.sh
+          name: 'Export gcloud service key for environment << parameters.environment_name >>'
+          command: .circleci/export_gcloud_service_key.sh
           environment:
             ENVIRONMENT_NAME: << parameters.environment_name >>
+      - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
       - gcp-cli/setup:
           components: 'gke-gcloud-auth-plugin --quiet'
       - run:
