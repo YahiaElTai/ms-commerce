@@ -13,15 +13,10 @@ enum Currency {
   GBP
 }
 
-model PriceForProduct {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+type Price {
   centAmount     Int
   currencyCode   Currency @default(EUR)
   fractionDigits Int      @default(2)
-
-  // each price is connected to one variant
-  variant   VariantForProduct? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId String?            @unique @db.ObjectId
 }
 
 model VariantForProduct {
@@ -29,11 +24,11 @@ model VariantForProduct {
   sku String @unique
 
   // each variant can have one price connected
-  price PriceForProduct?
+  price Price
 
   // many variants can be connected to a single product
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId String?  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId String  @db.ObjectId
 }
 
 model Product {
@@ -57,31 +52,16 @@ model Product {
 // More variants can be added later, with their own prices. (These will be events from the product service)
 // Variants can be added to the cart as line item with a unique identifier "SKU"
 
-model Price {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  centAmount     Int
-  currencyCode   Currency @default(EUR)
-  fractionDigits Int      @default(2)
-
-  // each price is connected to one variant
-  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId String?  @unique @db.ObjectId
-
-  // each price is connected to one variant
-  lineItem   LineItem? @relation(fields: [lineItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  lineItemId String?   @unique @db.ObjectId
-}
-
 model Variant {
   id  String @id @default(auto()) @map("_id") @db.ObjectId
   sku String
 
   // each variant can have one price connected
-  price Price?
+  price Price
 
-  // many variants can be connected to a single product
-  lineItem   LineItem? @relation(fields: [lineItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  lineItemId String?   @unique @db.ObjectId
+  // variants can be connected to many line items
+  lineItem   LineItem @relation(fields: [lineItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lineItemId String   @unique @db.ObjectId
 }
 
 model LineItem {
@@ -90,14 +70,14 @@ model LineItem {
   productName String
   productKey  String?
 
-  price Price?
+  price Price
 
   // each line item can have one variant connected
   variant Variant?
 
   // many line items can be connected to a single cart
-  cart   Cart?   @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  cartId String? @db.ObjectId
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  cartId String @db.ObjectId
   // computed fields include: totalPrice
   // totalPrice is the price * the quantity
 }

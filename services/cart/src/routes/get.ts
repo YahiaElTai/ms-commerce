@@ -20,12 +20,7 @@ router.get(
       include: {
         lineItems: {
           include: {
-            price: true,
-            variant: {
-              include: {
-                price: true,
-              },
-            },
+            variant: true,
           },
         },
       },

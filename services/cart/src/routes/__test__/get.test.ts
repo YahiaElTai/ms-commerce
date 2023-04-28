@@ -62,7 +62,6 @@ describe('when cart is found', () => {
         createdAt: validatedCart.createdAt,
         updatedAt: validatedCart.updatedAt,
         totalPrice: {
-          id: '',
           centAmount: 804000,
           currencyCode: 'EUR',
           fractionDigits: 2,

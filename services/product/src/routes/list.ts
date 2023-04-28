@@ -34,11 +34,7 @@ router.get('/api/:projectKey/products', async (req: Request, res: Response) => {
 
   const products = await prisma.product.findMany({
     include: {
-      variants: {
-        include: {
-          price: true,
-        },
-      },
+      variants: true,
     },
     where: { projectKey },
     skip: offset,

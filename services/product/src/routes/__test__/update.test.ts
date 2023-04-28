@@ -163,7 +163,6 @@ describe('when addVariant update action is provided', () => {
             id: validatedProduct2.variants[0]?.id,
             sku: randomSKU,
             price: {
-              id: validatedProduct2.variants[0]?.price?.id,
               centAmount: 67000,
               currencyCode: 'EUR',
               fractionDigits: 2,
@@ -173,7 +172,6 @@ describe('when addVariant update action is provided', () => {
             id: validatedProduct2.variants[1]?.id,
             sku: randomSKU2,
             price: {
-              id: validatedProduct2.variants[1]?.price?.id,
               centAmount: 12000,
               currencyCode: 'EUR',
               fractionDigits: 2,
@@ -273,7 +271,6 @@ describe('when changeVariantPrice update action is provided', () => {
             id: validatedProduct2.variants[0]?.id,
             sku: randomSKU2,
             price: {
-              id: validatedProduct2.variants[0]?.price?.id,
               centAmount: 12000,
               currencyCode: 'EUR',
               fractionDigits: 2,

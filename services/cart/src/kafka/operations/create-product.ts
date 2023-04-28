@@ -5,38 +5,36 @@ import { ProductSchema } from '../../validators';
 type TProduct = z.infer<typeof ProductSchema>;
 
 const createProduct = async (value: string) => {
-  const product = JSON.parse(value) as TProduct;
+  const receivedProduct = JSON.parse(value) as TProduct;
 
   try {
     // validate received product
     const { id, name, productKey, description, variants, projectKey } =
-      ProductSchema.parse(product);
+      ProductSchema.parse(receivedProduct);
 
-    // create all variants
-    for (const variant of variants) {
-      await prisma.variantForProduct.create({
-        data: {
-          sku: variant.sku,
-          price: {
-            create: variant.price,
-          },
-        },
-      });
-    }
-
-    // finally create the product
-    await prisma.product.create({
+    // 1. create the product
+    const product = await prisma.product.create({
       data: {
         name,
         projectKey,
         originalId: id,
         productKey,
         description,
-        variants: {
-          connect: variants.map((variant) => ({ sku: variant.sku })),
-        },
       },
     });
+
+    // 2. create all variants and connect them to the product
+    for (const variant of variants) {
+      await prisma.variantForProduct.create({
+        data: {
+          productId: product.id,
+          sku: variant.sku,
+          price: {
+            set: variant.price,
+          },
+        },
+      });
+    }
   } catch (e) {
     console.error('💣 Error happened while creating product with value', value);
     console.error(e);

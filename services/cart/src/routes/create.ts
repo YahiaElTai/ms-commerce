@@ -35,6 +35,22 @@ router.post(
 
     validateCurrencyWithVariants(currency, validatedProducts);
 
+    // 1. create cart
+    const cart = await prisma.cart.create({
+      data: {
+        projectKey,
+        customerEmail,
+        currency,
+      },
+      include: {
+        lineItems: {
+          include: {
+            variant: true,
+          },
+        },
+      },
+    });
+
     for (const lineItem of lineItems) {
       // for each line item find the related product and validate it
       const relatedProduct = validatedProducts.find((product) =>
@@ -48,9 +64,10 @@ router.post(
       );
       const validatedVariant = VariantSchema.parse(variant);
 
-      // create a line item and connect both price and variant as a snapshot
+      // 1. create line items and connect them to the cart
       await prisma.lineItem.create({
         data: {
+          cartId: cart.id,
           productName: validatedProduct.name,
           productKey: validatedProduct.productKey,
           quantity: lineItem.quantity,
@@ -58,7 +75,7 @@ router.post(
             create: {
               sku: validatedVariant.sku,
               price: {
-                create: {
+                set: {
                   centAmount: validatedVariant.price.centAmount,
                   currencyCode: validatedVariant.price.currencyCode,
                   fractionDigits: validatedVariant.price.fractionDigits,
@@ -67,7 +84,7 @@ router.post(
             },
           },
           price: {
-            create: {
+            set: {
               centAmount: validatedVariant.price.centAmount,
               currencyCode: validatedVariant.price.currencyCode,
               fractionDigits: validatedVariant.price.fractionDigits,
@@ -77,41 +94,18 @@ router.post(
       });
     }
 
-    const createdLineItems = await prisma.lineItem.findMany({
-      where: {
-        variant: {
-          sku: {
-            in: skus,
-          },
-        },
-      },
-    });
-
-    // create a cart and connect all created line items above
-    const cart = await prisma.cart.create({
-      data: {
-        projectKey,
-        customerEmail,
-        currency,
-        lineItems: {
-          connect: createdLineItems.map((lineItem) => ({ id: lineItem.id })),
-        },
-      },
+    const finalCart = await prisma.cart.findUnique({
+      where: { id: cart.id },
       include: {
         lineItems: {
           include: {
-            price: true,
-            variant: {
-              include: {
-                price: true,
-              },
-            },
+            variant: true,
           },
         },
       },
     });
 
-    const validatedCart = CartSchema.parse(cart);
+    const validatedCart = CartSchema.parse(finalCart);
 
     const computedCart = computeCartFields(validatedCart);
 

@@ -17,11 +17,7 @@ router.get(
     const product = await prisma.product.findUnique({
       where: { id },
       include: {
-        variants: {
-          include: {
-            price: true,
-          },
-        },
+        variants: true,
       },
     });
 

@@ -38,12 +38,7 @@ router.get('/api/:projectKey/carts', async (req: Request, res: Response) => {
     include: {
       lineItems: {
         include: {
-          price: true,
-          variant: {
-            include: {
-              price: true,
-            },
-          },
+          variant: true,
         },
       },
     },

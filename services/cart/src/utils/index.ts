@@ -73,11 +73,7 @@ export const validateVariantsExists = async (
         },
       },
       include: {
-        variants: {
-          include: {
-            price: true,
-          },
-        },
+        variants: true,
       },
     });
 
