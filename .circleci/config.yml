@@ -69,7 +69,7 @@ jobs:
           command: pnpm test:ci
           name: Run tests ./services/<< parameters.app-dir >>
   build-and-push-image:
-    executor: gcp-executor
+    executor: gcp-gcr/default
     resource_class: large
     parameters:
       environment_name:
@@ -85,7 +85,8 @@ jobs:
             ENVIRONMENT_NAME: << parameters.environment_name >>
       - dotenv/source:
           path: .circleci/.env.<< parameters.environment_name >>
-      - gcp-gcr/gcr-auth
+      - gcp-gcr/gcr-auth:
+          registry-url: $REGISTRY_URL
       - gcp-gcr/build-image:
           registry-url: $REGISTRY_URL
           image: $REPO_NAME/<< parameters.service >>
