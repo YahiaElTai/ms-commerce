@@ -123,6 +123,7 @@ jobs:
           name: Deploying << parameters.chart_name >>
           command: ./.circleci/deploy_service.sh
           environment:
+            ENVIRONMENT_NAME: << parameters.environment_name >>
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>

@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/ms-commerce-staging/ms-commerce/cart
+  pullPolicy: IfNotPresent
+  tag: 'latest'
+
+nameOverride: 'cart'
+
+service:
+  type: ClusterIP
+  ports:
+    - name: internal-port
+      port: 3001
+      targetPort: 3001
+    - name: status-port
+      port: 9000
+      targetPort: 9000
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+rollingUpdateStrategy:
+  maxSurge: 1
+  maxUnavailable: 0
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 384Mi
+  limits:
+    memory: 384Mi
+    cpu: 300m
+
+# Secrets are encryped with Cloud KMS
+secrets: {}
