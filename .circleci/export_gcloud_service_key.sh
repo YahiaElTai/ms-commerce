@@ -14,4 +14,4 @@ if [ "$ENVIRONMENT_NAME" == "gcp-production-eu" ]; then
     GCLOUD_SERVICE_KEY="$GCLOUD_SERVICE_KEY_PROD"
 fi
 
-echo "GCLOUD_SERVICE_KEY=\"$GCLOUD_SERVICE_KEY\"" >>".circleci/.env.$ENVIRONMENT_NAME"
+echo "GCLOUD_SERVICE_KEY=$GCLOUD_SERVICE_KEY" >>".circleci/.env.$ENVIRONMENT_NAME"
