@@ -28,11 +28,7 @@ router.get(
     const products = await prisma.product.findMany({
       where: { projectKey },
       include: {
-        variants: {
-          include: {
-            price: true,
-          },
-        },
+        variants: true,
       },
     });
 

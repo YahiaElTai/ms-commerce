@@ -17,11 +17,7 @@ const updateProduct = async (value: string) => {
   const product = await prisma.product.findFirst({
     where: { originalId: receivedMessage.id },
     include: {
-      variants: {
-        include: {
-          price: true,
-        },
-      },
+      variants: true,
     },
   });
 
@@ -46,7 +42,7 @@ const updateProduct = async (value: string) => {
             create: {
               sku: validatedAction.value.sku,
               price: {
-                create: validatedAction.value.price,
+                set: validatedAction.value.price,
               },
             },
           },

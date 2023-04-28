@@ -116,7 +116,6 @@ describe('when correct draft object is provided', () => {
             id: validatedVariant.id,
             sku: randomSKU,
             price: {
-              id: validatedVariant.price?.id,
               centAmount: 67000,
               currencyCode: 'EUR',
               fractionDigits: 2,

@@ -35,11 +35,7 @@ router.put(
     const existingProduct = await prisma.product.findUnique({
       where: { id },
       include: {
-        variants: {
-          include: {
-            price: true,
-          },
-        },
+        variants: true,
       },
     });
 
@@ -63,7 +59,7 @@ router.put(
                 create: {
                   sku: validatedAction.value.sku,
                   price: {
-                    create: validatedAction.value.price,
+                    set: validatedAction.value.price,
                   },
                 },
               },
@@ -157,11 +153,7 @@ router.put(
     const updatedProduct = await prisma.product.findUnique({
       where: { id },
       include: {
-        variants: {
-          include: {
-            price: true,
-          },
-        },
+        variants: true,
       },
     });
 

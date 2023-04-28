@@ -76,7 +76,6 @@ describe('when product is found', () => {
             id: validatedVariant.id,
             sku: randomSKU,
             price: {
-              id: validatedVariant.price?.id,
               centAmount: 67000,
               currencyCode: 'EUR',
               fractionDigits: 2,

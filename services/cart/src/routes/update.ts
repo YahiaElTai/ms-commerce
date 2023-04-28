@@ -43,12 +43,7 @@ router.put(
       include: {
         lineItems: {
           include: {
-            price: true,
-            variant: {
-              include: {
-                price: true,
-              },
-            },
+            variant: true,
           },
         },
       },
@@ -100,12 +95,12 @@ router.put(
                     create: {
                       sku: validatedVariant.sku,
                       price: {
-                        create: validatedVariant.price,
+                        set: validatedVariant.price,
                       },
                     },
                   },
                   price: {
-                    create: validatedVariant.price,
+                    set: validatedVariant.price,
                   },
                 },
               },
@@ -170,12 +165,7 @@ router.put(
       include: {
         lineItems: {
           include: {
-            price: true,
-            variant: {
-              include: {
-                price: true,
-              },
-            },
+            variant: true,
           },
         },
       },
