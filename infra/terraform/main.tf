@@ -100,6 +100,8 @@ resource "helm_release" "ingress_nginx" {
   chart            = "ingress-nginx"
   create_namespace = true
   namespace        = "ingress-nginx"
+
+  depends_on = [ google_container_cluster.ms-commerce-cluster ]
 }
 
 # Create key ring and key for KMS encryption for helm secrets
@@ -111,6 +113,8 @@ resource "google_kms_key_ring" "ms-commerce-key-ring" {
 resource "google_kms_crypto_key" "ms-commerce-key" {
   name     = var.key_name
   key_ring = "projects/${var.project_id}/locations/${var.region}/keyRings/${var.keyring_name}"
+  
+  depends_on = [ google_kms_key_ring.ms-commerce-key-ring ]
 }
 
 

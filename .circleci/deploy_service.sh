@@ -9,6 +9,8 @@ set -e
 : "${CHART_NAME?Required env variable CHART_NAME}"
 : "${HELM_RELEASE_NAME?Required env variable HELM_RELEASE_NAME}"
 : "${GIT_REVISION?Required env variable GIT_REVISION}"
+: "${KEYRING_NAME?Required env variable KEYRING_NAME}"
+: "${KEY_NAME?Required env variable KEY_NAME}"
 
 push_prisma_db_changes() {
     case "$HELM_RELEASE_NAME" in
@@ -41,8 +43,8 @@ if [ "$HELM_RELEASE_NAME" = "ms-ingress" ]; then
 else
     echo -e "\033[32mDecrypting helm secrets..."
     gcloud kms decrypt \
-        --key ms-commerce-key \
-        --keyring ms-commerce-key-ring \
+        --key "$KEY_NAME" \
+        --keyring "$KEYRING_NAME" \
         --location "$GOOGLE_COMPUTE_REGION" \
         --ciphertext-file "infra/k8s/values/$ENVIRONMENT_NAME/$CHART_NAME/secrets.yaml.enc" \
         --plaintext-file "infra/k8s/values/$ENVIRONMENT_NAME/$CHART_NAME/secrets.yaml"

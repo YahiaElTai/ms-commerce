@@ -2,6 +2,10 @@
 
 The project is a simplified version of commercetools HTTP API written as microservices and deployed on GCP with kubernetes.
 
+The project is currently deployed across two environments: Staging and Production.
+
+These environments are managed using Terraform workspaces, which enable efficient and organized infrastructure provisioning. Detailed information about the infrastructure setup can be found below
+
 ### Tech Stack
 
 | Stack                       | Detail                                                                                          |
