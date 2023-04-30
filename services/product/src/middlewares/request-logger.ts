@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import logger from '../logger';
+import { requestLogger } from '../loggers';
 
 const buildCorrelationId = (userId?: string, projectKey?: string) => {
   if (!userId || !projectKey) {
@@ -27,12 +27,18 @@ export const requestLoggerMiddleware = (
 
     const correlationId = buildCorrelationId(userId, projectKey);
 
-    logger.info(`${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`, {
-      projectKey,
-      host,
-      userId,
-      correlationId,
-    });
+    requestLogger.info(
+      `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
+      {
+        projectKey,
+        host,
+        userId,
+        correlationId,
+        method,
+        statusCode,
+        url: originalUrl,
+      }
+    );
   });
 
   next();
