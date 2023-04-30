@@ -19,11 +19,11 @@ export const requestLoggerMiddleware = (
   res.on('finish', () => {
     const elapsedTime = new Date().getTime() - startTime;
     const { statusCode } = res;
-    const { method, headers, originalUrl, params } = req;
+    const { method, headers, originalUrl } = req;
 
-    const projectKey = params['projectKey'];
     const host = headers['host'];
     const userId = headers['userid'] as string;
+    const projectKey = headers['projectkey'] as string;
 
     const correlationId = buildCorrelationId(userId, projectKey);
 

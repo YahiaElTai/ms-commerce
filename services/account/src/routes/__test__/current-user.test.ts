@@ -27,8 +27,9 @@ const authenticate = async () => {
 
   const userId = authenticateResponse.get('UserId');
   const userEmail = authenticateResponse.get('UserEmail');
+  const projectKey = authenticateResponse.get('ProjectKey');
 
-  return { userId, userEmail, firstName, lastName };
+  return { userId, userEmail, firstName, lastName, projectKey };
 };
 
 describe('when user is authenticated', () => {
@@ -37,7 +38,11 @@ describe('when user is authenticated', () => {
 
     const response = await request(app)
       .get('/api/account/users/currentuser')
-      .set({ UserId: user.userId, UserEmail: user.userEmail })
+      .set({
+        UserId: user.userId,
+        UserEmail: user.userEmail,
+        ProjectKey: user.projectKey,
+      })
       .send()
       .expect(200);
 

@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
     nginx.ingress.kubernetes.io/auth-url: http://account-srv.default.svc.cluster.local:3000/api/account/authenticate
     nginx.ingress.kubernetes.io/auth-method: POST
-    nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail
+    nginx.ingress.kubernetes.io/auth-response-headers: UserId,UserEmail,ProjectKey
 spec:
   rules:
     - host: ms-commerce.dev

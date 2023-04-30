@@ -83,6 +83,12 @@ There are 2 options to start developing locally:
       --namespace ingress-nginx --create-namespace
    ```
 
+   It may take a few minutes for the LoadBalancer IP to be available.
+
+   You can watch the status by running:
+
+   `kubectl --namespace ingress-nginx get services -o wide -w ingress-nginx-controller`
+
 3. Add environment variables
    Replace `.env.template` with `.env` and add the required variables.
 

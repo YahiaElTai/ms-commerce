@@ -81,6 +81,7 @@ router.post(
       .set({
         UserId: validatedUser.data.id,
         UserEmail: validatedUser.data.email,
+        ProjectKey: URLSegment,
       })
       .send();
   }
