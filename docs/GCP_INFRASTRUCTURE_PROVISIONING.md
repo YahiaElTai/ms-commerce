@@ -32,7 +32,7 @@
 
    4. Copy connection URL as DATABASE_URL in k8s secrets and encypt it with KMS
 
-5. Make sure the secrets are encrypted using the newly created KMS key
+5. Make sure the secrets are encrypted using the newly created KMS key for the intended env
 
 6. point your domain name to ingress load balancer external IP address.
 

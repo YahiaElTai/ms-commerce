@@ -1,10 +1,13 @@
 ### Project overview
 
-The project is a simplified version of commercetools HTTP API written as microservices and deployed on GCP with kubernetes.
+The project is a highly simplified version of commercetools HTTP API written as microservices and deployed on GCP with kubernetes.
 
 The project is currently deployed across two environments: Staging and Production.
 
-These environments are managed using Terraform workspaces, which enable efficient and organized infrastructure provisioning. Detailed information about the infrastructure setup can be found below
+- Production: `mss-commerce.com`
+- Staging: `staging.mss-commerce.com`
+
+These environments are managed using Terraform workspaces. Detailed information about the infrastructure setup can be found below
 
 ### Tech Stack
 
