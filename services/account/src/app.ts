@@ -15,6 +15,7 @@ import { ListProjectsRouter } from './routes/projects/list';
 import { NotFoundError } from './errors';
 import { errorHandler } from './middlewares';
 import { UpdateUserRouter } from './routes/users/update-user';
+import { requestLoggerMiddleware } from './middlewares/request-logger';
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(compression());
 app.set('trust proxy', true);
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(requestLoggerMiddleware);
 
 // user
 app.use(currentUserRouter);

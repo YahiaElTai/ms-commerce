@@ -12,18 +12,18 @@ const start = async () => {
 
   const server = app
     .listen(3001, () => {
-      console.log('Listening on port 3001!');
+      console.info('Listening on port 3001!');
       lightship.signalReady();
     })
     .on('error', () => {
       lightship
         .shutdown()
         .then(() => {
-          console.log('Shutting down');
+          console.warn('Shutting down');
         })
         .catch((error) => {
-          console.log('Lightship: Error shutting down...');
-          console.log(error);
+          console.error('Lightship: Error shutting down...');
+          console.error(error);
         });
     });
 

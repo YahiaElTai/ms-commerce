@@ -3,7 +3,7 @@ import { createLogger, format, transports } from 'winston';
 
 const logLevel = process.env['NODE_ENV'] === 'test' ? 'silent' : 'info';
 
-const applicationLogger = createLogger({
+const requestLogger = createLogger({
   level: logLevel,
   format: format.combine(
     format.timestamp(),
@@ -12,11 +12,11 @@ const applicationLogger = createLogger({
         severity: level.toUpperCase(),
         message,
         ...args,
-        service: 'product',
+        service: 'account',
       })
     )
   ),
   transports: [new transports.Console()],
 });
 
-export default applicationLogger;
+export default requestLogger;

@@ -18,7 +18,7 @@ push_prisma_db_changes() {
         echo -e "\033[32mPushing Prisma MongoDB changes from inside K8s pod"
         pod_name=$(kubectl get pods --field-selector=status.phase=Running --sort-by=.metadata.creationTimestamp -l instance="${HELM_RELEASE_NAME}" -o=name | tail -1)
         echo -e "\033[32mUsing pod $pod_name"
-        kubectl exec -it "$pod_name" -- npx prisma db push --schema=./prisma/schema.prisma
+        kubectl exec -it "$pod_name" -- npx prisma db push --schema=./prisma/schema.prisma --skip-generate
         ;;
     *)
         echo -e "\033[32m${HELM_RELEASE_NAME} does not use Prisma"

@@ -12,7 +12,7 @@ const applicationLogger = createLogger({
         severity: level.toUpperCase(),
         message,
         ...args,
-        service: 'product',
+        service: 'account',
       })
     )
   ),
