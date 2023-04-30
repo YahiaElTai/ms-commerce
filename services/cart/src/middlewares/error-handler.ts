@@ -4,6 +4,7 @@ import type { TFormattedErrors } from '../validators';
 import { CustomError } from '../errors';
 import { ZodError, ZodIssue } from 'zod';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { applicationLogger } from '../loggers';
 
 const GENERIC_ERROR_MESSAGE =
   'Something went wrong. If the issue persist, please contact our support team.';
@@ -22,36 +23,71 @@ const formatZodError = (err: ZodError): (TFormattedErrors | undefined)[] => {
 
 export const errorHandler = (
   err: Error,
-  _req: Request,
+  req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
+  const { method, headers, originalUrl } = req;
+
+  const host = headers['host'];
+  const userId = headers['userid'] as string;
+  const projectKey = headers['projectkey'] as string;
+
   if (err instanceof ZodError) {
+    applicationLogger.error('Zod validation errors', {
+      errorJsonString: err,
+      method,
+      originalUrl,
+      host,
+      userId,
+      projectKey,
+    });
+
     return res.status(400).send(formatZodError(err));
   }
 
   if (err instanceof CustomError) {
+    applicationLogger.error(err.message, {
+      errorJsonString: err,
+      method,
+      originalUrl,
+      host,
+      userId,
+      projectKey,
+    });
     return res.status(err.statusCode).send([{ message: err.message }]);
   }
 
   // This logic can be refactored to account for other relevant error codes from Prisma
   if (err instanceof PrismaClientKnownRequestError && err.code === 'P2017') {
-    return res
-      .status(400)
-      .send([
-        { message: 'The Line item id provided does not exist on this cart.' },
-      ]);
+    const message = 'The Line item id provided does not exist on this cart.';
+    applicationLogger.error(message, {
+      errorJsonString: err,
+      method,
+      originalUrl,
+      host,
+      userId,
+      projectKey,
+    });
+
+    return res.status(400).send([{ message }]);
   }
 
   // This logic can be refactored to account for other relevant error codes from Prisma
   if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
-    return res.status(400).send([
-      {
-        message:
-          'Variant with the given SKU already exists. SKUs must be unique across all products within a project.',
-      },
-    ]);
+    const message =
+      'Variant with the given SKU already exists. SKUs must be unique across all products within a project.';
+    applicationLogger.error(message, {
+      errorJsonString: err,
+      method,
+      originalUrl,
+      host,
+      userId,
+      projectKey,
+    });
+
+    return res.status(400).send([{ message }]);
   }
 
   console.error(err);

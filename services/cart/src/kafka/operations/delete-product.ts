@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { IdSchema } from '../../validators';
 import { prisma } from '../../prisma';
+import { applicationLogger } from '../../loggers';
 
 type TId = z.infer<typeof IdSchema>;
 
@@ -15,8 +16,13 @@ const deleteProduct = async (value: string) => {
     });
 
     if (!product) {
-      console.error(
-        `💣 Error deleting a product - Product with original ID '${validatedID}' could not be found`
+      applicationLogger.error(
+        'Error happened while processing message from product_deleted topic',
+        {
+          errorJsonString: `Product with original ID '${validatedID}' could not be found`,
+          topic: 'product_deleted',
+          receivedValue: value,
+        }
       );
 
       return;
@@ -24,8 +30,10 @@ const deleteProduct = async (value: string) => {
 
     await prisma.product.delete({ where: { id: product.id } });
   } catch (e) {
-    console.error('💣 Error happened while deleting product with value', value);
-    console.log(e);
+    applicationLogger.error(
+      'Error happened while processing message from product_deleted topic',
+      { errorJsonString: e, topic: 'product_deleted', receivedValue: value }
+    );
   }
 };
 

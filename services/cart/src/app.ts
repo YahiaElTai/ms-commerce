@@ -2,7 +2,7 @@ import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 
-import { errorHandler } from './middlewares';
+import { errorHandler, requestLoggerMiddleware } from './middlewares';
 import { NotFoundError } from './errors';
 
 import { ListCartsRouter } from './routes/list';
@@ -20,6 +20,8 @@ app.use(compression());
 
 app.set('trust proxy', true);
 app.use(express.json());
+
+app.use(requestLoggerMiddleware);
 
 app.use(ListCartsRouter);
 app.use(ListProductsRouter);

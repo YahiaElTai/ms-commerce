@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { prisma } from '../../prisma';
 import { ProductSchema } from '../../validators';
+import { applicationLogger } from '../../loggers';
 
 type TProduct = z.infer<typeof ProductSchema>;
 
@@ -36,8 +37,10 @@ const createProduct = async (value: string) => {
       });
     }
   } catch (e) {
-    console.error('💣 Error happened while creating product with value', value);
-    console.error(e);
+    applicationLogger.error(
+      'Error happened while processing message from product_created topic',
+      { errorJsonString: e, topic: 'product_created', receivedValue: value }
+    );
   }
 };
 

@@ -69,10 +69,10 @@ const run = async (): Promise<void> => {
 };
 
 const shutdown = async (): Promise<void> => {
-  console.log('Shutting down gracefully...');
+  console.warn('Kafka Shutting down gracefully...');
   try {
     await consumer.disconnect();
-    console.log('Kafka consumer disconnected.');
+    console.info('Kafka consumer disconnected.');
     process.exit(0);
   } catch (error) {
     console.error('Error disconnecting Kafka consumer:', error);

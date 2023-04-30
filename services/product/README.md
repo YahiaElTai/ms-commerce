@@ -7,27 +7,18 @@ This service provides basic CRUD operations for products
 Data modeling is done with prisma. You can check it out [here](/services/product/src/prisma/schema.prisma)
 
 ```prisma
-enum Currency {
-  EUR
-  USD
-  GBP
-}
-
-model Price {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+type Price {
   centAmount     Int
   currencyCode   Currency @default(EUR)
   fractionDigits Int      @default(2)
-  variant        Variant? @relation(fields: [variantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  variantId      String   @unique @db.ObjectId
 }
 
 model Variant {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  sku       String   @unique
-  price     Price?
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  productId String   @unique @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  sku       String  @unique
+  price     Price
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId String  @db.ObjectId
 }
 
 model Product {
