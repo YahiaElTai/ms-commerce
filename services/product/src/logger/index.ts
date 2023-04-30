@@ -19,7 +19,7 @@ const logger = createLogger({
       }) =>
         JSON.stringify({
           severity: level.toUpperCase(),
-          textPayload: message,
+          jsonPayload: { message },
           timestamp,
           labels: {
             projectKey,
