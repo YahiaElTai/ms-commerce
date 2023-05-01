@@ -6,11 +6,10 @@ const buildCorrelationId = (userId?: string, projectKey?: string) => {
   if (!userId || !projectKey) {
     return uuidv4();
   }
-
-  return `account/${projectKey}/${userId}/${uuidv4()}`;
+  return `product/${projectKey}/${userId}/${uuidv4()}`;
 };
 
-export const requestLoggerMiddleware = (
+const requestLoggerMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -28,8 +27,7 @@ export const requestLoggerMiddleware = (
 
     const correlationId = buildCorrelationId(userId, projectKey);
 
-    // do not log authenticate forwarded request, only log user requests
-    if (originalUrl !== '/api/account/authenticate') {
+    if (originalUrl !== '/api/products/health') {
       requestLogger.info(
         `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
         {
@@ -47,3 +45,5 @@ export const requestLoggerMiddleware = (
 
   next();
 };
+
+export default requestLoggerMiddleware;

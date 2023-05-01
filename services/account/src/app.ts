@@ -13,9 +13,12 @@ import { GetProjectRouter } from './routes/projects/get';
 import { DeleteProjectRouter } from './routes/projects/delete';
 import { ListProjectsRouter } from './routes/projects/list';
 import { NotFoundError } from './errors';
-import { errorHandler } from './middlewares';
+import {
+  errorHandlerMiddleware,
+  requestLoggerMiddleware,
+  healthCheckMiddleware,
+} from './middlewares';
 import { UpdateUserRouter } from './routes/users/update-user';
-import { requestLoggerMiddleware } from './middlewares/request-logger';
 
 const app = express();
 
@@ -25,6 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(requestLoggerMiddleware);
+app.use(healthCheckMiddleware);
 
 // user
 app.use(currentUserRouter);
@@ -59,6 +63,6 @@ app.all('*', () => {
   throw new NotFoundError();
 });
 
-app.use(errorHandler);
+app.use(errorHandlerMiddleware);
 
 export { app };

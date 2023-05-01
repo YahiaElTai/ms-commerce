@@ -21,7 +21,7 @@ const formatZodError = (err: ZodError): (TFormattedErrors | undefined)[] => {
     .concat(errors.formErrors);
 };
 
-export const errorHandler = (
+const errorHandlerMiddleware = (
   err: Error,
   req: Request,
   res: Response,
@@ -86,3 +86,5 @@ export const errorHandler = (
   });
   return res.status(500).send([{ message: GENERIC_ERROR_MESSAGE }]);
 };
+
+export default errorHandlerMiddleware;

@@ -20,14 +20,14 @@ spec:
                 name: account-srv
                 port:
                   number: 3000
-          - path: /api/([^/\s]+)/carts/?(.*)
+          - path: /api(?:/([^/\s]+))?/carts/?(.*)
             pathType: Prefix
             backend:
               service:
                 name: cart-srv
                 port:
                   number: 3001
-          - path: /api/([^/\s]+)/products/?(.*)
+          - path: /api(?:/([^/\s]+))?/products/?(.*)
             pathType: Prefix
             backend:
               service:

@@ -6,10 +6,10 @@ const buildCorrelationId = (userId?: string, projectKey?: string) => {
   if (!userId || !projectKey) {
     return uuidv4();
   }
-  return `product/${projectKey}/${userId}/${uuidv4()}`;
+  return `cart/${projectKey}/${userId}/${uuidv4()}`;
 };
 
-export const requestLoggerMiddleware = (
+const requestLoggerMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -43,3 +43,5 @@ export const requestLoggerMiddleware = (
 
   next();
 };
+
+export default requestLoggerMiddleware;

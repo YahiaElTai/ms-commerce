@@ -1,2 +1,3 @@
-export * from './error-handler';
-export * from './request-logger';
+export { default as errorHandlerMiddleware } from './error-handler-middleware';
+export { default as requestLoggerMiddleware } from './request-logger-middleware';
+export { default as healthCheckMiddleware } from './health-check-middleware';

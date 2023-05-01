@@ -94,14 +94,13 @@ resource "google_container_cluster" "ms-commerce-cluster" {
 }
 
 #  Install ingress_nginx controller chart via helm
+#  Ensure `config_path = "~/.kube/config"` contains access to the cluster created above
 resource "helm_release" "ingress_nginx" {
   name             = "ingress-nginx"
   repository       = "https://kubernetes.github.io/ingress-nginx"
   chart            = "ingress-nginx"
   create_namespace = true
   namespace        = "ingress-nginx"
-
-  depends_on = [ google_container_cluster.ms-commerce-cluster ]
 }
 
 # Create key ring and key for KMS encryption for helm secrets
@@ -113,8 +112,6 @@ resource "google_kms_key_ring" "ms-commerce-key-ring" {
 resource "google_kms_crypto_key" "ms-commerce-key" {
   name     = var.key_name
   key_ring = "projects/${var.project_id}/locations/${var.region}/keyRings/${var.keyring_name}"
-  
-  depends_on = [ google_kms_key_ring.ms-commerce-key-ring ]
 }
 
 

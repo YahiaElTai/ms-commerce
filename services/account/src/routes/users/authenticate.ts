@@ -10,7 +10,13 @@ import { CookiesSchema, PayloadSchema } from '../../validators';
 import { prisma } from '../../prisma';
 
 // These URIs should not be authenticated
-const UNAUTHENTICATED_URLS = ['/api/account/signup', '/api/account/signin'];
+const UNAUTHENTICATED_URLS = [
+  '/api/account/signup',
+  '/api/account/signin',
+  `/api/account/health`,
+  '/api/products/health',
+  '/api/carts/health',
+];
 
 const router = express.Router();
 
