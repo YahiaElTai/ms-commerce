@@ -7,6 +7,7 @@ import {
   healthCheckMiddleware,
   requestLoggerMiddleware,
 } from './middlewares';
+import { createMiddleware } from '@promster/express';
 import { NotFoundError } from './errors';
 
 import { CreateProductRouter } from './routes/create';
@@ -20,6 +21,8 @@ const app = express();
 app.use(compression());
 app.set('trust proxy', true);
 app.use(express.json());
+
+app.use(createMiddleware({ app }));
 
 app.use(requestLoggerMiddleware);
 app.use(healthCheckMiddleware);

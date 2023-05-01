@@ -20,6 +20,8 @@ Each service in the microservices architecture exposes a `/health` endpoint for 
 
 The `/health` endpoints provide a lightweight way to assess the health of each microservice by returning an HTTP `200` OK status code when the service is running and operational. This helps to minimize the processing overhead and ensures a quick response for health checks`
 
+GCP Uptime checks are configured with alerts to send notifications (via email for now) when they fail.
+
 These are the endpoints available currently:
 
 - `http://mss-commerce.com/api/account/health`
