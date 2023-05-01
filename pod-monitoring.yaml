@@ -1,0 +1,11 @@
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: prom-ms-product
+spec:
+  selector:
+    matchLabels:
+      app: ms-product
+  endpoints:
+    - port: metrics
+      interval: 30s

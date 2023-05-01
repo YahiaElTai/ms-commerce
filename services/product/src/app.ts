@@ -1,13 +1,13 @@
 import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
+import { createMiddleware } from '@promster/express';
 
 import {
   errorHandlerMiddleware,
   healthCheckMiddleware,
   requestLoggerMiddleware,
 } from './middlewares';
-import { createMiddleware } from '@promster/express';
 import { NotFoundError } from './errors';
 
 import { CreateProductRouter } from './routes/create';

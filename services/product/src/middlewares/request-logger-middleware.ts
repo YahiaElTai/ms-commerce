@@ -27,7 +27,7 @@ const requestLoggerMiddleware = (
 
     const correlationId = buildCorrelationId(userId, projectKey);
 
-    if (originalUrl !== '/api/products/health') {
+    if (!originalUrl.includes('health') && !originalUrl.includes('metrics')) {
       requestLogger.info(
         `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
         {
