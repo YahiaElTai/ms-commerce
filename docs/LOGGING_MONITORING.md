@@ -14,4 +14,14 @@ In order to ensure effective logging in our microservices app, each microservice
 
 ### Monitoring
 
-Coming soon
+#### Uptime checks
+
+Each service in the microservices architecture exposes a `/health` endpoint for monitoring the health and availability of the individual services. These endpoints are used to set up uptime checks in GCP to monitor the services and receive alerts in case of any downtime or performance issues.
+
+The `/health` endpoints provide a lightweight way to assess the health of each microservice by returning an HTTP `200` OK status code when the service is running and operational. This helps to minimize the processing overhead and ensures a quick response for health checks`
+
+These are the endpoints available currently:
+
+- `http://mss-commerce.com/api/account/health`
+- `http://mss-commerce.com/api/products/health`
+- `http://mss-commerce.com/api/carts/health`
