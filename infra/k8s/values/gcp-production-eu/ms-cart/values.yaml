@@ -16,6 +16,9 @@ service:
     - name: status-port
       port: 9000
       targetPort: 9000
+    - name: metrics
+      port: 7788
+      targetPort: 7788
 
 autoscaling:
   enabled: true

@@ -1,6 +1,7 @@
 import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
+import { createMiddleware } from '@promster/express';
 
 import {
   errorHandlerMiddleware,
@@ -24,6 +25,8 @@ app.use(compression());
 
 app.set('trust proxy', true);
 app.use(express.json());
+
+app.use(createMiddleware({ app }));
 
 app.use(requestLoggerMiddleware);
 app.use(healthCheckMiddleware);

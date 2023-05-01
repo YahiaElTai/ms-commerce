@@ -1,3 +1,4 @@
+import { createServer as createPrometheusMetricsServer } from '@promster/server';
 import { createLightship } from 'lightship';
 import { DatabaseUrlUndefinedError } from './errors';
 
@@ -5,6 +6,11 @@ import { app } from './app';
 
 const start = async () => {
   const lightship = await createLightship();
+
+  const prometheusMetricsServer = await createPrometheusMetricsServer({
+    detectKubernetes: false,
+    port: 7788,
+  });
 
   if (!process.env['DATABASE_URL']) {
     throw new DatabaseUrlUndefinedError();
@@ -28,6 +34,8 @@ const start = async () => {
     });
 
   lightship.registerShutdownHandler(() => {
+    prometheusMetricsServer.close();
+
     server.close();
   });
 };

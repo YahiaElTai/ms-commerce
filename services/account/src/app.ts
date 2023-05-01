@@ -2,6 +2,14 @@ import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 import cookieParser from 'cookie-parser';
+import { createMiddleware } from '@promster/express';
+
+import { NotFoundError } from './errors';
+import {
+  errorHandlerMiddleware,
+  requestLoggerMiddleware,
+  healthCheckMiddleware,
+} from './middlewares';
 
 import { currentUserRouter } from './routes/users/current-user';
 import { signinRouter } from './routes/users/signin';
@@ -12,12 +20,6 @@ import { CreateProjectRouter } from './routes/projects/create';
 import { GetProjectRouter } from './routes/projects/get';
 import { DeleteProjectRouter } from './routes/projects/delete';
 import { ListProjectsRouter } from './routes/projects/list';
-import { NotFoundError } from './errors';
-import {
-  errorHandlerMiddleware,
-  requestLoggerMiddleware,
-  healthCheckMiddleware,
-} from './middlewares';
 import { UpdateUserRouter } from './routes/users/update-user';
 
 const app = express();
@@ -26,6 +28,8 @@ app.use(compression());
 app.set('trust proxy', true);
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(createMiddleware({ app }));
 
 app.use(requestLoggerMiddleware);
 app.use(healthCheckMiddleware);

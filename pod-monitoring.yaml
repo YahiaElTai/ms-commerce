@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: ms-product
+      app: product
   endpoints:
     - port: metrics
       interval: 30s
