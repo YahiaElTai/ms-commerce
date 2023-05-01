@@ -35,6 +35,21 @@ locals {
     "roles/container.developer",
     "roles/cloudkms.cryptoKeyDecrypter",
   ]
+
+  pod_monitoring = [
+    {
+      name      = "prom-ms-account"
+      app_label = "account"
+    },
+    {
+      name      = "prom-ms-product"
+      app_label = "product"
+    },
+    {
+      name      = "prom-ms-cart"
+      app_label = "cart"
+    }
+  ]
 }
 
 # List of providers required
@@ -113,6 +128,36 @@ resource "google_kms_crypto_key" "ms-commerce-key" {
   name     = var.key_name
   key_ring = "projects/${var.project_id}/locations/${var.region}/keyRings/${var.keyring_name}"
 }
+
+# Create PodMonitoring CR for GCP managed Prometheus service
+
+resource "kubernetes_manifest" "pod_monitoring" {
+  for_each = { for item in local.pod_monitoring : item.name => item }
+
+  manifest = {
+    apiVersion = "monitoring.googleapis.com/v1"
+    kind       = "PodMonitoring"
+
+    metadata = {
+      name      = each.value.name
+      namespace = "default"
+    }
+    spec = {
+      selector = {
+        matchLabels = {
+          app = each.value.app_label
+        }
+      }
+      endpoints = [
+        {
+          port     = "metrics"
+          interval = "30s"
+        }
+      ]
+    }
+  }
+}
+
 
 
 
