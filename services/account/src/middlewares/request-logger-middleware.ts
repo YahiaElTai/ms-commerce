@@ -29,7 +29,12 @@ const requestLoggerMiddleware = (
     const correlationId = buildCorrelationId(userId, projectKey);
 
     // do not log authenticate forwarded request, only log user requests
-    if (originalUrl !== '/api/account/authenticate') {
+
+    if (
+      originalUrl.includes('authenticate') &&
+      !originalUrl.includes('health') &&
+      !originalUrl.includes('metrics')
+    ) {
       requestLogger.info(
         `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
         {

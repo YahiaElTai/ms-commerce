@@ -27,18 +27,20 @@ const requestLoggerMiddleware = (
 
     const correlationId = buildCorrelationId(userId, projectKey);
 
-    requestLogger.info(
-      `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
-      {
-        projectKey,
-        host,
-        userId,
-        correlationId,
-        method,
-        statusCode,
-        url: originalUrl,
-      }
-    );
+    if (!originalUrl.includes('health') && !originalUrl.includes('metrics')) {
+      requestLogger.info(
+        `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
+        {
+          projectKey,
+          host,
+          userId,
+          correlationId,
+          method,
+          statusCode,
+          url: originalUrl,
+        }
+      );
+    }
   });
 
   next();
