@@ -21,26 +21,24 @@ const requestLoggerMiddleware = (
     const { statusCode } = res;
     const { method, headers, originalUrl } = req;
 
-    const host = headers['host'];
+    const originalHost = req.headers['x-forwarded-host'] || req.headers.host;
     const userId = headers['userid'] as string;
     const projectKey = headers['projectkey'] as string;
 
     const correlationId = buildCorrelationId(userId, projectKey);
 
-    if (!originalUrl.includes('health') && !originalUrl.includes('metrics')) {
-      requestLogger.info(
-        `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
-        {
-          projectKey,
-          host,
-          userId,
-          correlationId,
-          method,
-          statusCode,
-          url: originalUrl,
-        }
-      );
-    }
+    requestLogger.info(
+      `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
+      {
+        projectKey,
+        host: originalHost,
+        userId,
+        correlationId,
+        method,
+        statusCode,
+        url: originalUrl,
+      }
+    );
   });
 
   next();

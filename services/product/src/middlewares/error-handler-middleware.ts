@@ -30,7 +30,7 @@ const errorHandlerMiddleware = (
 ) => {
   const { method, headers, originalUrl } = req;
 
-  const host = headers['host'];
+  const originalHost = req.headers['x-forwarded-host'] || req.headers.host;
   const userId = headers['userid'] as string;
   const projectKey = headers['projectkey'] as string;
 
@@ -39,7 +39,7 @@ const errorHandlerMiddleware = (
       errorJsonString: err,
       method,
       originalUrl,
-      host,
+      host: originalHost,
       userId,
       projectKey,
     });
@@ -52,7 +52,7 @@ const errorHandlerMiddleware = (
       errorJsonString: err,
       method,
       originalUrl,
-      host,
+      host: originalHost,
       userId,
       projectKey,
     });
@@ -68,7 +68,7 @@ const errorHandlerMiddleware = (
       errorJsonString: err,
       method,
       originalUrl,
-      host,
+      host: originalHost,
       userId,
       projectKey,
     });
@@ -80,7 +80,7 @@ const errorHandlerMiddleware = (
     errorJsonString: err,
     method,
     originalUrl,
-    host,
+    host: originalHost,
     userId,
     projectKey,
   });

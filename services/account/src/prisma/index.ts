@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { hashingMiddlware } from '../middlewares';
+import { prismaHashingMiddlware } from '../middlewares';
 
 export * from './utils';
 
 const prisma = new PrismaClient();
 
-prisma.$use(hashingMiddlware);
+prisma.$use(prismaHashingMiddlware);
 
 export { prisma };

@@ -1,18 +1,9 @@
 ingress:
   host: staging.mss-commerce.com
   name: ms-ingress
-  # Auth service must stay as the first service
-  # You can add more services below
+
   services:
-    - name: ms-account
-      path: /api/account/?(.*)
+    - name: account-srv
+      path: /
       port: 3000
-      pathType: Prefix
-    - name: ms-cart
-      path: /api(?:/([^/\s]+))?/carts/?(.*)
-      port: 3001
-      pathType: Prefix
-    - name: ms-product
-      path: /api(?:/([^/\s]+))?/products/?(.*)
-      port: 3002
       pathType: Prefix

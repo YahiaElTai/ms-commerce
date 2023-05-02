@@ -1,7 +1,7 @@
 import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
-import { createMiddleware } from '@promster/express';
+import { createMiddleware as createPrometheusMiddleware } from '@promster/express';
 
 import {
   errorHandlerMiddleware,
@@ -26,10 +26,9 @@ app.use(compression());
 app.set('trust proxy', true);
 app.use(express.json());
 
-app.use(createMiddleware({ app }));
-
-app.use(requestLoggerMiddleware);
 app.use(healthCheckMiddleware);
+app.use(requestLoggerMiddleware);
+app.use(createPrometheusMiddleware({ app }));
 
 app.use(ListCartsRouter);
 app.use(ListProductsRouter);
