@@ -2,20 +2,21 @@ import express from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 import cookieParser from 'cookie-parser';
-import { createMiddleware } from '@promster/express';
+import { createMiddleware as createPrometheusMiddleware } from '@promster/express';
 
 import { NotFoundError } from './errors';
 import {
   errorHandlerMiddleware,
   requestLoggerMiddleware,
   healthCheckMiddleware,
+  authenticationMiddleware,
+  proxyMiddlewares,
 } from './middlewares';
 
 import { currentUserRouter } from './routes/users/current-user';
 import { signinRouter } from './routes/users/signin';
 import { signoutRouter } from './routes/users/signout';
 import { signupRouter } from './routes/users/signup';
-import { authenticateRouter } from './routes/users/authenticate';
 import { CreateProjectRouter } from './routes/projects/create';
 import { GetProjectRouter } from './routes/projects/get';
 import { DeleteProjectRouter } from './routes/projects/delete';
@@ -29,18 +30,32 @@ app.set('trust proxy', true);
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(createMiddleware({ app }));
+// Proxying requests to product and cart services health endpoints that do not require authentication
+app.use('/api/products/health', proxyMiddlewares.productProxyMiddleware);
+app.use('/api/carts/health', proxyMiddlewares.cartProxyMiddleware);
 
-app.use(requestLoggerMiddleware);
 app.use(healthCheckMiddleware);
+app.use(requestLoggerMiddleware);
+app.use(createPrometheusMiddleware({ app }));
 
-// user
-app.use(currentUserRouter);
+// account routes that do not require authentication
 app.use(signinRouter);
-app.use(signoutRouter);
 app.use(signupRouter);
-app.use(authenticateRouter);
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.use(authenticationMiddleware);
+
+// account user routes that require authentication
+app.use(currentUserRouter);
+app.use(signoutRouter);
 app.use(UpdateUserRouter);
+
+// Proxying requests to product and cart services after authentication
+app.use(
+  '/api/:projectKey/products(/.*)?',
+  proxyMiddlewares.productProxyMiddleware
+);
+app.use('/api/:projectKey/carts(/.*)?', proxyMiddlewares.cartProxyMiddleware);
 
 /*
   Currently endpoints connected to users or projects are without any permissions
@@ -49,15 +64,13 @@ app.use(UpdateUserRouter);
   and what they can access. Adding this would add a lot of complexity to the project which is not desired at the moment.
 
 
-  Endpoints connected to resources like products and carts and so on are validated 
-  Validation happens on /authenticate route which is where the ingress redirects all requests first and if
-  /authenticate returns 200 then the request is passed to the original destination
+  Endpoints connected to resources like products and carts and so on are validated.
+  Validation happens at the authentication middleware route and then the proxy middleware forwards those requests
   
-  On /authenticate we validate that the project exists and that the user has access to it 
-  if so then return 200, and if not we return 400
+  At the authentication middleware, we validate that the project exists and that the user has access to it 
 */
 
-// project
+// account project routes that require authentication
 app.use(CreateProjectRouter);
 app.use(GetProjectRouter);
 app.use(DeleteProjectRouter);

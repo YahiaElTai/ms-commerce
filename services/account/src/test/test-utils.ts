@@ -1,3 +1,25 @@
+import request from 'supertest';
+import { UserSchema } from '../validators';
+import { app } from '../app';
+
+export const authenticate = async () => {
+  // sign in to get the user id
+  const email = generateRandomEmail();
+  const password = 'password';
+  const firstName = 'Test';
+  const lastName = 'User';
+
+  const response = await request(app)
+    .post('/api/account/signup')
+    .send({ email, password, firstName, lastName })
+    .expect(201);
+
+  const validatedUser = UserSchema.parse(response.body);
+  const cookie = response.get('Set-Cookie');
+
+  return { user: validatedUser, cookie };
+};
+
 const domains = [
   'gmail',
   'yahoo',

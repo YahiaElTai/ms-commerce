@@ -13,7 +13,7 @@ interface IMiddlewareParams extends Prisma.MiddlewareParams {
   };
 }
 
-const hashingMiddlware: Prisma.Middleware<TUser> = async (
+const prismaHashingMiddlware: Prisma.Middleware<TUser> = async (
   params: IMiddlewareParams,
   next
 ) => {
@@ -32,4 +32,4 @@ const hashingMiddlware: Prisma.Middleware<TUser> = async (
   return result;
 };
 
-export default hashingMiddlware;
+export default prismaHashingMiddlware;

@@ -1,6 +1,7 @@
 import { NotAuthorized } from '../../errors';
 import express, { Request, Response } from 'express';
 import { excludePasswordFromUser, prisma } from '../../prisma';
+import { IdParamSchema } from '../../validators';
 
 const router = express.Router();
 
@@ -10,15 +11,16 @@ router.get(
   // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50871
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (req: Request, res: Response) => {
-    const id = req.header('UserId');
-    const email = req.header('UserEmail');
+    const id = req.headers['UserId'];
 
-    if (!id || !email) {
+    const parsedId = IdParamSchema.safeParse({ id });
+
+    if (!parsedId.success) {
       throw new NotAuthorized();
     }
 
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { id: parsedId.data.id },
       select: excludePasswordFromUser,
     });
 

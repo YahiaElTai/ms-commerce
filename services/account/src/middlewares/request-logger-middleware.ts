@@ -28,13 +28,9 @@ const requestLoggerMiddleware = (
 
     const correlationId = buildCorrelationId(userId, projectKey);
 
-    // do not log authenticate forwarded request, only log user requests
-
-    if (
-      originalUrl.includes('authenticate') &&
-      !originalUrl.includes('health') &&
-      !originalUrl.includes('metrics')
-    ) {
+    // don't log requests proxied to other service
+    // logging is handled at the service itself
+    if (!originalUrl.includes('products') && !originalUrl.includes('carts')) {
       requestLogger.info(
         `${method} ${originalUrl} ${statusCode} ${elapsedTime}ms`,
         {
