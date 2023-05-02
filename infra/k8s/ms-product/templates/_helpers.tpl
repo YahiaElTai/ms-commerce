@@ -34,10 +34,3 @@ Selector labels
 app: {{ include "ms-product.name" . }}
 instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Cloud SQL proxy instance to connect to Cloud SQL database instance
-*/}}
-{{- define "ms-product.postgresql-instances" -}}
-{{ printf "-instances=%s" .Values.postgresql.instance | quote -}}
-{{- end }}

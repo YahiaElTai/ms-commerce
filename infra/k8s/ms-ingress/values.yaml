@@ -3,7 +3,7 @@ ingress:
   name: ms-ingress
 
   services:
-    - name: account-srv
+    - name: ms-account
       path: /
       port: 3000
       pathType: Prefix
