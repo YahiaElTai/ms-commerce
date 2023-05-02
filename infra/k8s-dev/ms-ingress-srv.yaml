@@ -13,6 +13,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: account-srv
+                name: ms-account
                 port:
                   number: 3000

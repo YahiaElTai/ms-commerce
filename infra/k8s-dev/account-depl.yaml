@@ -26,7 +26,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: account-srv
+  name: ms-account
 spec:
   selector:
     app: account

@@ -17,13 +17,13 @@ const restream = (proxyReq: http.ClientRequest, req: Request) => {
 };
 
 export const productProxyMiddleware = createProxyMiddleware({
-  target: 'http://product-srv.default.svc.cluster.local:3002',
+  target: 'http://ms-product.default.svc.cluster.local:3002',
   changeOrigin: true,
   onProxyReq: restream,
 });
 
 export const cartProxyMiddleware = createProxyMiddleware({
-  target: 'http://cart-srv.default.svc.cluster.local:3001',
+  target: 'http://ms-cart.default.svc.cluster.local:3001',
   changeOrigin: true,
   onProxyReq: restream,
 });
