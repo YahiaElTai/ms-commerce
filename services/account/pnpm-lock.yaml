@@ -10,6 +10,9 @@ dependencies:
   '@promster/server':
     specifier: ^7.0.8
     version: 7.0.8(prom-client@14.2.0)(typescript@5.0.3)
+  '@promster/types':
+    specifier: ^3.2.5
+    version: 3.2.5(prom-client@14.2.0)
   compression:
     specifier: ^1.7.4
     version: 1.7.4
@@ -1756,6 +1759,15 @@ packages:
       - prom-client
       - supports-color
       - typescript
+    dev: false
+
+  /@promster/types@3.2.5(prom-client@14.2.0):
+    resolution: {integrity: sha512-U1ddE7l7NM9PB2sosQDHbNJD+cwwsNZmz96kZwx4HukyCrQcDS8/QG7wrR81pj5p5lLFtuVcSsQZxLe8rpDrEQ==}
+    engines: {node: '>=14', npm: '>=6'}
+    peerDependencies:
+      prom-client: 13.x.x || 14.x
+    dependencies:
+      prom-client: 14.2.0
     dev: false
 
   /@sematext/gc-stats@1.5.8:
