@@ -16,7 +16,6 @@ const authenticationMiddleware = async (
 ) => {
   const requestedUrl = req.url;
 
-  // authenticate request
   const validatedCookies = CookiesSchema.safeParse(req.cookies);
 
   if (!validatedCookies.success) {
@@ -39,7 +38,6 @@ const authenticationMiddleware = async (
   }
 
   // validate that project exists and user can access it
-
   const projectKey = requestedUrl?.split('/')[2];
 
   // This is required as the account service has this URL

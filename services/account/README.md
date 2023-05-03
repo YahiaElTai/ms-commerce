@@ -25,7 +25,33 @@ model Project {
 
 ### Authentication
 
-Authentication is managed at the ingress level, where all incoming requests are initially directed to the /authenticate endpoint for verification. This process involves checking the validity of the access_token. If the request receives a 200 status code in response, the ingress permits it to proceed to its intended destination.
+All requests are initially directed to the `account` service for authentication.
+
+The `authentication-middleware` serves to validate the user's token, as well as confirm their access to the specific project.
+
+Upon successful authentication, the request proceeds to be proxied to its original destination.
+
+### Proxying
+
+Proxying requests is handled with [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware) within the cluster.
+
+```typescript
+export const productProxyMiddleware = createProxyMiddleware({
+  target: 'http://ms-product.default.svc.cluster.local:3002',
+  changeOrigin: true,
+});
+
+export const cartProxyMiddleware = createProxyMiddleware({
+  target: 'http://ms-cart.default.svc.cluster.local:3001',
+  changeOrigin: true,
+});
+
+app.use(
+  '/api/:projectKey/products(/.*)?',
+  proxyMiddlewares.productProxyMiddleware
+);
+app.use('/api/:projectKey/carts(/.*)?', proxyMiddlewares.cartProxyMiddleware);
+```
 
 ### Projects bucketing
 
@@ -34,10 +60,6 @@ Projects serve as data repositories, allowing users to create various resources 
 Currently, endpoints associated with users or projects do not have any permissions, which means any user can add or delete projects and assign them to other users.
 
 In a real-world production application, there would be multiple levels of permissions to control user actions and access. However, incorporating such a system would significantly increase the complexity of the project, which is not desired at this time.
-
-Endpoints related to resources like products and carts are validated through the /authenticate endpoint.
-
-At the /authenticate endpoint, the system verifies the existence of the project and confirms whether the user has access to it. If the validation is successful, the endpoint returns a 200 status code; otherwise, it returns a 400 status code.
 
 ### Events
 

@@ -61,6 +61,6 @@ Prisma is an open source next-generation ORM. It consists of the following parts
 
 ### Kubernetes Readiness and Liveness probes
 
-These are provided to each container using [lightship](https://github.com/gajus/)
+These are provided to each pod using [lightship](https://github.com/gajus/)
 
 Lightship abstracts readiness, liveness and startup checks and graceful shutdown of Node.js services running in Kubernetes.

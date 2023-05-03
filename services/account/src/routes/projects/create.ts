@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { prisma } from '../../prisma';
 import { ProjectDraftSchema, ProjectSchema } from '../../validators';
-import { NotFoundError } from '../../errors';
+import { BadRequestError } from '../../errors';
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.post(
     });
 
     if (existingProject) {
-      throw new NotFoundError(`Project with Key '${key}' already exists`);
+      throw new BadRequestError(`Project with Key '${key}' already exists`);
     }
 
     const project = await prisma.project.create({

@@ -13,8 +13,6 @@ The model has 2 parts
 
   All Caluclated fields are mentioned as comment in the code snippet.
 
-The following is the prisma model which contains also comments regarding the computed fields.
-
 ```prisma
 model LineItem {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -56,7 +54,7 @@ This is a business decision is all commerce shops to avoid cart changes when the
 
 ### Creating a cart
 
-The Product service (coming soon) will emit events about creating and updating products with details about all their variants.
+The Product service will emit events about creating and updating products with details about all their variants.
 
 Cart service will listen for those events and store the exact products in its own database.
 
