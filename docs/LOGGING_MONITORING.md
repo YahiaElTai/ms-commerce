@@ -77,6 +77,10 @@ Because most requests are proxied from the `account` service, the proxying itsel
 
 `@promster` also has a subpackage `@promster/server` which exposes the collected metrics at port `7788`.
 
-### Grafana Dashboards
+### Grafana
 
-Coming soon
+Managed Service for Prometheus uses the built-in Prometheus data source for Grafana
+
+Google Cloud APIs all require authentication using OAuth2; however, Grafana doesn't support OAuth2 authentication for Prometheus data sources. To use Grafana with Managed Service for Prometheus, you use the standalone Prometheus frontend UI as an authentication proxy.
+
+The process for authenticating Grafana with GCP APIs is described [here](https://cloud.google.com/stackdriver/docs/managed-prometheus/query#ui-grafana)
