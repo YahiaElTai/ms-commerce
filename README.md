@@ -39,7 +39,7 @@ These environments are managed using Terraform workspaces. Detailed information 
 
 - [TypeScript Overview](/docs/OVERVIEW_TYPESCRIPT.md)
 
-- [Postman API Documentation](https://documenter.getpostman.com/view/8722825/2s8YsryZiW).
+- [Swagger API Documentation](https://app.swaggerhub.com/apis-docs/YAHIAELTAI022_1/ms-commerce/1.2.0#/).
 
 - [Logging and Monitoring](/docs/LOGGING_MONITORING.md)
 
