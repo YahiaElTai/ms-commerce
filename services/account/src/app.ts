@@ -1,5 +1,4 @@
 import express from 'express';
-import type { Request } from 'express';
 import compression from 'compression';
 import 'express-async-errors';
 import cookieParser from 'cookie-parser';
@@ -37,17 +36,7 @@ app.use('/api/carts/health', proxyMiddlewares.cartProxyMiddleware);
 
 app.use(healthCheckMiddleware);
 app.use(requestLoggerMiddleware);
-app.use(
-  createPrometheusMiddleware({
-    app,
-    options: {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      skip: (req: Request) =>
-        req.url.includes('products') || req.url.includes('carts'),
-    },
-  })
-);
+app.use(createPrometheusMiddleware({ app }));
 
 // account routes that do not require authentication
 app.use(signinRouter);
