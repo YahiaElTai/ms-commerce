@@ -1,38 +1,35 @@
-# Project Overview
+# Overview
 
-This project uses Terraform to manage infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two separate environments: `staging` and `production`. Each environment has its own dedicated GCP project.
+This repository contains a Terraform project for managing infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two distinct environments: `staging` and `production`. Each environment is deployed within a dedicated GCP project to ensure separation of concerns and promote best practices for managing infrastructure.
 
-## Terraform Workspaces
+## Remote State Management
 
-Terraform workspaces are used to separate the state and management of each environment. This allows for better isolation and control when working with multiple environments.
+Terraform's remote state is stored in separate Google Cloud Storage (GCS) buckets for each environment (`staging` and `production`). This approach ensures isolation and security of state files, preventing unauthorized access or accidental changes to the infrastructure.
 
-By leveraging workspaces, a single Terraform configuration can be used to manage the infrastructure for both the staging and production environments. This promotes reusability and reduces the potential for configuration drift between environments.
+The environment configurations are defined in `./environments/{env}.hcl` files, while the corresponding variables are stored in `./environments/{env}.tfvars` files.
 
-## Directory Structure
+## Usage Instructions
 
-The project is organized as follows:
+Follow the steps below to initialize and apply Terraform configurations for the desired environment:
 
-- `main.tf`: The primary Terraform configuration file containing the infrastructure resources and configuration.
-- `variables.tf`: Contains the Terraform input variables used in the `main.tf` file.
-- `terraform.production.tfvars`: Contains the variable values specific to the production environment.
-- `terraform.staging.tfvars`: Contains the variable values specific to the staging environment.
+### Initializing Terraform
 
-## Provisiong
+Before applying any Terraform configurations, you need to initialize Terraform. To do this, run the following command, replacing `${env}` with the desired environment (`staging` or `production`):
 
-To provision the staging environment, execute the following commands:
+```bash
+    terraform init -backend-config=./environments/${env}.hcl
+```
 
-    ```
-    terraform workspace select staging
+This command initializes the Terraform backend with the specified environment configuration and downloads the required provider plugins.
 
-    terraform apply -var-file=terraform.staging.tfvars
-    ```
+### Applying Terraform Configurations
 
-To provision the production environment, execute the following commands:
+To apply the Terraform configurations for the chosen environment, run the following command, again replacing `${env}` with the appropriate environment:
 
-    ```
-    terraform workspace select production
+```bash
+    terraform apply -var-file=./environments/${env}.tfvars
+```
 
-    terraform apply -var-file=terraform.production.tfvars
-    ```
+This command prompts you to confirm the changes before applying the Terraform configurations using the variables defined in the corresponding `.tfvars` file.
 
-When updating infrastructure, remember to switch to the correct workspace first and use the correct `.tfvars` file.
+Please ensure you review the planned changes carefully before proceeding, as applying these configurations will affect your GCP infrastructure.

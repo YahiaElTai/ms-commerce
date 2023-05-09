@@ -7,6 +7,7 @@ orbs:
   shellcheck: circleci/shellcheck@3.1.2
   helm: circleci/helm@2.0.1
   dotenv: anilanar/dotenv@1.0.0
+  terraform: circleci/terraform@3.2.1
 
 executors:
   gcp-executor:
@@ -127,6 +128,28 @@ jobs:
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
+    terraform_apply:
+      executor: terraform/default
+      parameters:
+      environment_name:
+        type: string
+      steps:
+        - checkout
+        - terraform/init:
+            backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
+            path: infra/terraform
+        - terraform/fmt:
+            path: infra/terraform
+        - terraform/validate:
+            path: infra/terraform
+        - terraform/plan:
+            backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
+            path: infra/terraform
+            var_file: infra/terraform/environments/<< parameters.environment_name >>.tfvars
+        - run:
+          name: 'Print plan file'
+          command: cat plan.out
+
 workflows:
   test_branch:
     when:
@@ -153,6 +176,9 @@ workflows:
           app-dir: product
           requires:
             - shell_check
+      - terraform_apply:
+          name: terraform_apply_staging
+          environment_name: gcp-production-eu
   test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]
