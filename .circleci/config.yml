@@ -16,6 +16,9 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:20.0.0
+  base-executor:
+    docker:
+      - image: cimg/base:2023.05
 
 commands:
   install-pnpm:
@@ -39,6 +42,28 @@ commands:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - node_modules
+    setup_environment_variables:
+      description: Setup env variables for environment
+      parameters:
+        environment_name:
+          type: enum
+          enum: ['gcp-production-eu', 'gcp-staging-eu']
+        gcloud_service_key_env_name:
+          type: string
+          default: ''
+        terraform_service_key_env_name:
+          type: string
+          default: ''
+      steps:
+        - run:
+            name: 'Setup env variables for << parameters.environment_name >>'
+            command: ./.circleci/setup_environment_variables.sh
+            environment:
+              ENVIRONMENT_NAME: << parameters.environment_name >>
+              GCLOUD_SERVICE_KEY_ENV_NAME: << parameters.gcloud_service_key_env_name >>
+              TERRAFORM_SERVICE_KEY_ENV_NAME: << parameters.terraform_service_key_env_name >>
+        - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
 
 jobs:
   typecheck_test:
@@ -79,13 +104,9 @@ jobs:
         type: string
     steps:
       - checkout
-      - run:
-          name: 'Export gcloud service key for environment << parameters.environment_name >>'
-          command: .circleci/export_gcloud_service_key.sh
-          environment:
-            ENVIRONMENT_NAME: << parameters.environment_name >>
-      - dotenv/source:
-          path: .circleci/.env.<< parameters.environment_name >>
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          gcloud_service_key_env_name: GCP_JSON_KEY
       - gcp-gcr/gcr-auth:
           registry-url: $REGISTRY_URL
       - gcp-gcr/build-image:
@@ -111,13 +132,9 @@ jobs:
     steps:
       - checkout
       - helm/install-helm-client
-      - run:
-          name: 'Export gcloud service key for environment << parameters.environment_name >>'
-          command: .circleci/export_gcloud_service_key.sh
-          environment:
-            ENVIRONMENT_NAME: << parameters.environment_name >>
-      - dotenv/source:
-          path: .circleci/.env.<< parameters.environment_name >>
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          gcloud_service_key_env_name: GCP_JSON_KEY
       - gcp-cli/setup:
           components: 'gke-gcloud-auth-plugin --quiet'
       - run:
@@ -128,8 +145,8 @@ jobs:
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
-  terraform_apply:
-    executor: gcp-executor
+  terraform_deploy_infra:
+    executor: base-executor
     parameters:
       environment_name:
         type: string
@@ -137,24 +154,13 @@ jobs:
       - checkout
       - run:
           name: Install Terraform
-          command: |
-            TERRAFORM_VERSION="1.4.6"
-            sudo apt-get update && \
-            sudo apt-get install -y wget unzip && \
-            wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
-            unzip "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
-            sudo mv terraform /usr/local/bin/ && \
-            rm "terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+          command: ./.circleci/terraform_install.sh
       - run:
           name: Terraform version
           command: terraform version
-      - run:
-          name: 'Export gcloud service key for environment << parameters.environment_name >>'
-          command: .circleci/export_gcloud_service_key.sh
-          environment:
-            ENVIRONMENT_NAME: << parameters.environment_name >>
-      - dotenv/source:
-          path: .circleci/.env.<< parameters.environment_name >>
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          terraform_service_key_env_name: TERRAFORM_JSON_KEY
       - run:
           name: show env file
           command: cat .circleci/.env.<< parameters.environment_name >>
@@ -178,10 +184,10 @@ jobs:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
           var_file: ./environments/<< parameters.environment_name >>.tfvars
-      - terraform/apply:
-          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
-          path: ./infra/terraform
-          var_file: ./environments/<< parameters.environment_name >>.tfvars
+      # - terraform/apply:
+      #     backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+      #     path: ./infra/terraform
+      #     var_file: ./environments/<< parameters.environment_name >>.tfvars
 
 workflows:
   test_branch:
@@ -209,9 +215,12 @@ workflows:
           app-dir: product
           requires:
             - shell_check
-      - terraform_apply:
-          name: terraform_apply_staging
+      - terraform_deploy_infra:
+          name: terraform_deploy_infra_staging
           environment_name: gcp-staging-eu
+      - terraform_deploy_infra:
+          name: terraform_deploy_infra_production
+          environment_name: gcp-production-eu
   test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]

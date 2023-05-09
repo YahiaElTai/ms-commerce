@@ -33,3 +33,12 @@ To apply the Terraform configurations for the chosen environment, run the follow
 This command prompts you to confirm the changes before applying the Terraform configurations using the variables defined in the corresponding `.tfvars` file.
 
 Please ensure you review the planned changes carefully before proceeding, as applying these configurations will affect your GCP infrastructure.
+
+Terraform service account required roles
+roles/storage.admin
+roles/artifactregistry.admin
+roles/cloudkms.admin
+roles/container.admin
+roles/iam.serviceAccountAdmin
+roles/resourcemanager.projectIamAdmin
+roles/serviceusage.serviceUsageAdmin
