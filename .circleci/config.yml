@@ -178,9 +178,10 @@ jobs:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
           var_file: ./environments/<< parameters.environment_name >>.tfvars
-      - run:
-          name: 'Print plan file'
-          command: cat plan.out
+      - terraform/apply:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+          var_file: ./environments/<< parameters.environment_name >>.tfvars
 
 workflows:
   test_branch:
