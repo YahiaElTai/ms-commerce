@@ -136,16 +136,16 @@ jobs:
     steps:
       - checkout
       - terraform/init:
-          backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
-          path: infra/terraform
+          backend_config_file: ./infra/terraform/environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
       - terraform/fmt:
-          path: infra/terraform
+          path: ./infra/terraform
       - terraform/validate:
-          path: infra/terraform
+          path: ./infra/terraform
       - terraform/plan:
-          backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
-          path: infra/terraform
-          var_file: infra/terraform/environments/<< parameters.environment_name >>.tfvars
+          backend_config_file: ./infra/terraform/environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+          var_file: ./infra/terraform/environments/<< parameters.environment_name >>.tfvars
       - run:
           name: 'Print plan file'
           command: cat plan.out
@@ -178,7 +178,7 @@ workflows:
             - shell_check
       - terraform_apply:
           name: terraform_apply_staging
-          environment_name: gcp-production-eu
+          environment_name: gcp-staging-eu
   test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]
