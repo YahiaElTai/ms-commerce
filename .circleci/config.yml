@@ -42,27 +42,27 @@ commands:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - node_modules
-    setup_environment_variables:
-      description: Setup env variables for environment
-      parameters:
-        environment_name:
-          type: enum
-          enum: ['gcp-production-eu', 'gcp-staging-eu']
-        gcloud_service_key_env_name:
-          type: string
-          default: ''
-        terraform_service_key_env_name:
-          type: string
-          default: ''
-      steps:
-        - run:
-            name: 'Setup env variables for << parameters.environment_name >>'
-            command: ./.circleci/setup_environment_variables.sh
-            environment:
-              ENVIRONMENT_NAME: << parameters.environment_name >>
-              GCLOUD_SERVICE_KEY_ENV_NAME: << parameters.gcloud_service_key_env_name >>
-              TERRAFORM_SERVICE_KEY_ENV_NAME: << parameters.terraform_service_key_env_name >>
-        - dotenv/source:
+  setup_environment_variables:
+    description: Setup env variables for environment
+    parameters:
+      environment_name:
+        type: enum
+        enum: ['gcp-production-eu', 'gcp-staging-eu']
+      gcloud_service_key_env_name:
+        type: string
+        default: ''
+      terraform_service_key_env_name:
+        type: string
+        default: ''
+    steps:
+      - run:
+          name: 'Setup env variables for << parameters.environment_name >>'
+          command: ./.circleci/setup_environment_variables.sh
+          environment:
+            ENVIRONMENT_NAME: << parameters.environment_name >>
+            GCLOUD_SERVICE_KEY_ENV_NAME: << parameters.gcloud_service_key_env_name >>
+            TERRAFORM_SERVICE_KEY_ENV_NAME: << parameters.terraform_service_key_env_name >>
+      - dotenv/source:
           path: .circleci/.env.<< parameters.environment_name >>
 
 jobs:
