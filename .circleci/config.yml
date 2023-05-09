@@ -16,9 +16,6 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:20.0.0
-  terraform-executor:
-    docker:
-      - image: hashicorp/terraform:1.4.6
 
 commands:
   install-pnpm:
@@ -132,12 +129,25 @@ jobs:
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
   terraform_apply:
-    executor: terraform/default
+    executor: gcp-executor
     parameters:
       environment_name:
         type: string
     steps:
       - checkout
+      - run:
+          name: Install Terraform
+          command: |
+            TERRAFORM_VERSION="1.4.6"
+            apt-get update && \
+            apt-get install -y wget unzip && \
+            wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
+            unzip "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
+            mv terraform /usr/local/bin/ && \
+            rm "terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+      - run:
+          name: Terraform version
+          command: terraform version
       - run:
           name: 'Export gcloud service key for environment << parameters.environment_name >>'
           command: .circleci/export_gcloud_service_key.sh
