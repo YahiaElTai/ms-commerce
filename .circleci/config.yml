@@ -16,6 +16,9 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:20.0.0
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:1.4.6
 
 commands:
   install-pnpm:
@@ -129,14 +132,12 @@ jobs:
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
   terraform_apply:
-    executor: terraform/default
+    executor: terraform-executor
     parameters:
       environment_name:
         type: string
     steps:
       - checkout
-      - terraform/install:
-          terraform_version: 'latest'
       - terraform/init:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
