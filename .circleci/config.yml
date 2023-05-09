@@ -128,25 +128,25 @@ jobs:
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
-    terraform_apply:
-      executor: terraform/default
-      parameters:
-      environment_name:
-        type: string
-      steps:
-        - checkout
-        - terraform/init:
-            backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
-            path: infra/terraform
-        - terraform/fmt:
-            path: infra/terraform
-        - terraform/validate:
-            path: infra/terraform
-        - terraform/plan:
-            backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
-            path: infra/terraform
-            var_file: infra/terraform/environments/<< parameters.environment_name >>.tfvars
-        - run:
+  terraform_apply:
+    executor: terraform/default
+    parameters:
+    environment_name:
+      type: string
+    steps:
+      - checkout
+      - terraform/init:
+          backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
+          path: infra/terraform
+      - terraform/fmt:
+          path: infra/terraform
+      - terraform/validate:
+          path: infra/terraform
+      - terraform/plan:
+          backend_config_file: infra/terraform/environments/<< parameters.environment_name >>.hcl
+          path: infra/terraform
+          var_file: infra/terraform/environments/<< parameters.environment_name >>.tfvars
+      - run:
           name: 'Print plan file'
           command: cat plan.out
 
