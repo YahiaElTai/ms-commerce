@@ -138,6 +138,13 @@ jobs:
         type: string
     steps:
       - checkout
+      - run:
+          name: 'Export gcloud service key for environment << parameters.environment_name >>'
+          command: .circleci/export_gcloud_service_key.sh
+          environment:
+            ENVIRONMENT_NAME: << parameters.environment_name >>
+      - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
       - terraform/init:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
