@@ -17,7 +17,10 @@ fi
 
 if [[ -n "${TERRAFORM_SERVICE_KEY_ENV_NAME}" ]]; then
     TERRAFORM_SERVICE_KEY_NAME="${!TERRAFORM_SERVICE_KEY_ENV_NAME}"
+
+    echo "$TERRAFORM_SERVICE_KEY_NAME"
     TERRAFORM_SERVICE_KEY="${!TERRAFORM_SERVICE_KEY_NAME}"
+    echo "$TERRAFORM_SERVICE_KEY"
     echo "$TERRAFORM_SERVICE_KEY" >>"$HOME"/terraform-service-key.json
 
     echo "GOOGLE_APPLICATION_CREDENTIALS=\"$HOME/terraform-service-key.json\"" >>".circleci/.env.$ENVIRONMENT_NAME"
