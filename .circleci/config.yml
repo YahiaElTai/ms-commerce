@@ -139,8 +139,8 @@ jobs:
           name: Install Terraform
           command: |
             TERRAFORM_VERSION="1.4.6"
-            apt-get update && \
-            apt-get install -y wget unzip && \
+            sudo apt-get update && \
+            sudo apt-get install -y wget unzip && \
             wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
             unzip "terraform_${TERRAFORM_VERSION}_linux_amd64.zip" && \
             mv terraform /usr/local/bin/ && \
