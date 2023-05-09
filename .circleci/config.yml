@@ -182,14 +182,10 @@ jobs:
           path: ./infra/terraform
       - terraform/validate:
           path: ./infra/terraform
-      - terraform/plan:
+      - terraform/apply:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
           var_file: ./environments/<< parameters.environment_name >>.tfvars
-      # - terraform/apply:
-      #     backend_config_file: ./environments/<< parameters.environment_name >>.hcl
-      #     path: ./infra/terraform
-      #     var_file: ./environments/<< parameters.environment_name >>.tfvars
 
 workflows:
   test_branch:
