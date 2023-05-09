@@ -145,6 +145,9 @@ jobs:
             ENVIRONMENT_NAME: << parameters.environment_name >>
       - dotenv/source:
           path: .circleci/.env.<< parameters.environment_name >>
+      - run:
+          name: show env file
+          command: cat .circleci/.env.<< parameters.environment_name >>
       - terraform/init:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
