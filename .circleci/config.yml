@@ -132,7 +132,7 @@ jobs:
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
   terraform_apply:
-    executor: gcp-executor
+    executor: terraform/default
     parameters:
       environment_name:
         type: string
