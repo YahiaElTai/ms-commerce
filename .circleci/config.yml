@@ -136,16 +136,16 @@ jobs:
     steps:
       - checkout
       - terraform/init:
-          backend_config_file: ./infra/terraform/environments/<< parameters.environment_name >>.hcl
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
       - terraform/fmt:
           path: ./infra/terraform
       - terraform/validate:
           path: ./infra/terraform
       - terraform/plan:
-          backend_config_file: ./infra/terraform/environments/<< parameters.environment_name >>.hcl
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
-          var_file: ./infra/terraform/environments/<< parameters.environment_name >>.tfvars
+          var_file: ./environments/<< parameters.environment_name >>.tfvars
       - run:
           name: 'Print plan file'
           command: cat plan.out
