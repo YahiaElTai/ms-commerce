@@ -6,27 +6,27 @@ resource "google_project_service" "enabled_services" {
   disable_on_destroy = false
 }
 
-# Create Artifact Registry repository
-resource "google_artifact_registry_repository" "ms_commerce_repository" {
-  repository_id = var.repository_name
-  location      = var.region
-  format        = "DOCKER"
-}
+# # Create Artifact Registry repository
+# resource "google_artifact_registry_repository" "ms_commerce_repository" {
+#   repository_id = var.repository_name
+#   location      = var.region
+#   format        = "DOCKER"
+# }
 
-# Create CI service account to authenticate to Artifact Registry, GKE and KMS
-resource "google_service_account" "ci_service_account" {
-  account_id   = local.ci_service_account_account_id
-  display_name = local.ci_service_account_display_name
-}
+# # Create CI service account to authenticate to Artifact Registry, GKE and KMS
+# resource "google_service_account" "ci_service_account" {
+#   account_id   = local.ci_service_account_account_id
+#   display_name = local.ci_service_account_display_name
+# }
 
-# Add needed roles for CI service account
-resource "google_project_iam_member" "ci_sa_roles" {
-  for_each = toset(local.ci_service_account_roles)
+# # Add needed roles for CI service account
+# resource "google_project_iam_member" "ci_sa_roles" {
+#   for_each = toset(local.ci_service_account_roles)
 
-  project = var.project_id
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.ci_service_account.email}"
-}
+#   project = var.project_id
+#   role    = each.value
+#   member  = "serviceAccount:${google_service_account.ci_service_account.email}"
+# }
 
 # # Create Autopilot GKE cluster
 # resource "google_container_cluster" "ms_commerce_cluster" {
