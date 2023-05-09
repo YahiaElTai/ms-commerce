@@ -19,5 +19,3 @@ set -e
 echo "$TERRAFORM_GCP_STAGING_KEY" >>"$HOME"/terraform-service-key.json
 
 echo "GOOGLE_APPLICATION_CREDENTIALS=\"$HOME/terraform-service-key.json\"" >>".circleci/.env.$ENVIRONMENT_NAME"
-
-cat "$GOOGLE_APPLICATION_CREDENTIALS"
