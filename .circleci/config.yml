@@ -131,8 +131,8 @@ jobs:
   terraform_apply:
     executor: terraform/default
     parameters:
-    environment_name:
-      type: string
+      environment_name:
+        type: string
     steps:
       - checkout
       - terraform/init:
