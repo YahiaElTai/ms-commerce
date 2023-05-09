@@ -136,7 +136,7 @@ jobs:
     steps:
       - checkout
       - terraform/install:
-          terraform_version: '1.4.6'
+          terraform_version: '1.0.0'
       - terraform/init:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
