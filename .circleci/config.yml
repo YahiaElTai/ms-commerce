@@ -148,6 +148,12 @@ jobs:
       - run:
           name: show env file
           command: cat .circleci/.env.<< parameters.environment_name >>
+      - run:
+          name: Check GOOGLE_APPLICATION_CREDENTIALS
+          command: echo "GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS"
+      - run:
+          name: Check JSON key file content
+          command: cat "$GOOGLE_APPLICATION_CREDENTIALS"
       - terraform/init:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
