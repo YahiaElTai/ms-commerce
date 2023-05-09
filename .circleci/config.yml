@@ -55,6 +55,8 @@ commands:
         type: string
         default: ''
     steps:
+      - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
       - run:
           name: 'Setup env variables for << parameters.environment_name >>'
           command: ./.circleci/setup_environment_variables.sh
