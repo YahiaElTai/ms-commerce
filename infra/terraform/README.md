@@ -42,3 +42,5 @@ roles/container.admin
 roles/iam.serviceAccountAdmin
 roles/resourcemanager.projectIamAdmin
 roles/serviceusage.serviceUsageAdmin
+
+Cloud Resource Manager API
