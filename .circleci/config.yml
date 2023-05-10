@@ -76,6 +76,7 @@ commands:
                 echo "$TERRAFORM_SERVICE_KEY_JSON"
                 cat "$HOME"/terraform-service-key.json
 
+                cat .circleci/.env."$ENVIRONMENT_NAME"
                 echo "GOOGLE_APPLICATION_CREDENTIALS=\"$HOME/terraform-service-key.json\"" >>".circleci/.env.$ENVIRONMENT_NAME"
 
                 echo -e "\033[32mExported GOOGLE_APPLICATION_CREDENTIALS for enviroment $ENVIRONMENT_NAME"
