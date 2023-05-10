@@ -49,6 +49,8 @@ These environments (GCP Projects) are managed using terraform with GCS bucket fo
 
 - [Local Development Setup](/docs/LOCAL_DEV_SETUP.md)
 
+- [CI/CD Pipeline screenshot](/docs/CI_CD_Pipeline.png)
+
 ### Microservices Architecture Decisions
 
 - [Authentication strategy](/docs/AUTHENTICATION_STRATEGY.md)

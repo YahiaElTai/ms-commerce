@@ -784,7 +784,7 @@
     "method": "GET",
     "sortNum": 60000,
     "created": "2023-05-06T07:53:39.672Z",
-    "modified": "2023-05-06T07:53:39.672Z",
+    "modified": "2023-05-10T21:03:14.381Z",
     "headers": [
       {
         "name": "Content-Type",
@@ -799,13 +799,11 @@
         "value": "fnklfew"
       }
     ],
-    "body": {
-      "form": [],
-      "type": "formencoded"
-    },
+    "params": [],
     "auth": {
       "type": "none"
-    }
+    },
+    "tests": []
   },
   {
     "_id": "2b66bb80-f0a7-4cb4-902d-c5c90e77d685",
@@ -870,17 +868,20 @@
     "method": "POST",
     "sortNum": 70000,
     "created": "2023-05-06T07:53:39.673Z",
-    "modified": "2023-05-06T07:53:39.673Z",
+    "modified": "2023-05-10T21:03:07.233Z",
     "headers": [
       {
         "name": "Content-Type",
         "value": "application/json"
       }
     ],
+    "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n    \"email\": \"test1@test.com\",\n    \"password\": \"password\"\n}"
-    }
+      "raw": "{\n    \"email\": \"test1@test.com\",\n    \"password\": \"password\"\n}",
+      "form": []
+    },
+    "tests": []
   },
   {
     "_id": "f1396622-f9e1-4250-84d0-e68f46c4c9a6",
