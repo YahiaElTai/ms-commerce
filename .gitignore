@@ -10,4 +10,3 @@ junit.xml
 .terraform
 *.tfstate
 *.tfstate.*
-*.tfvars

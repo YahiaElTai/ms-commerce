@@ -2,11 +2,13 @@
 
 1.  Connect Github repo to CircleCI.
 
-2.  Add required env variables using CircleCI UI:
+2.  Add required env variables using CircleCI UI (steps detailed below)
 
     - `JWT_KEY`
-    - `GCLOUD_SERVICE_KEY_PROD`: See below for setup
-    - `GCLOUD_SERVICE_KEY_STAGING`: See below for setup
+    - `GCLOUD_SERVICE_KEY_PROD`
+    - `GCLOUD_SERVICE_KEY_STAGING`
+    - `TERRAFORM_SERVICE_KEY_PROD`
+    - `TERRAFORM_SERVICE_KEY_STAGING`
 
 3.  Add required env variables to both staging and production env files located at `.circleci/.env.{env}`
 
@@ -16,13 +18,15 @@
     - `CLUSTER_NAME`
     - `REGISTRY_URL`
     - `REPO_NAME`
+    - `KEYRING_NAME`
+    - `KEY_NAME`
+    - `GCP_JSON_KEY_ENV_VAR_NAME`
+    - `TERRAFORM_JSON_KEY_ENV_VAR_NAME`
 
 4.  Add `GCLOUD_SERVICE_KEY_PROD` and `GCLOUD_SERVICE_KEY_STAGING` to authenticate CI with Artifact Registry & Kubernetes Engine on production and staging envs respectively
 
-    1.  Create service account and add the required roles to it.
+    Create a key for each service account created by terraform and add the content of the JSON as env variables.
 
-        Handled with Terraform (per env)
+5.  Add `TERRAFORM_SERVICE_KEY_PROD` and `TERRAFORM_SERVICE_KEY_STAGING` to authenticate terraform to the corresponding GCP project
 
-    2.  Create key file in JSON format and download it.
-
-    3.  Create 2 env variables with the content of the files downloaded as is.
+    Steps are detailed [here](../infra/terraform/README.md#terraform-cicd-pipeline)

@@ -45,6 +45,8 @@ These environments are managed using Terraform workspaces. Detailed information 
 
 - [GCP Infrastructure Provisioning](/docs/GCP_INFRASTRUCTURE_PROVISIONING.md)
 
+- [Terraform Overview](/docs/TERRAFORM_OVERVIEW.md)
+
 - [Local Development Setup](/docs/LOCAL_DEV_SETUP.md)
 
 ### Microservices Architecture Decisions

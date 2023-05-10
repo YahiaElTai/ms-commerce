@@ -7,6 +7,7 @@ orbs:
   shellcheck: circleci/shellcheck@3.1.2
   helm: circleci/helm@2.0.1
   dotenv: anilanar/dotenv@1.0.0
+  terraform: circleci/terraform@3.2.1
 
 executors:
   gcp-executor:
@@ -15,6 +16,9 @@ executors:
   node-executor:
     docker:
       - image: cimg/node:20.0.0
+  base-executor:
+    docker:
+      - image: cimg/base:2023.05
 
 commands:
   install-pnpm:
@@ -38,6 +42,44 @@ commands:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - node_modules
+  setup_environment_variables:
+    description: Setup env variables for environment
+    parameters:
+      environment_name:
+        type: enum
+        enum: ['gcp-production-eu', 'gcp-staging-eu']
+      environment_variable_name:
+        type: string
+    steps:
+      - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
+      - run:
+          name: 'Setup env variables for << parameters.environment_name >>'
+          command: |
+            set -e
+
+            ENVIRONMENT_NAME=<< parameters.environment_name >>
+            ENVIRONMENT_VARIABLE_NAME=<< parameters.environment_variable_name >>
+
+            if [[ "$ENVIRONMENT_VARIABLE_NAME" == "GCP_JSON_KEY_ENV_VAR_NAME" ]]; then
+                GCLOUD_SERVICE_KEY_JSON="${!GCP_JSON_KEY_ENV_VAR_NAME}"
+
+                echo "GCLOUD_SERVICE_KEY=$GCLOUD_SERVICE_KEY_JSON" >>".circleci/.env.$ENVIRONMENT_NAME"
+
+                echo -e "\033[32mExported GCLOUD_SERVICE_KEY for enviroment $ENVIRONMENT_NAME"
+            fi
+
+            if [[ "$ENVIRONMENT_VARIABLE_NAME" == "TERRAFORM_JSON_KEY_ENV_VAR_NAME" ]]; then
+                TERRAFORM_SERVICE_KEY_JSON="${!TERRAFORM_JSON_KEY_ENV_VAR_NAME}"
+
+                echo "$TERRAFORM_SERVICE_KEY_JSON" >>"$HOME"/terraform-service-key.json
+
+                echo "GOOGLE_APPLICATION_CREDENTIALS=\"$HOME/terraform-service-key.json\"" >>".circleci/.env.$ENVIRONMENT_NAME"
+
+                echo -e "\033[32mExported GOOGLE_APPLICATION_CREDENTIALS for enviroment $ENVIRONMENT_NAME"
+            fi
+      - dotenv/source:
+          path: .circleci/.env.<< parameters.environment_name >>
 
 jobs:
   typecheck_test:
@@ -78,13 +120,9 @@ jobs:
         type: string
     steps:
       - checkout
-      - run:
-          name: 'Export gcloud service key for environment << parameters.environment_name >>'
-          command: .circleci/export_gcloud_service_key.sh
-          environment:
-            ENVIRONMENT_NAME: << parameters.environment_name >>
-      - dotenv/source:
-          path: .circleci/.env.<< parameters.environment_name >>
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          environment_variable_name: GCP_JSON_KEY_ENV_VAR_NAME
       - gcp-gcr/gcr-auth:
           registry-url: $REGISTRY_URL
       - gcp-gcr/build-image:
@@ -110,13 +148,9 @@ jobs:
     steps:
       - checkout
       - helm/install-helm-client
-      - run:
-          name: 'Export gcloud service key for environment << parameters.environment_name >>'
-          command: .circleci/export_gcloud_service_key.sh
-          environment:
-            ENVIRONMENT_NAME: << parameters.environment_name >>
-      - dotenv/source:
-          path: .circleci/.env.<< parameters.environment_name >>
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          environment_variable_name: GCP_JSON_KEY_ENV_VAR_NAME
       - gcp-cli/setup:
           components: 'gke-gcloud-auth-plugin --quiet'
       - run:
@@ -127,6 +161,51 @@ jobs:
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
+  terraform_plan:
+    executor: base-executor
+    parameters:
+      environment_name:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install Terraform
+          command: ./.circleci/terraform_install.sh
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          environment_variable_name: TERRAFORM_JSON_KEY_ENV_VAR_NAME
+      - terraform/init:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+      - terraform/fmt:
+          path: ./infra/terraform
+      - terraform/validate:
+          path: ./infra/terraform
+      - terraform/plan:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+          var_file: ./environments/<< parameters.environment_name >>.tfvars
+  terraform_apply:
+    executor: base-executor
+    parameters:
+      environment_name:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install Terraform
+          command: ./.circleci/terraform_install.sh
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          environment_variable_name: TERRAFORM_JSON_KEY_ENV_VAR_NAME
+      - terraform/init:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+      - terraform/apply:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+          var_file: ./environments/<< parameters.environment_name >>.tfvars
+
 workflows:
   test_branch:
     when:
@@ -300,3 +379,35 @@ workflows:
           helm_release_name: ms-ingress
           requires:
             - can_deploy_p_ingress
+      # Terraform (optional) jobs (staging)
+      - terraform_plan:
+          name: terraform_plan_staging
+          environment_name: gcp-staging-eu
+          requires:
+            - shell_check
+      - can_terraform_apply:
+          name: can_terraform_apply_staging
+          type: approval
+          requires:
+            - terraform_plan_staging
+      - terraform_apply:
+          name: terraform_apply_staging
+          environment_name: gcp-staging-eu
+          requires:
+            - can_terraform_apply_staging
+      # Terraform (optional) jobs (production)
+      - terraform_plan:
+          name: terraform_plan_production
+          environment_name: gcp-production-eu
+          requires:
+            - shell_check
+      - can_terraform_apply:
+          name: can_terraform_apply_production
+          type: approval
+          requires:
+            - terraform_plan_production
+      - terraform_apply:
+          name: terraform_apply_production
+          environment_name: gcp-production-eu
+          requires:
+            - can_terraform_apply_production

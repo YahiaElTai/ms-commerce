@@ -2,6 +2,7 @@ variable "host" {
   description = "hostname"
   type        = string
 }
+
 variable "project_id" {
   description = "GCP project ID"
   type        = string
@@ -10,11 +11,13 @@ variable "project_id" {
 variable "region" {
   description = "GCP region"
   type        = string
+  default     = "europe-west1"
 }
 
 variable "zone" {
   description = "GCP zone"
   type        = string
+  default     = "europe-west1-b"
 }
 
 variable "k8s_cluster_name" {
@@ -36,7 +39,9 @@ variable "key_name" {
   description = "KMS key name"
   type        = string
 }
+
 variable "email_address" {
   description = "Email address for GCP alerts"
   type        = string
+  sensitive   = true
 }
