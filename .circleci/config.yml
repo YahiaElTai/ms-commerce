@@ -80,7 +80,7 @@ commands:
 
                 echo -e "\033[32mExported GOOGLE_APPLICATION_CREDENTIALS for enviroment $ENVIRONMENT_NAME"
 
-                cat .circleci/.env.$ENVIRONMENT_NAME"
+                cat .circleci/.env."$ENVIRONMENT_NAME"
             fi
       - dotenv/source:
           path: .circleci/.env.<< parameters.environment_name >>
