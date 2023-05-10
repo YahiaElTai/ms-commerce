@@ -11,13 +11,13 @@ variable "project_id" {
 variable "region" {
   description = "GCP region"
   type        = string
-  default = "europe-west1"
+  default     = "europe-west1"
 }
 
 variable "zone" {
   description = "GCP zone"
   type        = string
-  default = "europe-west1-b"
+  default     = "europe-west1-b"
 }
 
 variable "k8s_cluster_name" {
