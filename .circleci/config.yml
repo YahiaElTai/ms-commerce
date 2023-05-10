@@ -380,11 +380,16 @@ workflows:
           requires:
             - can_deploy_p_ingress
       # Terraform (optional) jobs (staging)
+      - can_terraform_plan:
+          name: can_terraform_plan_staging
+          type: approval
+          requires:
+            - shell_check
       - terraform_plan:
           name: terraform_plan_staging
           environment_name: gcp-staging-eu
           requires:
-            - shell_check
+            - can_terraform_plan_staging
       - can_terraform_apply:
           name: can_terraform_apply_staging
           type: approval
@@ -396,11 +401,16 @@ workflows:
           requires:
             - can_terraform_apply_staging
       # Terraform (optional) jobs (production)
+      - can_terraform_plan:
+          name: can_terraform_plan_production
+          type: approval
+          requires:
+            - shell_check
       - terraform_plan:
           name: terraform_plan_production
           environment_name: gcp-production-eu
           requires:
-            - shell_check
+            - can_terraform_plan_production
       - can_terraform_apply:
           name: can_terraform_apply_production
           type: approval
