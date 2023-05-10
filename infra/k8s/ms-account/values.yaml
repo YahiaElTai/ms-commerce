@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: europe-west1-docker.pkg.dev/ms-commerce-round-2-key/ms-commerce/account
+  repository: europe-west1-docker.pkg.dev/ms-commerce-prod/ms-commerce/account
   pullPolicy: IfNotPresent
   tag: 'latest'
 

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: europe-west1-docker.pkg.dev/ms-commerce-round-2-key/ms-commerce/cart
+  repository: europe-west1-docker.pkg.dev/ms-commerce-prod/ms-commerce/cart
   pullPolicy: IfNotPresent
   tag: 'latest'
 
