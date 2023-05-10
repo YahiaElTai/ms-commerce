@@ -86,15 +86,15 @@ resource "google_project_iam_member" "ci_sa_roles" {
 #   }
 # }
 
-# # Create notification channel for alerts
-# resource "google_monitoring_notification_channel" "email_notification_channel" {
-#   display_name = "Yahia El Tai Email"
-#   type         = "email"
+# Create notification channel for alerts
+resource "google_monitoring_notification_channel" "email_notification_channel" {
+  display_name = "Yahia El Tai Email"
+  type         = "email"
 
-#   labels = {
-#     email_address = var.email_address
-#   }
-# }
+  labels = {
+    email_address = var.email_address
+  }
+}
 
 # # Create uptime health check for services
 # resource "google_monitoring_uptime_check_config" "uptime_checks" {
