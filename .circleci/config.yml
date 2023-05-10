@@ -59,11 +59,26 @@ commands:
           path: .circleci/.env.<< parameters.environment_name >>
       - run:
           name: 'Setup env variables for << parameters.environment_name >>'
-          command: ./.circleci/setup_environment_variables.sh
-          environment:
-            ENVIRONMENT_NAME: << parameters.environment_name >>
-            GCLOUD_SERVICE_KEY_ENV_NAME: << parameters.gcloud_service_key_env_name >>
-            TERRAFORM_SERVICE_KEY_ENV_NAME: << parameters.terraform_service_key_env_name >>
+          command: |
+            set -e
+
+            if [[ -n "${<< parameters.gcloud_service_key_env_name >>}" ]]; then
+                GCLOUD_SERVICE_KEY_JSON="${!<< parameters.gcloud_service_key_env_name >>}"
+
+                echo "GCLOUD_SERVICE_KEY=$GCLOUD_SERVICE_KEY_JSON" >>".circleci/.env.$ENVIRONMENT_NAME"
+
+                echo -e "\033[32mExported GCLOUD_SERVICE_KEY for enviroment $ENVIRONMENT_NAME"
+            fi
+
+            if [[ -n "${<< parameters.terraform_service_key_env_name >>}" ]]; then
+                TERRAFORM_SERVICE_KEY_JSON="${!<< parameters.terraform_service_key_env_name >>}"
+
+                echo "$TERRAFORM_SERVICE_KEY_JSON" >>"$HOME"/terraform-service-key.json
+
+                echo "GOOGLE_APPLICATION_CREDENTIALS=\"$HOME/terraform-service-key.json\"" >>".circleci/.env.$ENVIRONMENT_NAME"
+
+                echo -e "\033[32mExported GOOGLE_APPLICATION_CREDENTIALS for enviroment $ENVIRONMENT_NAME"
+            fi
       - dotenv/source:
           path: .circleci/.env.<< parameters.environment_name >>
 
@@ -108,7 +123,7 @@ jobs:
       - checkout
       - setup_environment_variables:
           environment_name: << parameters.environment_name >>
-          gcloud_service_key_env_name: GCP_JSON_KEY
+          gcloud_service_key_env_name: GCP_JSON_KEY_ENV_VAR_NAME
       - gcp-gcr/gcr-auth:
           registry-url: $REGISTRY_URL
       - gcp-gcr/build-image:
@@ -136,7 +151,7 @@ jobs:
       - helm/install-helm-client
       - setup_environment_variables:
           environment_name: << parameters.environment_name >>
-          gcloud_service_key_env_name: GCP_JSON_KEY
+          gcloud_service_key_env_name: GCP_JSON_KEY_ENV_VAR_NAME
       - gcp-cli/setup:
           components: 'gke-gcloud-auth-plugin --quiet'
       - run:
@@ -147,7 +162,7 @@ jobs:
             CHART_NAME: << parameters.chart_name >>
             HELM_RELEASE_NAME: << parameters.helm_release_name >>
             GIT_REVISION: << pipeline.git.revision >>
-  terraform_deploy_infra:
+  terraform_plan:
     executor: base-executor
     parameters:
       environment_name:
@@ -159,13 +174,33 @@ jobs:
           command: ./.circleci/terraform_install.sh
       - setup_environment_variables:
           environment_name: << parameters.environment_name >>
-          terraform_service_key_env_name: TERRAFORM_JSON_KEY
+          terraform_service_key_env_name: TERRAFORM_JSON_KEY_ENV_VAR_NAME
       - terraform/init:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
       - terraform/fmt:
           path: ./infra/terraform
       - terraform/validate:
+          path: ./infra/terraform
+      - terraform/plan:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
+          path: ./infra/terraform
+          var_file: ./environments/<< parameters.environment_name >>.tfvars
+  terraform_apply:
+    executor: base-executor
+    parameters:
+      environment_name:
+        type: string
+    steps:
+      - checkout
+      - run:
+          name: Install Terraform
+          command: ./.circleci/terraform_install.sh
+      - setup_environment_variables:
+          environment_name: << parameters.environment_name >>
+          terraform_service_key_env_name: TERRAFORM_JSON_KEY_ENV_VAR_NAME
+      - terraform/init:
+          backend_config_file: ./environments/<< parameters.environment_name >>.hcl
           path: ./infra/terraform
       - terraform/apply:
           backend_config_file: ./environments/<< parameters.environment_name >>.hcl
@@ -198,12 +233,19 @@ workflows:
           app-dir: product
           requires:
             - shell_check
-      - terraform_deploy_infra:
-          name: terraform_deploy_infra_staging
+      - terraform_plan:
+          name: terraform_plan_staging
           environment_name: gcp-staging-eu
-      - terraform_deploy_infra:
-          name: terraform_deploy_infra_production
+      - can_terraform_apply:
+          name: can_terraform_apply_staging
+          type: approval
+          requires:
+            - terraform_plan_staging
+      - terraform_apply:
+          name: terraform_apply_staging
           environment_name: gcp-production-eu
+          requires:
+            - can_terraform_apply_staging
   test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]
