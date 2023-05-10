@@ -1,46 +1,61 @@
-# Overview
+## Requirements
 
-This repository contains a Terraform project for managing infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two distinct environments: `staging` and `production`. Each environment is deployed within a dedicated GCP project to ensure separation of concerns and promote best practices for managing infrastructure.
+| Name                                                                        | Version  |
+| --------------------------------------------------------------------------- | -------- |
+| <a name="requirement_terraform"></a> [terraform](#requirement_terraform)    | ~> 1.4.6 |
+| <a name="requirement_google"></a> [google](#requirement_google)             | 4.63.1   |
+| <a name="requirement_helm"></a> [helm](#requirement_helm)                   | 2.9.0    |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement_kubernetes) | 2.20.0   |
 
-## Remote State Management
+## Providers
 
-Terraform's remote state is stored in separate Google Cloud Storage (GCS) buckets for each environment (`staging` and `production`). This approach ensures isolation and security of state files, preventing unauthorized access or accidental changes to the infrastructure.
+| Name                                                                  | Version |
+| --------------------------------------------------------------------- | ------- |
+| <a name="provider_google"></a> [google](#provider_google)             | 4.63.1  |
+| <a name="provider_helm"></a> [helm](#provider_helm)                   | 2.9.0   |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider_kubernetes) | 2.20.0  |
 
-The environment configurations are defined in `./environments/{env}.hcl` files, while the corresponding variables are stored in `./environments/{env}.tfvars` files.
+## Modules
 
-## Usage Instructions
+No modules.
 
-Follow the steps below to initialize and apply Terraform configurations for the desired environment:
+## Resources
 
-### Initializing Terraform
+| Name                                                                                                                                                                                | Type     |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| [google_artifact_registry_repository.ms_commerce_repository](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/artifact_registry_repository)           | resource |
+| [google_container_cluster.ms_commerce_cluster](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/container_cluster)                                    | resource |
+| [google_kms_crypto_key.ms_commerce_key](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/kms_crypto_key)                                              | resource |
+| [google_kms_key_ring.ms_commerce_key_ring](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/kms_key_ring)                                             | resource |
+| [google_monitoring_alert_policy.alert_policies](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/monitoring_alert_policy)                             | resource |
+| [google_monitoring_notification_channel.email_notification_channel](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/monitoring_notification_channel) | resource |
+| [google_monitoring_uptime_check_config.uptime_checks](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/monitoring_uptime_check_config)                | resource |
+| [google_project_iam_member.ci_sa_roles](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/project_iam_member)                                          | resource |
+| [google_project_service.enabled_services](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/project_service)                                           | resource |
+| [google_service_account.ci_service_account](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/service_account)                                         | resource |
+| [helm_release.ingress_nginx](https://registry.terraform.io/providers/hashicorp/helm/2.9.0/docs/resources/release)                                                                   | resource |
+| [kubernetes_manifest.pod_monitoring](https://registry.terraform.io/providers/hashicorp/kubernetes/2.20.0/docs/resources/manifest)                                                   | resource |
 
-Before applying any Terraform configurations, you need to initialize Terraform. To do this, run the following command, replacing `${env}` with the desired environment (`staging` or `production`):
+## Inputs
 
-```bash
-    terraform init -backend-config=./environments/${env}.hcl
-```
+| Name                                                                              | Description                  | Type     | Default | Required |
+| --------------------------------------------------------------------------------- | ---------------------------- | -------- | ------- | :------: |
+| <a name="input_email_address"></a> [email_address](#input_email_address)          | Email address for GCP alerts | `string` | n/a     |   yes    |
+| <a name="input_host"></a> [host](#input_host)                                     | hostname                     | `string` | n/a     |   yes    |
+| <a name="input_k8s_cluster_name"></a> [k8s_cluster_name](#input_k8s_cluster_name) | K8s cluster name             | `string` | n/a     |   yes    |
+| <a name="input_key_name"></a> [key_name](#input_key_name)                         | KMS key name                 | `string` | n/a     |   yes    |
+| <a name="input_keyring_name"></a> [keyring_name](#input_keyring_name)             | KMS key ring name            | `string` | n/a     |   yes    |
+| <a name="input_project_id"></a> [project_id](#input_project_id)                   | GCP project ID               | `string` | n/a     |   yes    |
+| <a name="input_region"></a> [region](#input_region)                               | GCP region                   | `string` | n/a     |   yes    |
+| <a name="input_repository_name"></a> [repository_name](#input_repository_name)    | Artifact registry repo name  | `string` | n/a     |   yes    |
+| <a name="input_zone"></a> [zone](#input_zone)                                     | GCP zone                     | `string` | n/a     |   yes    |
 
-This command initializes the Terraform backend with the specified environment configuration and downloads the required provider plugins.
+## Outputs
 
-### Applying Terraform Configurations
-
-To apply the Terraform configurations for the chosen environment, run the following command, again replacing `${env}` with the appropriate environment:
-
-```bash
-    terraform apply -var-file=./environments/${env}.tfvars
-```
-
-This command prompts you to confirm the changes before applying the Terraform configurations using the variables defined in the corresponding `.tfvars` file.
-
-Please ensure you review the planned changes carefully before proceeding, as applying these configurations will affect your GCP infrastructure.
-
-Terraform service account required roles
-roles/storage.admin
-roles/artifactregistry.admin
-roles/cloudkms.admin
-roles/container.admin
-roles/iam.serviceAccountAdmin
-roles/resourcemanager.projectIamAdmin
-roles/serviceusage.serviceUsageAdmin
-
-Cloud Resource Manager API
+| Name                                                                                                                                | Description                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| <a name="output_artifact_registry_repository_url"></a> [artifact_registry_repository_url](#output_artifact_registry_repository_url) | The URL of the created Artifact Registry repository. |
+| <a name="output_ci_service_account_email"></a> [ci_service_account_email](#output_ci_service_account_email)                         | The email of the CI service account.                 |
+| <a name="output_gke_cluster_endpoint"></a> [gke_cluster_endpoint](#output_gke_cluster_endpoint)                                     | The endpoint of the created GKE Autopilot cluster.   |
+| <a name="output_kms_crypto_key_name"></a> [kms_crypto_key_name](#output_kms_crypto_key_name)                                        | The name of the created KMS crypto key.              |
+| <a name="output_kms_keyring_name"></a> [kms_keyring_name](#output_kms_keyring_name)                                                 | The name of the created KMS key ring.                |

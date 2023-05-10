@@ -6,17 +6,16 @@ resource "google_project_service" "enabled_services" {
   disable_on_destroy = false
 }
 
-# Create Artifact Registry repository
-resource "google_artifact_registry_repository" "ms_commerce_repository" {
-  repository_id = var.repository_name
-  location      = var.region
-  format        = "DOCKER"
-}
-
 # Create CI service account to authenticate to Artifact Registry, GKE and KMS
 resource "google_service_account" "ci_service_account" {
   account_id   = local.ci_service_account_account_id
   display_name = local.ci_service_account_display_name
+}
+
+# Output for the CI service account email
+output "ci_service_account_email" {
+  value       = google_service_account.ci_service_account.email
+  description = "The email of the CI service account."
 }
 
 # Add needed roles for CI service account
@@ -37,6 +36,12 @@ resource "google_project_iam_member" "ci_sa_roles" {
 #   enable_autopilot = true
 # }
 
+# # Output for the GKE cluster endpoint
+# output "gke_cluster_endpoint" {
+#   value       = google_container_cluster.ms_commerce_cluster.endpoint
+#   description = "The endpoint of the created GKE Autopilot cluster."
+# }
+
 # #  Install ingress_nginx controller chart via helm
 # #  Ensure `config_path = "~/.kube/config"` contains access to the cluster created above
 # resource "helm_release" "ingress_nginx" {
@@ -53,9 +58,21 @@ resource "google_project_iam_member" "ci_sa_roles" {
 #   location = var.region
 # }
 
+# # Output for the KMS keyring name
+# output "kms_keyring_name" {
+#   value       = google_kms_key_ring.ms_commerce_key_ring.name
+#   description = "The name of the created KMS key ring."
+# }
+
 # resource "google_kms_crypto_key" "ms_commerce_key" {
 #   name     = var.key_name
 #   key_ring = "projects/${var.project_id}/locations/${var.region}/keyRings/${var.keyring_name}"
+# }
+
+# # Output for the KMS crypto key name
+# output "kms_crypto_key_name" {
+#   value       = google_kms_crypto_key.ms_commerce_key.name
+#   description = "The name of the created KMS crypto key."
 # }
 
 # # Create PodMonitoring CR for GCP managed Prometheus service
