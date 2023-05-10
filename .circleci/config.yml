@@ -62,10 +62,10 @@ commands:
           command: |
             set -e
 
-            echo << parameters.gcloud_service_key_env_name >>
-            echo << parameters.terraform_service_key_env_name >>
+            echo "$<< parameters.gcloud_service_key_env_name >>"
+            echo "$<< parameters.terraform_service_key_env_name >>"
 
-            if [[ -n << parameters.gcloud_service_key_env_name >> ]]; then
+            if [[ -n "$<< parameters.gcloud_service_key_env_name >>" ]]; then
                 GCLOUD_SERVICE_KEY_JSON="${!<< parameters.gcloud_service_key_env_name >>}"
 
                 echo "GCLOUD_SERVICE_KEY=$GCLOUD_SERVICE_KEY_JSON" >>".circleci/.env.$ENVIRONMENT_NAME"
@@ -73,7 +73,7 @@ commands:
                 echo -e "\033[32mExported GCLOUD_SERVICE_KEY for enviroment $ENVIRONMENT_NAME"
             fi
 
-            if [[ -n << parameters.terraform_service_key_env_name >> ]]; then
+            if [[ -n "$<< parameters.terraform_service_key_env_name >>" ]]; then
                 TERRAFORM_SERVICE_KEY_JSON="${!<< parameters.terraform_service_key_env_name >>}"
 
                 echo "$TERRAFORM_SERVICE_KEY_JSON" >>"$HOME"/terraform-service-key.json
