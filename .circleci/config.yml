@@ -62,6 +62,9 @@ commands:
           command: |
             set -e
 
+            echo << parameters.gcloud_service_key_env_name >>
+            echo << parameters.terraform_service_key_env_name >>
+
             if [[ -n << parameters.gcloud_service_key_env_name >> ]]; then
                 GCLOUD_SERVICE_KEY_JSON="${!<< parameters.gcloud_service_key_env_name >>}"
 
