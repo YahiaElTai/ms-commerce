@@ -35,6 +35,7 @@ No modules.
 | [google_service_account.ci_service_account](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/resources/service_account)                                         | resource    |
 | [helm_release.ingress_nginx](https://registry.terraform.io/providers/hashicorp/helm/2.9.0/docs/resources/release)                                                                   | resource    |
 | [kubernetes_manifest.pod_monitoring](https://registry.terraform.io/providers/hashicorp/kubernetes/2.20.0/docs/resources/manifest)                                                   | resource    |
+| [google_client_config.provider](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/data-sources/client_config)                                                    | data source |
 | [google_container_cluster.ms_commerce_cluster_info](https://registry.terraform.io/providers/hashicorp/google/4.63.1/docs/data-sources/container_cluster)                            | data source |
 
 ## Inputs
