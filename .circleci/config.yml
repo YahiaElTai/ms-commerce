@@ -58,8 +58,8 @@ commands:
           command: |
             set -e
 
+            ENVIRONMENT_NAME=<< parameters.environment_name >>
             ENVIRONMENT_VARIABLE_NAME=<< parameters.environment_variable_name >>
-            ENVIRONMENT_NAME=<< parameters.environment_variable_name >>
 
             if [[ "$ENVIRONMENT_VARIABLE_NAME" == "GCP_JSON_KEY_ENV_VAR_NAME" ]]; then
                 GCLOUD_SERVICE_KEY_JSON="${!GCP_JSON_KEY_ENV_VAR_NAME}"
