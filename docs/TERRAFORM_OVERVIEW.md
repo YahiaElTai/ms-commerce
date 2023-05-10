@@ -1,10 +1,10 @@
 # Terraform Overview
 
-This repository contains a Terraform project for managing infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two distinct environments: `staging` and `production`. Each environment is deployed within a dedicated GCP project to ensure separation of concerns and promote best practices for managing infrastructure.
+This repository contains a Terraform project for managing infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two distinct environments: `gcp-staging-eu` and `gcp-production-eu`. Each environment is deployed within a dedicated GCP project to ensure separation of concerns and promote best practices for managing infrastructure.
 
 ## Remote State Management
 
-Terraform's remote state is stored in a Google Cloud Storage (GCS) bucket in the production environment. The bucket is called `ms-commerce-ops-terraform-state` which has a prefix for each environment, currently:
+Terraform's remote state is stored in a Google Cloud Storage (GCS) bucket in the `gcp-production-eu` environment. The bucket is called `ms-commerce-ops-terraform-state` which has a prefix for each environment, currently:
 
 ```
 -> ms-commerce-ops-terraform-state
@@ -20,7 +20,7 @@ Follow the steps below to initialize and apply Terraform configurations for the 
 
 ### Initializing Terraform
 
-Before applying any Terraform configurations, you need to initialize Terraform. To do this, run the following command, replacing `${env}` with the desired environment (`staging` or `production`):
+Before applying any Terraform configurations, you need to initialize Terraform. To do this, run the following command, replacing `${env}` with the desired environment (`gcp-staging-eu` or `gcp-production-eu`):
 
 ```bash
     terraform init -backend-config=./environments/${env}.hcl
@@ -63,7 +63,7 @@ A Terraform service account is created for each Google Cloud Platform (GCP) proj
 
 Please note that before running Terraform on the CI (Continuous Integration) system, you should ensure that the Cloud Resource Manager API is enabled.
 
-These service account should most likely be created using the GCP Console and not via terraform locally.
+These service account should be created using the GCP Console and not via terraform locally.
 
 Once these service accounts are created, generate a key for each of them and store it as an environment variable in CI:
 

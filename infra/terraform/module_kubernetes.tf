@@ -1,17 +1,17 @@
-# # Create Autopilot GKE cluster
-# resource "google_container_cluster" "ms_commerce_cluster" {
-#   name     = var.k8s_cluster_name
-#   project  = var.project_id
-#   location = var.region
-#   ip_allocation_policy {}
-#   enable_autopilot = true
-# }
+# Create Autopilot GKE cluster
+resource "google_container_cluster" "ms_commerce_cluster" {
+  name     = var.k8s_cluster_name
+  project  = var.project_id
+  location = var.region
+  ip_allocation_policy {}
+  enable_autopilot = true
+}
 
-# # Output for the GKE cluster endpoint
-# output "gke_cluster_endpoint" {
-#   value       = google_container_cluster.ms_commerce_cluster.endpoint
-#   description = "The endpoint of the created GKE Autopilot cluster."
-# }
+# Output for the GKE cluster endpoint
+output "gke_cluster_endpoint" {
+  value       = google_container_cluster.ms_commerce_cluster.endpoint
+  description = "The endpoint of the created GKE Autopilot cluster."
+}
 
 # #  Install ingress_nginx controller chart via helm
 # #  Ensure `config_path = "~/.kube/config"` contains access to the cluster created above
