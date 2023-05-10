@@ -4,6 +4,8 @@ provider "google" {
   zone    = var.zone
 }
 
+data "google_client_config" "provider" {}
+
 # fetch k8s cluster information from GKE to authenticate k8s and helm providers
 data "google_container_cluster" "ms_commerce_cluster_info" {
   name     = var.k8s_cluster_name
@@ -13,16 +15,14 @@ data "google_container_cluster" "ms_commerce_cluster_info" {
 
 provider "kubernetes" {
   host                   = "https://${data.google_container_cluster.ms_commerce_cluster_info.endpoint}"
-  client_certificate     = base64decode(data.google_container_cluster.ms_commerce_cluster_info.master_auth[0].client_certificate)
-  client_key             = base64decode(data.google_container_cluster.ms_commerce_cluster_info.master_auth[0].client_key)
+  token                  = data.google_client_config.provider.access_token
   cluster_ca_certificate = base64decode(data.google_container_cluster.ms_commerce_cluster_info.master_auth[0].cluster_ca_certificate)
 }
 
 provider "helm" {
   kubernetes {
     host                   = "https://${data.google_container_cluster.ms_commerce_cluster_info.endpoint}"
-    client_certificate     = base64decode(data.google_container_cluster.ms_commerce_cluster_info.master_auth[0].client_certificate)
-    client_key             = base64decode(data.google_container_cluster.ms_commerce_cluster_info.master_auth[0].client_key)
+    token                  = data.google_client_config.provider.access_token
     cluster_ca_certificate = base64decode(data.google_container_cluster.ms_commerce_cluster_info.master_auth[0].cluster_ca_certificate)
   }
 }
