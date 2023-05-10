@@ -1,6 +1,6 @@
 # Terraform Overview
 
-This repository contains a Terraform project for managing infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two distinct environments: `gcp-staging-eu` and `gcp-production-eu`. Each environment is deployed within a dedicated GCP project to ensure separation of concerns and promote best practices for managing infrastructure.
+This project uses Terraform for managing infrastructure provisioning on Google Cloud Platform (GCP). The infrastructure is designed to support two distinct environments: `gcp-staging-eu` and `gcp-production-eu`. Each environment is deployed within a dedicated GCP project to ensure separation of concerns and promote best practices for managing infrastructure.
 
 ## Remote State Management
 
