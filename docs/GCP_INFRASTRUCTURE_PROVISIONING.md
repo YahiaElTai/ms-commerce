@@ -36,7 +36,7 @@
 
 6. point your domain name to ingress load balancer external IP address.
 
-All other steps required are handled via Terraform in [this file](../infra/terraform/main.tf) documented [here](/infra/terraform/README.md)
+All other steps required are handled via Terraform in [this file](../infra/terraform/main.tf) documented [here](/docs/TERRAFORM_OVERVIEW.md)
 
 ### Helpful links
 
