@@ -13,41 +13,40 @@ output "gke_cluster_endpoint" {
   description = "The endpoint of the created GKE Autopilot cluster."
 }
 
-# #  Install ingress_nginx controller chart via helm
-# #  Ensure `config_path = "~/.kube/config"` contains access to the cluster created above
-# resource "helm_release" "ingress_nginx" {
-#   name             = "ingress-nginx"
-#   repository       = "https://kubernetes.github.io/ingress-nginx"
-#   chart            = "ingress-nginx"
-#   create_namespace = true
-#   namespace        = "ingress-nginx"
-# }
+#  Install ingress_nginx controller chart via helm
+resource "helm_release" "ingress_nginx" {
+  name             = "ingress-nginx"
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  create_namespace = true
+  namespace        = "ingress-nginx"
+}
 
 
-# # Create PodMonitoring CR for GCP managed Prometheus service
-# resource "kubernetes_manifest" "pod_monitoring" {
-#   for_each = { for item in local.pod_monitoring : item.name => item }
+# Create PodMonitoring CR for GCP managed Prometheus service
+resource "kubernetes_manifest" "pod_monitoring" {
+  for_each = { for item in local.pod_monitoring : item.name => item }
 
-#   manifest = {
-#     apiVersion = "monitoring.googleapis.com/v1"
-#     kind       = "PodMonitoring"
+  manifest = {
+    apiVersion = "monitoring.googleapis.com/v1"
+    kind       = "PodMonitoring"
 
-#     metadata = {
-#       name      = each.value.name
-#       namespace = "default"
-#     }
-#     spec = {
-#       selector = {
-#         matchLabels = {
-#           app = each.value.app_label
-#         }
-#       }
-#       endpoints = [
-#         {
-#           port     = "metrics"
-#           interval = "30s"
-#         }
-#       ]
-#     }
-#   }
-# }
+    metadata = {
+      name      = each.value.name
+      namespace = "default"
+    }
+    spec = {
+      selector = {
+        matchLabels = {
+          app = each.value.app_label
+        }
+      }
+      endpoints = [
+        {
+          port     = "metrics"
+          interval = "30s"
+        }
+      ]
+    }
+  }
+}
