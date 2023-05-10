@@ -79,6 +79,8 @@ commands:
                 echo "GOOGLE_APPLICATION_CREDENTIALS=\"$HOME/terraform-service-key.json\"" >>".circleci/.env.$ENVIRONMENT_NAME"
 
                 echo -e "\033[32mExported GOOGLE_APPLICATION_CREDENTIALS for enviroment $ENVIRONMENT_NAME"
+
+                cat .circleci/.env.$ENVIRONMENT_NAME"
             fi
       - dotenv/source:
           path: .circleci/.env.<< parameters.environment_name >>
@@ -256,7 +258,7 @@ workflows:
             - terraform_plan_staging
       - terraform_apply:
           name: terraform_apply_staging
-          environment_name: gcp-production-eu
+          environment_name: gcp-staging-eu
           requires:
             - can_terraform_apply_staging
   test_and_deploy:
