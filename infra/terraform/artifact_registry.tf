@@ -5,8 +5,8 @@ resource "google_artifact_registry_repository" "ms_commerce_repository" {
   format        = "DOCKER"
 }
 
-# Output for the Artifact Registry repository URL
-output "artifact_registry_repository_url" {
+# Output for the Artifact Registry repository ID
+output "artifact_registry_repository_id" {
   value       = google_artifact_registry_repository.ms_commerce_repository.id
-  description = "The URL of the created Artifact Registry repository."
+  description = "The ID of the created Artifact Registry repository."
 }
