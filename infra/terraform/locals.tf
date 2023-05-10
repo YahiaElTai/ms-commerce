@@ -1,6 +1,7 @@
 locals {
   # required GCP services to be enabled
   enabled_gcp_services = [
+    "cloudresourcemanager.googleapis.com",
     "artifactregistry.googleapis.com",
     "container.googleapis.com",
     "cloudkms.googleapis.com"
