@@ -232,32 +232,6 @@ workflows:
           app-dir: product
           requires:
             - shell_check
-      - terraform_plan:
-          name: terraform_plan_staging
-          environment_name: gcp-staging-eu
-      - can_terraform_apply:
-          name: can_terraform_apply_staging
-          type: approval
-          requires:
-            - terraform_plan_staging
-      - terraform_apply:
-          name: terraform_apply_staging
-          environment_name: gcp-staging-eu
-          requires:
-            - can_terraform_apply_staging
-      - terraform_plan:
-          name: terraform_plan_production
-          environment_name: gcp-production-eu
-      - can_terraform_apply:
-          name: can_terraform_apply_production
-          type: approval
-          requires:
-            - terraform_plan_production
-      - terraform_apply:
-          name: terraform_apply_production
-          environment_name: gcp-production-eu
-          requires:
-            - can_terraform_apply_production
   test_and_deploy:
     when:
       equal: [main, << pipeline.git.branch >>]
@@ -405,3 +379,35 @@ workflows:
           helm_release_name: ms-ingress
           requires:
             - can_deploy_p_ingress
+      # Terraform (optional) jobs (staging)
+      - terraform_plan:
+          name: terraform_plan_staging
+          environment_name: gcp-staging-eu
+          requires:
+            - shell_check
+      - can_terraform_apply:
+          name: can_terraform_apply_staging
+          type: approval
+          requires:
+            - terraform_plan_staging
+      - terraform_apply:
+          name: terraform_apply_staging
+          environment_name: gcp-staging-eu
+          requires:
+            - can_terraform_apply_staging
+      # Terraform (optional) jobs (production)
+      - terraform_plan:
+          name: terraform_plan_production
+          environment_name: gcp-production-eu
+          requires:
+            - shell_check
+      - can_terraform_apply:
+          name: can_terraform_apply_production
+          type: approval
+          requires:
+            - terraform_plan_production
+      - terraform_apply:
+          name: terraform_apply_production
+          environment_name: gcp-production-eu
+          requires:
+            - can_terraform_apply_production
