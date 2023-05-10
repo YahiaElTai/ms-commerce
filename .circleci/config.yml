@@ -60,7 +60,7 @@ commands:
 
             ENVIRONMENT_VARIABLE_NAME=<< parameters.environment_variable_name >>
 
-            if [[ -n "$ENVIRONMENT_VARIABLE_NAME" == "GCP_JSON_KEY_ENV_VAR_NAME" ]]; then
+            if [[ "$ENVIRONMENT_VARIABLE_NAME" == "GCP_JSON_KEY_ENV_VAR_NAME" ]]; then
                 GCLOUD_SERVICE_KEY_JSON="${!ENVIRONMENT_VARIABLE_NAME}"
 
                 echo "GCLOUD_SERVICE_KEY=$GCLOUD_SERVICE_KEY_JSON" >>".circleci/.env.$ENVIRONMENT_NAME"
@@ -68,7 +68,7 @@ commands:
                 echo -e "\033[32mExported GCLOUD_SERVICE_KEY for enviroment $ENVIRONMENT_NAME"
             fi
 
-            if [[ -n "$ENVIRONMENT_VARIABLE_NAME" == "TERRAFORM_JSON_KEY_ENV_VAR_NAME" ]]; then
+            if [[ "$ENVIRONMENT_VARIABLE_NAME" == "TERRAFORM_JSON_KEY_ENV_VAR_NAME" ]]; then
                 TERRAFORM_SERVICE_KEY_JSON="${!ENVIRONMENT_VARIABLE_NAME}"
 
                 echo "$TERRAFORM_SERVICE_KEY_JSON" >>"$HOME"/terraform-service-key.json
