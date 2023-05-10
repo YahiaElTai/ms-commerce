@@ -49,12 +49,14 @@ A Terraform service account is created for each Google Cloud Platform (GCP) proj
    These are the required roles currently for "ms-commerce":
 
    - `roles/storage.admin`
+   - `roles/resourcemanager.projectIamAdmin`
+   - `roles/iam.serviceAccountUser`
+   - `roles/serviceusage.serviceUsageAdmin`
+   - `roles/iam.serviceAccountAdmin`
    - `roles/artifactregistry.admin`
    - `roles/cloudkms.admin`
+   - `roles/compute.instanceAdmin`
    - `roles/container.admin`
-   - `roles/iam.serviceAccountAdmin`
-   - `roles/resourcemanager.projectIamAdmin`
-   - `roles/serviceusage.serviceUsageAdmin`
    - `roles/monitoring.admin`
 
 2. Access to the Google Cloud Storage (GCS) bucket located in the production environment for managing its remote state.
@@ -67,5 +69,5 @@ These service account should be created using the GCP Console and not via terraf
 
 Once these service accounts are created, generate a key for each of them and store it as an environment variable in CI:
 
-- TERRAFORM_SERVICE_KEY_STAGING
-- TERRAFORM_SERVICE_KEY_PROD
+- `TERRAFORM_SERVICE_KEY_STAGING`
+- `TERRAFORM_SERVICE_KEY_PROD`
