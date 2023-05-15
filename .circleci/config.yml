@@ -12,7 +12,7 @@ orbs:
 executors:
   gcp-executor:
     docker:
-      - image: cimg/gcp:2023.04
+      - image: cimg/gcp:2023.05
   node-executor:
     docker:
       - image: cimg/node:20.0.0
